@@ -10,24 +10,33 @@ const Header = ({heading}) => {
 const SubList = ({onChange}) => {
     return (
         <div>
-            <Link to="/posts" onClick={onChange('posts')}>Sub 1</Link>&nbsp;
-            <Link to="/todos" onClick={onChange('todos')}>Sub 2</Link>&nbsp;
-            <Link to="/photos" onClick={onChange('photos')}>Sub 3</Link>&nbsp;
+            <Link to="/PSVR" onClick={onChange('PSVR')}>PSVR</Link>&nbsp;
+            <Link to="/PS4" onClick={onChange('PS4')}>PS4</Link>&nbsp;
+            <Link to="/Apple" onClick={onChange('Apple')}>Apple</Link>&nbsp;
         </div>
     );
 };
 
 const PostList = ({match, posts}) => {
-    return (
-        <div>
-            {
-                posts.map(post => {
-                    let href = `/${match.params.sub}/${post.id}`;
-                    return <Link to={href} key={post.id}>{post.title}</Link>
-                })
-            }
-        </div>
-    );
+    console.log(match, posts);
+    if (posts.length === 0){
+        return (
+            <p>Loading...</p>
+        );
+    } else {
+        return (
+            <div>
+                <Header heading={match.params.sub} />
+                <hr/>
+                {
+                    posts.map(post => {
+                        let href = `${match.params.sub}/${post.id}`;
+                        return <div key={post.id}><Link to={href}>{post.title}</Link></div>
+                    })
+                }
+            </div>
+        );
+    }
 };
 
 class Post extends Component {
@@ -58,19 +67,30 @@ class Post extends Component {
     }
     
     componentDidMount(){
-        this.getPostDetails(this.match.url);
+        let {sub, post} = this.match.params;
+        this.getPostDetails(`${sub}/comments/${post}.json`);
     }
     
     getPostDetails = async (url) => {
-        let response = await fetch('https://jsonplaceholder.typicode.com'+url);
-        let data = await response.json();
-
-        const {title, body} = data;
-        this.setState({title, body});
+        
+        try {
+            let response = await fetch('https://www.reddit.com/r/'+url);
+            let data = await response.json();
+            
+            if (data.error){
+                this.setState({title: 'Not Found', body: ''});
+            } else {
+                const {title, selftext_html} = data[0].data.children[0].data;
+                this.setState({title, body: selftext_html});
+            }
+        } catch (error) {
+            console.log(error);
+        }
+            
     };
 }
 
-class App extends Component {
+class Page extends Component {
     constructor(){
         super();
         this.state = {
@@ -81,41 +101,49 @@ class App extends Component {
     }
     
     changeSub = (sub) => () => {
-        this.setState({sub, heading: sub});
+        this.setState({sub, heading: sub, posts: []});
         this.getPosts(sub);
     };
     
     render(){
         return (
-            <Router>
-                <div>
-                    <SubList onChange={this.changeSub}/>
-                    <Header heading={this.state.heading}/>
-                    <hr />
-                    <Switch>
-                        <Route exact path="/:sub" render={props => <PostList {...props} posts={this.state.posts}/>} />
-                        <Route path="/:sub/:post" component={Post} />
-                        <Redirect from="/" to="/posts"/>
-                    </Switch>
-                </div>
-            </Router>
+            <div>
+                <SubList onChange={this.changeSub}/>
+                <Switch>
+                    <Route exact path="/:sub" render={props => <PostList {...props} posts={this.state.posts}/>} />
+                    <Route path="/:sub/:post" component={Post} />
+                    <Redirect from="/" to="/PSVR"/>
+                </Switch>
+            </div>
         );
     }
 
     getPosts = async (sub) => {
-        let heading = sub;
-        sub === '/' ? heading = 'Home' : heading = sub;
-        
-        let response = await fetch('https://jsonplaceholder.typicode.com/'+sub);
+        let response = await fetch('https://www.reddit.com/r/'+sub+'.json');
         let data = await response.json();
+
+        let posts = data.data.children.map(post => {
+            return {
+                title: post.data.title,
+                id: post.data.id,
+                body: post.data.selftext_html
+            };
+        });
         
-        this.setState({heading});
-        this.setState({posts: data});
+        this.setState({posts});
     };
     
     componentDidMount(){
-        this.getPosts('posts');
+        this.getPosts(this.props.location.pathname.replace('/',''));
     }
+}
+
+const App = () => {
+    return (
+        <Router>
+            <Route path='/' component={Page} />
+        </Router>
+    );
 }
 
 export default App;
