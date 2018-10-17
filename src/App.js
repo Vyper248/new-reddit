@@ -77,9 +77,9 @@ class Post extends Component {
             
             if (data.error){
                 this.setState({title: 'Not Found', body: ''});
-            } else {
+            } else {                
                 let {title, selftext_html} = data[0].data.children[0].data;
-                selftext_html = selftext_html.replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+                selftext_html = selftext_html.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;#39;/g,"'");
                 this.setState({title, body: selftext_html});
             }
         } catch (error) {
@@ -120,7 +120,7 @@ class Page extends Component {
     getPosts = async (sub) => {
         let response = await fetch('https://www.reddit.com/r/'+sub+'.json');
         let data = await response.json();
-        console.log(data);
+
         if (data && data.data && data.data.children){
             let posts = data.data.children.map(post => {
                 console.log(post);
