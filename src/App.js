@@ -56,9 +56,7 @@ class Post extends Component {
                     this.state.title.length === 0 ? <h1>Loading...</h1> : (
                         <div>
                             <h1>{this.state.title}</h1>
-                            <div>
-                                {this.state.body}
-                            </div>
+                            <div dangerouslySetInnerHTML={{ __html: this.state.body }}></div>
                         </div>
                     )
                 }
@@ -80,7 +78,8 @@ class Post extends Component {
             if (data.error){
                 this.setState({title: 'Not Found', body: ''});
             } else {
-                const {title, selftext_html} = data[0].data.children[0].data;
+                let {title, selftext_html} = data[0].data.children[0].data;
+                selftext_html = selftext_html.replace(/&lt;/g,'<').replace(/&gt;/g,'>');
                 this.setState({title, body: selftext_html});
             }
         } catch (error) {
@@ -121,16 +120,19 @@ class Page extends Component {
     getPosts = async (sub) => {
         let response = await fetch('https://www.reddit.com/r/'+sub+'.json');
         let data = await response.json();
-
-        let posts = data.data.children.map(post => {
-            return {
-                title: post.data.title,
-                id: post.data.id,
-                body: post.data.selftext_html
-            };
-        });
-        
-        this.setState({posts});
+        console.log(data);
+        if (data && data.data && data.data.children){
+            let posts = data.data.children.map(post => {
+                console.log(post);
+                return {
+                    title: post.data.title,
+                    id: post.data.id,
+                    body: post.data.selftext_html
+                };
+            });
+            
+            this.setState({posts});
+        }
     };
     
     componentDidMount(){
