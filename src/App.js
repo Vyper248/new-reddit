@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 
 const Header = ({heading}) => {
     return (
@@ -18,7 +18,9 @@ const SubList = ({onChange}) => {
 };
 
 const PostList = ({match, posts}) => {
-    console.log(match, posts);
+    let title = match.params.sub;
+    if (!title) title = 'Home';
+    
     if (posts.length === 0){
         return (
             <p>Loading...</p>
@@ -26,7 +28,7 @@ const PostList = ({match, posts}) => {
     } else {
         return (
             <div>
-                <Header heading={match.params.sub} />
+                <Header heading={title} />
                 <hr/>
                 {
                     posts.map(post => {
@@ -70,16 +72,16 @@ class Post extends Component {
     }
     
     getPostDetails = async (url) => {
-        
         try {
             let response = await fetch('https://www.reddit.com/r/'+url);
             let data = await response.json();
             
             if (data.error){
                 this.setState({title: 'Not Found', body: ''});
-            } else {                
+            } else {
                 let {title, selftext_html} = data[0].data.children[0].data;
-                selftext_html = selftext_html.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;#39;/g,"'");
+                //if this exists, replace &lt etc with proper symbols, otherwise set to empty string
+                selftext_html ? selftext_html = selftext_html.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;#39;/g,"'") : selftext_html = '';
                 this.setState({title, body: selftext_html});
             }
         } catch (error) {
@@ -109,21 +111,23 @@ class Page extends Component {
             <div>
                 <SubList onChange={this.changeSub}/>
                 <Switch>
+                    <Route exact path="/" render={props => <PostList {...props} posts={this.state.posts}/>} />
                     <Route exact path="/:sub" render={props => <PostList {...props} posts={this.state.posts}/>} />
-                    <Route path="/:sub/:post" component={Post} />
-                    <Redirect from="/" to="/PSVR"/>
+                    <Route exact path="/:sub/:post" component={Post} />
+                    {/* <Redirect from="/" to="/PSVR"/> */}
                 </Switch>
             </div>
         );
     }
 
     getPosts = async (sub) => {
-        let response = await fetch('https://www.reddit.com/r/'+sub+'.json');
+        if (sub.length > 0) sub = 'r/'+sub;
+        
+        let response = await fetch('https://www.reddit.com/'+sub+'.json');
         let data = await response.json();
 
         if (data && data.data && data.data.children){
             let posts = data.data.children.map(post => {
-                console.log(post);
                 return {
                     title: post.data.title,
                     id: post.data.id,
@@ -136,7 +140,8 @@ class Page extends Component {
     };
     
     componentDidMount(){
-        this.getPosts(this.props.location.pathname.replace('/',''));
+        let url = this.props.location.pathname.replace('/','');
+        this.getPosts(url);
     }
 }
 
