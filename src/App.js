@@ -27,6 +27,17 @@ class Page extends Component {
             </div>
         );
     }
+    
+    parseBodyText(text){
+        text ? text = text
+                        .replace(/&lt;/g,'<')
+                        .replace(/&gt;/g,'>')
+                        .replace(/&amp;#39;/g,"'")
+                        .replace(/&amp;quot;/g,'"')
+                        .replace(/&amp;/,"&")
+                         : text = '';
+        return text;
+    }
 
     getPostList = async (sub) => {
         if (sub.length > 0) sub = 'r/'+sub;
@@ -41,9 +52,9 @@ class Page extends Component {
                 if (data && data.data && data.data.children){
                     let posts = data.data.children.map(post => {
                         return {
-                            title: post.data.title,
+                            title: this.parseBodyText(post.data.title),
                             id: post.data.id,
-                            body: post.data.selftext_html
+                            body: this.parseBodyText(post.data.selftext_html)
                         };
                     });
                     
@@ -67,11 +78,11 @@ class Page extends Component {
                 let {title, selftext_html, id} = data[0].data.children[0].data;
                 let comments = data[1].data.children.map(obj => {
                     let {body_html, id, author, permalink} = obj.data;
-                    body_html ? body_html = body_html.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;#39;/g,"'") : body_html = '';
+                    body_html = this.parseBodyText(body_html);
                     return {body_html, id, author, permalink};
                 });
                 //if this exists, replace &lt etc with proper symbols, otherwise set to empty string
-                selftext_html ? selftext_html = selftext_html.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;#39;/g,"'") : selftext_html = '';
+                selftext_html = this.parseBodyText(selftext_html);
                 this.setState({postDetails: {title, body: selftext_html, id, comments}});
             }
         } catch (error) {
@@ -102,7 +113,13 @@ class Page extends Component {
             }
             
             if (postId !== this.state.postId){
-                this.setState({sub, postId, postDetails: {title:'', body:'', id:''}});
+                //check if post details already exists within the current post array, and if so, use that for quicker rendering
+                let postInfo = this.state.posts.find(post => post.id === postId);
+                if (postInfo){
+                    this.setState({sub, postId, postDetails: postInfo});
+                } else {
+                    this.setState({sub, postId, postDetails: {title:'', body:'', id:''}});
+                }
                 this.getPostDetails(`${sub}/${postId}`);
             }
         }
