@@ -11,7 +11,7 @@ class Page extends Component {
             sub: '',
             postId: '',
             posts: [],
-            postDetails: {title: '', body: '', id: ''}
+            postDetails: {title: '', body: '', id: '', comments: []}
         };
     }
     
@@ -65,9 +65,14 @@ class Page extends Component {
                 this.setState({postDetails: {title: 'Not Found', body: '', id: ''}});
             } else {
                 let {title, selftext_html, id} = data[0].data.children[0].data;
+                let comments = data[1].data.children.map(obj => {
+                    let {body_html, id, author, permalink} = obj.data;
+                    body_html ? body_html = body_html.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;#39;/g,"'") : body_html = '';
+                    return {body_html, id, author, permalink};
+                });
                 //if this exists, replace &lt etc with proper symbols, otherwise set to empty string
                 selftext_html ? selftext_html = selftext_html.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;#39;/g,"'") : selftext_html = '';
-                this.setState({postDetails: {title, body: selftext_html, id}});
+                this.setState({postDetails: {title, body: selftext_html, id, comments}});
             }
         } catch (error) {
             console.log(error);

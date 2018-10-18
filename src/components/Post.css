@@ -1,0 +1,11 @@
+.postDiv {
+    padding: 10px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.commentDiv {
+    border: 1px solid darkred;
+    padding: 5px;
+    margin: 5px;
+}
