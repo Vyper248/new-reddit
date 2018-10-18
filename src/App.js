@@ -1,95 +1,8 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
-
-const Header = ({heading}) => {
-    return (
-        <h1>{heading}</h1>
-    );
-};
-
-const SubList = ({onChange}) => {
-    return (
-        <div>
-            <Link to="/PSVR" onClick={onChange('PSVR')}>PSVR</Link>&nbsp;
-            <Link to="/PS4" onClick={onChange('PS4')}>PS4</Link>&nbsp;
-            <Link to="/Apple" onClick={onChange('Apple')}>Apple</Link>&nbsp;
-        </div>
-    );
-};
-
-const PostList = ({match, posts}) => {
-    let title = match.params.sub;
-    if (!title) title = 'Home';
-    
-    if (posts.length === 0){
-        return (
-            <p>Loading...</p>
-        );
-    } else {
-        return (
-            <div>
-                <Header heading={title} />
-                <hr/>
-                {
-                    posts.map(post => {
-                        let href = `${match.params.sub}/${post.id}`;
-                        return <div key={post.id}><Link to={href}>{post.title}</Link></div>
-                    })
-                }
-            </div>
-        );
-    }
-};
-
-class Post extends Component {
-    constructor({match}){
-        super();
-        this.match = match;
-        this.state = {
-            title: '',
-            body: '',
-        };
-    }
-    
-    render(){
-        return (
-            <div>
-                {
-                    this.state.title.length === 0 ? <h1>Loading...</h1> : (
-                        <div>
-                            <h1>{this.state.title}</h1>
-                            <div dangerouslySetInnerHTML={{ __html: this.state.body }}></div>
-                        </div>
-                    )
-                }
-            </div>
-        );
-    }
-    
-    componentDidMount(){
-        let {sub, post} = this.match.params;
-        this.getPostDetails(`${sub}/comments/${post}.json`);
-    }
-    
-    getPostDetails = async (url) => {
-        try {
-            let response = await fetch('https://www.reddit.com/r/'+url);
-            let data = await response.json();
-            
-            if (data.error){
-                this.setState({title: 'Not Found', body: ''});
-            } else {
-                let {title, selftext_html} = data[0].data.children[0].data;
-                //if this exists, replace &lt etc with proper symbols, otherwise set to empty string
-                selftext_html ? selftext_html = selftext_html.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;#39;/g,"'") : selftext_html = '';
-                this.setState({title, body: selftext_html});
-            }
-        } catch (error) {
-            console.log(error);
-        }
-            
-    };
-}
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import SubList from './components/SubList';
+import PostList from './components/PostList';
+import Post from './components/Post';
 
 class Page extends Component {
     constructor(){
@@ -101,26 +14,20 @@ class Page extends Component {
         };
     }
     
-    changeSub = (sub) => () => {
-        this.setState({sub, heading: sub, posts: []});
-        this.getPosts(sub);
-    };
-    
     render(){
         return (
             <div>
-                <SubList onChange={this.changeSub}/>
+                <SubList />
                 <Switch>
                     <Route exact path="/" render={props => <PostList {...props} posts={this.state.posts}/>} />
                     <Route exact path="/:sub" render={props => <PostList {...props} posts={this.state.posts}/>} />
                     <Route exact path="/:sub/:post" component={Post} />
-                    {/* <Redirect from="/" to="/PSVR"/> */}
                 </Switch>
             </div>
         );
     }
 
-    getPosts = async (sub) => {
+    getPostList = async (sub) => {
         if (sub.length > 0) sub = 'r/'+sub;
         
         let response = await fetch('https://www.reddit.com/'+sub+'.json');
@@ -139,9 +46,24 @@ class Page extends Component {
         }
     };
     
+    componentDidUpdate(prevProps){
+        if (prevProps.location.pathname !== this.props.location.pathname){
+            //check if needs to get new posts
+            if (prevProps.location.pathname.match(/\/[a-zA-Z0-9]+\/[a-zA-Z0-9]+/) && this.props.location.pathname.match(/\/[a-zA-Z0-9]+/)) {
+                //going from post to sub, so don't need to update, already have array
+            } else if (prevProps.location.pathname.match(/\/[a-zA-Z0-9]+/) && this.props.location.pathname.match(/\/[a-zA-Z0-9]+\/[a-zA-Z0-9]+/)) {
+                //going from sub to post, so don't need to update
+            } else {
+                //going from one sub to another sub, so do need to update
+                this.setState({posts: []});
+                this.getPostList(this.props.location.pathname.replace('/',''));
+            }
+        }
+    }
+    
     componentDidMount(){
         let url = this.props.location.pathname.replace('/','');
-        this.getPosts(url);
+        this.getPostList(url);
     }
 }
 
