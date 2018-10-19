@@ -5,7 +5,7 @@
 }
 
 .commentPermalink {
-    color: rgb(166, 166, 166);
+    color: var(--fadedColor);
     font-size: 0.8em;
 }
 
@@ -14,7 +14,7 @@
 }
 
 .commentScore {
-    color: rgb(166, 166, 166);
+    color: var(--fadedColor);
 }
 
 .commentDiv.closed {

@@ -1,11 +1,3 @@
-.postLink {
-    border: 1px solid var(--outlineColor);
-    padding: 10px;
-    display: block;
-    margin: 5px;
-    color: white;
-}
-
 .postListDiv {
     padding: 20px;
 }

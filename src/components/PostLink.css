@@ -1,0 +1,55 @@
+.postThumbnail {
+    min-width: 70px;
+    max-width: 70px;
+    max-height: 70px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.postThumbnail img {
+    height: 70px;
+    width: auto;
+    margin: auto;
+}
+
+.postLink {
+    border: 1px solid var(--outlineColor);
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    margin: 5px;
+    color: white;
+}
+
+.postLinkAuthor, .postLinkDomain, .postLinkOpen {
+    color: var(--fadedColor);
+}
+
+.postLinkOpen {
+    cursor: default;
+}
+
+.postLinkOpen:hover {
+    text-shadow: 0px 0px 2px white;
+}
+
+.postLinkMiddle {
+    margin: 5px 0px;
+}
+
+.postLinkBody {
+    overflow: hidden;
+    height: 0px;
+}
+
+.postLinkBody.open {
+    height: auto;
+}
+
+.postLinkBody img {
+    max-width: 90%;
+    max-height: 900px;
+}

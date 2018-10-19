@@ -1,5 +1,6 @@
 :root {
     --outlineColor: red;
+    --fadedColor: rgb(166, 166, 166);
 }
 
 body {
@@ -21,7 +22,6 @@ code {
 
 a {
     color: white;
-    padding: 5px;
     text-decoration: none;
 }
 

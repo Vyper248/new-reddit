@@ -1,6 +1,6 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
+import PostLink from './PostLink';
 import './PostList.css';
 
 const PostList = ({posts, sub}) => {
@@ -13,8 +13,7 @@ const PostList = ({posts, sub}) => {
             <div className="postListDiv">
                 {
                     posts.map(post => {
-                        let href = `${sub}/${post.id}`;
-                        return <div key={post.id}><Link to={href} className="postLink">{post.title}</Link></div>
+                        return <PostLink key={post.id} post={post} sub={sub}/>
                     })
                 }
             </div>
