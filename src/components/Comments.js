@@ -1,5 +1,6 @@
 import React from 'react';
 import Comment from './Comment';
+import LoadingSpinner from './LoadingSpinner';
 
 const Comments = ({comments}) => {
     if (comments && comments.length > 0) {
@@ -7,6 +8,7 @@ const Comments = ({comments}) => {
             <div className="comments">
             {
                 comments.map(comment => {
+                    if (!comment.author) return null;
                     return <Comment key={comment.id} comment={comment} />
                 })
             }
@@ -18,7 +20,8 @@ const Comments = ({comments}) => {
         );
     } else if (!comments){
         return (
-            <div>Loading Comments...</div>
+            // <div>Loading Comments...</div>
+            <LoadingSpinner />
         );
     }
 }
