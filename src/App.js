@@ -56,7 +56,7 @@ class Page extends Component {
                 if (data && data.data && data.data.children){
                     let posts = data.data.children.map(post => {
                         const data = post.data;
-                        console.log(data);
+
                         let media = data.media;
                         if (media && media.oembed){
                             media = this.parseBodyText(media.oembed.html);

@@ -12,7 +12,7 @@ const PostLink = (props) => {
         </div>
     )
 
-    if (post.thumbnail === 'self' || post.thumbnail.length === 0){
+    if (/(.jpg|.png|.bmp|.jpeg)/.test(post.thumbnail) === false){
         thumbnail = <span></span>;
     }
 

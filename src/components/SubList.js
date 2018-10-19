@@ -6,7 +6,7 @@ const SubList = () => {
     
     //temp sub list (maybe change to browser storage?)
     const subs = [
-        'PSVR','PS4','Apple','iPhone','NoMansSkyTheGame'
+        'PSVR','PS4','Apple','iPhone','NoMansSkyTheGame','Minecraft','PS4Deals'
     ];
     
     return (
