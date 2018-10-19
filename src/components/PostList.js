@@ -4,11 +4,11 @@ import PostLink from './PostLink';
 import './PostList.css';
 
 const PostList = ({posts, sub}) => {
-    if (posts.length === 0){
+    if (posts && posts.length === 0){
         return (
             <LoadingSpinner />
         );
-    } else {
+    } else if (posts) {
         return (
             <div className="postListDiv">
                 {
@@ -18,6 +18,10 @@ const PostList = ({posts, sub}) => {
                 }
             </div>
         );
+    } else {
+        return (
+            <div className="postListDiv">No Posts Found, try a different Subreddit</div>
+        )
     }
 };
 

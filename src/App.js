@@ -51,7 +51,7 @@ class Page extends Component {
             let data = await response.json();
 
             if (data.error){
-                this.setState({posts: []});
+                this.setState({posts: null});
             } else {
                 if (data && data.data && data.data.children){
                     let posts = data.data.children.map(post => {
@@ -86,7 +86,7 @@ class Page extends Component {
             }
         } catch (error) {
             console.log(error);
-            this.setState({sub: '', postId: ''});
+            this.setState({posts:null});
         }
     };
     
