@@ -4,12 +4,12 @@ import './Comment.css';
 
 class Comment extends Component {
     render(){
-        let {comment} = this.props;
+        let {comment, author} = this.props;
         
         //if there are any replies to this comment, create a new Comments object (will work recursively)
         let replies = "";
         if (comment.replies.length > 0){
-            replies = <Comments comments={comment.replies}/>;
+            replies = <Comments comments={comment.replies} author={author}/>;
         }
         
         function toggleCommentClose(e){
@@ -24,7 +24,7 @@ class Comment extends Component {
             <div className="commentDiv">
                 <div className="commentHeader">
                     <span className="commentClose" onClick={toggleCommentClose}>[ - ] </span>
-                    <span className="commentAuthor">{comment.author}</span><span className="commentScore"> | {comment.score}</span>
+                    <span className={comment.author === author ? "commentAuthor OP" : "commentAuthor"}>{comment.author}</span><span className="commentScore"> | {comment.score}</span>
                 </div>
                 
                 <div className="commentText" dangerouslySetInnerHTML={{ __html: comment.body_html }}></div>

@@ -32,7 +32,7 @@ const Post = (props) => {
                         </div>
                         {bodyTag}
                         <hr/>
-                        <Comments comments={comments} />
+                        <Comments comments={comments} author={author} />
                     </div>
                 )
             }
