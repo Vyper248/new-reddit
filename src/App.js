@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import SubList from './components/SubList';
 import PostList from './components/PostList';
 import Post from './components/Post';
+import Header from './components/Header';
 
 class Page extends Component {
     constructor(){
@@ -19,6 +20,8 @@ class Page extends Component {
         return (
             <div>
                 <SubList />
+                <Header heading={this.state.sub}/>
+                <hr/>
                 <Switch>
                     <Route exact path="/" render={props => <PostList {...props} posts={this.state.posts} sub={this.state.sub}/>} />
                     <Route exact path="/:sub" render={props => <PostList {...props} posts={this.state.posts} sub={this.state.sub}/>} />

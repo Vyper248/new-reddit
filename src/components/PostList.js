@@ -1,18 +1,16 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import Header from './Header';
+import LoadingSpinner from './LoadingSpinner';
 import './PostList.css';
 
 const PostList = ({posts, sub}) => {
     if (posts.length === 0){
         return (
-            <p className="loading">Loading...</p>
+            <LoadingSpinner />
         );
     } else {
         return (
             <div className="postListDiv">
-                <Header heading={sub} />
-                <hr/>
                 {
                     posts.map(post => {
                         let href = `${sub}/${post.id}`;
