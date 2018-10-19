@@ -34,7 +34,8 @@ class Page extends Component {
                         .replace(/&gt;/g,'>')
                         .replace(/&amp;#39;/g,"'")
                         .replace(/&amp;quot;/g,'"')
-                        .replace(/&amp;/,"&")
+                        .replace(/&amp;/g,"&")
+                        .replace(/&#x200B;/g,' ')
                          : text = '';
         return text;
     }
@@ -67,6 +68,20 @@ class Page extends Component {
         }
     };
     
+    parseComment(comment){
+        let {body_html, id, author, permalink, replies, score} = comment;
+        body_html = this.parseBodyText(body_html);
+        
+        replies = typeof replies === 'object' ? replies.data.children : [];
+        
+        replies = replies.map(comment => {
+            //console.log(comment);
+            return this.parseComment(comment.data);
+        });
+        
+        return {body_html, id, author, permalink, replies, score};
+    }
+    
     getPostDetails = async (url) => {
         try {
             let response = await fetch('https://www.reddit.com/r/'+url+'.json');
@@ -77,9 +92,7 @@ class Page extends Component {
             } else {
                 let {title, selftext_html, id} = data[0].data.children[0].data;
                 let comments = data[1].data.children.map(obj => {
-                    let {body_html, id, author, permalink} = obj.data;
-                    body_html = this.parseBodyText(body_html);
-                    return {body_html, id, author, permalink};
+                    return this.parseComment(obj.data);
                 });
                 //if this exists, replace &lt etc with proper symbols, otherwise set to empty string
                 selftext_html = this.parseBodyText(selftext_html);

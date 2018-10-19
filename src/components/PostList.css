@@ -1,5 +1,5 @@
 .postLink {
-    border: 1px solid darkred;
+    border: 1px solid var(--outlineColor);
     padding: 10px;
     display: block;
     margin: 5px;

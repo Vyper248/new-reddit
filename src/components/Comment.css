@@ -1,0 +1,35 @@
+.commentDiv {
+    border: 1px solid var(--outlineColor);
+    padding: 5px;
+    margin: 5px;
+}
+
+.commentPermalink {
+    color: rgb(166, 166, 166);
+    font-size: 0.8em;
+}
+
+.commentAuthor {
+    font-weight: bold;
+}
+
+.commentScore {
+    color: rgb(166, 166, 166);
+}
+
+.commentDiv.closed {
+    height: 20px;
+    overflow: hidden;
+}
+
+.commentClose {
+    cursor: default;
+}
+
+.commentClose:hover {
+    text-shadow: 0px 0px 2px white;
+}
+
+.commentText {
+    padding: 5px;
+}

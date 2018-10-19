@@ -1,3 +1,7 @@
+:root {
+    --outlineColor: red;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -7,7 +11,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: black;
-  color: #CCC;
+  color: #DDD;
 }
 
 code {

@@ -1,16 +1,22 @@
 import React from 'react';
+import Comment from './Comment';
 
 const Comments = ({comments}) => {
-    console.log(comments);
-    if (!comments) comments = [];
-    
-    if (comments.length > 0) {
+    if (comments && comments.length > 0) {
         return (
-            comments.map(comment => {
-                return <div className="commentDiv" key={comment.id} dangerouslySetInnerHTML={{ __html: comment.body_html }}></div>
-            })
+            <div className="comments">
+            {
+                comments.map(comment => {
+                    return <Comment key={comment.id} comment={comment} />
+                })
+            }
+            </div>
         );
-    } else {
+    } else if (comments) {
+        return (
+            <div></div>
+        );
+    } else if (!comments){
         return (
             <div>Loading Comments...</div>
         );
