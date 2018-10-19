@@ -1,0 +1,13 @@
+.subLink {
+    padding: 5px;
+    display: inline-block;
+    border-right: 1px solid var(--fadedColor);
+}
+
+.subLink:hover {
+    background-color: #333;
+}
+
+.subLinks {
+    border-bottom: 1px solid var(--fadedColor);
+}

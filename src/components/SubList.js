@@ -1,12 +1,22 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import './SubList.css';
 
 const SubList = () => {
+    
+    //temp sub list (maybe change to browser storage?)
+    const subs = [
+        'PSVR','PS4','Apple','iPhone','NoMansSkyTheGame'
+    ];
+    
     return (
-        <div>
-            <Link to="/PSVR">PSVR</Link>&nbsp;
-            <Link to="/PS4">PS4</Link>&nbsp;
-            <Link to="/Apple">Apple</Link>&nbsp;
+        <div className="subLinks">
+            {
+                subs.map((sub,i) => {
+                    const link = '/'+sub;
+                    return <Link className="subLink" key={i} to={link}>{sub}</Link>
+                })
+            }
         </div>
     );
 };

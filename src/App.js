@@ -56,6 +56,14 @@ class Page extends Component {
                 if (data && data.data && data.data.children){
                     let posts = data.data.children.map(post => {
                         const data = post.data;
+                        console.log(data);
+                        let media = data.media;
+                        if (media && media.oembed){
+                            media = this.parseBodyText(media.oembed.html);
+                        } else {
+                            media = '';
+                        }
+                        
                         return {
                             author: data.author,
                             domain: data.domain,
@@ -65,9 +73,11 @@ class Page extends Component {
                             num_comments: data.num_comments,
                             score: data.score,
                             subreddit: data.subreddit,
+                            stickied: data.stickied,
                             url: data.url,
                             thumbnail: data.thumbnail, //if no thumbnail - "self"
                             permalink: data.permalink,
+                            media: media
                         };
                     });
                     
@@ -102,13 +112,20 @@ class Page extends Component {
             if (data.error){
                 this.setState({postDetails: {title: 'Not Found', body: '', id: ''}});
             } else {
-                let {title, selftext_html, id, url, media} = data[0].data.children[0].data;
+                let {title, selftext_html, id, url, media, author} = data[0].data.children[0].data;
                 let comments = data[1].data.children.map(obj => {
                     return this.parseComment(obj.data);
                 });
+                
+                if (media && media.oembed){
+                    media = this.parseBodyText(media.oembed.html);
+                } else {
+                    media = '';
+                }
+
                 //if this exists, replace &lt etc with proper symbols, otherwise set to empty string
                 selftext_html = this.parseBodyText(selftext_html);
-                this.setState({postDetails: {title, body: selftext_html, id, url, media, comments}});
+                this.setState({postDetails: {title, body: selftext_html, id, url, media, comments, author}});
             }
         } catch (error) {
             console.log(error);

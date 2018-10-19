@@ -27,14 +27,14 @@ const PostLink = (props) => {
         else e.target.innerText = '[ + ] ';
     }
     
-    //if there's a link to an image, replace that link with an img tag
-    const imageLinksInBodyFull = post.body.match(/<a href=.+?(\.(png|jpg|jpeg|bmp)).+?(<\/a>)/g);
-    if (imageLinksInBodyFull){
-        imageLinksInBodyFull.forEach(linkTag => {
-            const imageLinkInBody = linkTag.match(/"http([a-zA-Z0-9\W]+(.png|.jpg|.jpeg))"/)[0].replace(/"/g,'');
-            post.body = post.body.replace(linkTag, '<img src="'+imageLinkInBody+'"/>');
-        });
-    }
+    //if there's a link to an image, replace that link with an img tag (maybe remove?)
+    // const imageLinksInBodyFull = post.body.match(/<a href=.+?(\.(png|jpg|jpeg|bmp)).+?(<\/a>)/g);
+    // if (imageLinksInBodyFull){
+    //     imageLinksInBodyFull.forEach(linkTag => {
+    //         const imageLinkInBody = linkTag.match(/"http([a-zA-Z0-9\W]+(.png|.jpg|.jpeg))"/)[0].replace(/"/g,'');
+    //         post.body = post.body.replace(linkTag, '<img src="'+imageLinkInBody+'"/>');
+    //     });
+    // }
     
     //decide whether to show image preview in body
     let bodyTag = <div className="postLinkBody" dangerouslySetInnerHTML={{__html: post.body}}></div>;
@@ -46,14 +46,22 @@ const PostLink = (props) => {
         bodyHasImage = true;
     }
     
+    //decide whether to show embeded media
+    if (post.media.length > 0){
+        bodyTag = <div className="postLinkBody" dangerouslySetInnerHTML={{__html: post.media}}></div>;
+        bodyHasImage = true;
+    }
+    
     //decide whether to show an open button for post body
     let openBtn = (<span> - <span className="postLinkOpen" onClick={toggleBodyOpen}>[ + ] </span></span>);
     if (post.body.length === 0 && bodyHasImage === false) openBtn = <span></span>;
     
-
+    //check if sticked and add another class
+    let className = 'postLink';
+    if (post.stickied) className += ' stickied';
     
     return (
-        <div className="postLink">
+        <div className={className}>
             {thumbnail}
             <div>
                 <Link to={`${sub}/${post.id}`}>{post.title}</Link>
@@ -64,7 +72,7 @@ const PostLink = (props) => {
                 </div>
                 {bodyTag}
                 <div className="postLinkFooter">
-                    <span className="postLinkComments">{post.num_comments} Comments </span>
+                    <Link to={`${sub}/${post.id}`} className="postLinkComments">{post.num_comments} Comments </Link>
                     - <a className="postLinkReddit" href={'https://www.reddit.com'+post.permalink} target="_blank" rel="noopener noreferrer">Open on Reddit</a>
                 </div>
             </div>

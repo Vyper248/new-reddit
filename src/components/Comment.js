@@ -24,7 +24,7 @@ class Comment extends Component {
             <div className="commentDiv">
                 <div className="commentHeader">
                     <span className="commentClose" onClick={toggleCommentClose}>[ - ] </span>
-                    <span className="commentAuthor">{comment.author}</span> - <span className="commentScore">{comment.score}</span>
+                    <span className="commentAuthor">{comment.author}</span><span className="commentScore"> | {comment.score}</span>
                 </div>
                 
                 <div className="commentText" dangerouslySetInnerHTML={{ __html: comment.body_html }}></div>

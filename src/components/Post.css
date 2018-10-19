@@ -4,3 +4,16 @@
     margin: auto;
 }
 
+.postGoToURL {
+    color: var(--fadedColor);
+}
+
+.postMiddle {
+    position: relative;
+    top: -10px;
+}
+
+.postDiv img {
+    max-width: 90%;
+    max-height: 900px;
+}
