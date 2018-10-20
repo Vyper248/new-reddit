@@ -22,12 +22,12 @@
 }
 
 .commentDiv.closed {
-    height: 20px;
+    height: 30px;
     overflow: hidden;
 }
 
 .commentClose {
-    cursor: default;
+    cursor: pointer;
 }
 
 .commentClose:hover {

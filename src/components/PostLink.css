@@ -33,7 +33,7 @@
 }
 
 .postLinkOpen {
-    cursor: default;
+    cursor: pointer;
 }
 
 .postLinkOpen:hover {

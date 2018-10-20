@@ -48,6 +48,7 @@ const PostLink = (props) => {
     
     //decide whether to show embeded media
     if (post.media.length > 0){
+        if (post.body.length > 0) post.media += "<br/>"+post.body;
         bodyTag = <div className="postLinkBody" dangerouslySetInnerHTML={{__html: post.media}}></div>;
         bodyHasImage = true;
     }

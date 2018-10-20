@@ -1,13 +1,21 @@
-.subLink {
+.navLink, .sortButton {
     padding: 5px;
     display: inline-block;
     border-right: 1px solid var(--fadedColor);
+    cursor: pointer;
 }
 
-.subLink:hover {
+.navLink:active {
+    background-color: red;
+}
+
+.navLink:hover, .sortButton:hover {
     background-color: #333;
 }
 
 .subLinks {
     border-bottom: 1px solid var(--fadedColor);
+    position: sticky;
+    top: 0px;
+    background-color: black;
 }

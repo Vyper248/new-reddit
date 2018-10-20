@@ -4,6 +4,7 @@ import SubList from './components/SubList';
 import PostList from './components/PostList';
 import Post from './components/Post';
 import Header from './components/Header';
+import SortButtons from './components/SortButtons';
 
 class Page extends Component {
     constructor(){
@@ -11,6 +12,7 @@ class Page extends Component {
         this.state = {
             sub: '',
             postId: '',
+            sortMethod: 'hot',
             posts: [],
             postDetails: {title: '', body: '', id: '', comments: []}
         };
@@ -21,6 +23,7 @@ class Page extends Component {
             <div>
                 <SubList />
                 <Header heading={this.state.sub}/>
+                <SortButtons onClick={this.onChangeSortMethod}/>
                 <hr/>
                 <Switch>
                     <Route exact path="/" render={props => <PostList {...props} posts={this.state.posts} sub={this.state.sub}/>} />
@@ -29,6 +32,11 @@ class Page extends Component {
                 </Switch>
             </div>
         );
+    }
+    
+    onChangeSortMethod = (e) => {
+        let sortMethod = e.target.innerText.toLowerCase();
+        this.setState({sortMethod});
     }
     
     parseBodyText(text){
@@ -47,7 +55,7 @@ class Page extends Component {
         if (sub.length > 0) sub = 'r/'+sub;
         
         try {
-            let response = await fetch('https://www.reddit.com/'+sub+'.json');
+            let response = await fetch('https://www.reddit.com/'+sub+'/'+this.state.sortMethod+'/.json');
             let data = await response.json();
 
             if (data.error){
@@ -81,6 +89,7 @@ class Page extends Component {
                         };
                     });
                     
+                    if (posts.length === 0) posts = null;
                     this.setState({posts});
                 }
             }
@@ -113,6 +122,7 @@ class Page extends Component {
                 this.setState({postDetails: {title: 'Not Found', body: '', id: ''}});
             } else {
                 let {title, selftext_html, id, url, media, author} = data[0].data.children[0].data;
+
                 let comments = data[1].data.children.map(obj => {
                     return this.parseComment(obj.data);
                 });
@@ -132,7 +142,7 @@ class Page extends Component {
         }
     };
 
-    checkUrlAndUpdate(){
+    checkUrlAndUpdate(force = false){
         let url = this.props.location.pathname.replace('/','');
         
         let matches = this.props.location.pathname.match(/\//g);
@@ -140,7 +150,7 @@ class Page extends Component {
 
         if (matches === 1){
             //on sub, so get post list
-            if (url !== this.state.sub){
+            if (url !== this.state.sub || force){
                 this.setState({sub: url, posts:[]});
                 this.getPostList(url);
             }
@@ -149,12 +159,12 @@ class Page extends Component {
             let sub = url.replace(/\/[a-zA-Z0-9]+/,'');
             let postId = url.replace(/[a-zA-Z0-9]+\//,'');
             
-            if (sub !== this.state.sub){
+            if (sub !== this.state.sub || force){
                 this.setState({sub, posts: []});
                 this.getPostList(sub);
             }
             
-            if (postId !== this.state.postId){
+            if (postId !== this.state.postId || force){
                 //check if post details already exists within the current post array, and if so, use that for quicker rendering
                 let postInfo = this.state.posts.find(post => post.id === postId);
                 if (postInfo){
@@ -168,7 +178,9 @@ class Page extends Component {
     }
     
     componentDidUpdate(prevProps, prevState){
-        this.checkUrlAndUpdate();        
+        let force = false;
+        if (prevState.sortMethod !== this.state.sortMethod) force = true;
+        this.checkUrlAndUpdate(force);        
     }
     
     componentDidMount(){

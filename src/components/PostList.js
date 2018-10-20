@@ -3,7 +3,7 @@ import LoadingSpinner from './LoadingSpinner';
 import PostLink from './PostLink';
 import './PostList.css';
 
-const PostList = ({posts, sub}) => {
+const PostList = ({posts, sub}) => {    
     if (posts && posts.length === 0){
         return (
             <LoadingSpinner />
@@ -20,7 +20,7 @@ const PostList = ({posts, sub}) => {
         );
     } else {
         return (
-            <div className="postListDiv">No Posts Found, try a different Subreddit</div>
+            <div className="postListDiv">No Posts Found</div>
         )
     }
 };

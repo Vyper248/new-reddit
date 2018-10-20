@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 import './SubList.css';
 
 const SubList = () => {
@@ -14,7 +14,7 @@ const SubList = () => {
             {
                 subs.map((sub,i) => {
                     const link = '/'+sub;
-                    return <Link className="subLink" key={i} to={link}>{sub}</Link>
+                    return <NavLink className="navLink" activeClassName="active" key={i} to={link}>{sub}</NavLink>
                 })
             }
         </div>
