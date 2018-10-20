@@ -16,7 +16,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: black;
-  color: #DDD;
+  color: white;
 }
 
 code {
@@ -45,4 +45,18 @@ hr {
 
 .sortButton {
     border-top: 1px solid var(--fadedColor);
+}
+
+.sortButton.active {
+    background-color: #777;
+}
+
+.reloadButton {
+    font-weight: 200;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.reloadButton:hover {
+    text-shadow: 0px 0px 2px white;
 }

@@ -5,8 +5,8 @@
     cursor: pointer;
 }
 
-.navLink:active {
-    background-color: red;
+.navLink.active {
+    background-color: #777;
 }
 
 .navLink:hover, .sortButton:hover {

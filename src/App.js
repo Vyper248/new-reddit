@@ -22,8 +22,8 @@ class Page extends Component {
         return (
             <div>
                 <SubList />
-                <Header heading={this.state.sub}/>
-                <SortButtons onClick={this.onChangeSortMethod}/>
+                <Header heading={this.state.sub} onReload={this.onReload}/>
+                <SortButtons onClick={this.onChangeSortMethod} currentSort={this.state.sortMethod}/>
                 <hr/>
                 <Switch>
                     <Route exact path="/" render={props => <PostList {...props} posts={this.state.posts} sub={this.state.sub}/>} />
@@ -32,6 +32,10 @@ class Page extends Component {
                 </Switch>
             </div>
         );
+    }
+    
+    onReload = () => {
+        this.checkUrlAndUpdate(true);
     }
     
     onChangeSortMethod = (e) => {

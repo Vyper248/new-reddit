@@ -1,8 +1,8 @@
 import React from 'react';
 
-const Header = ({heading}) => {
+const Header = ({heading, onReload}) => {
     return (
-        <h1 className="subHeader">{heading}</h1>
+        <h1 className="subHeader">{heading} <span className="reloadButton" onClick={onReload}>&#8635;</span></h1>
     );
 };
 

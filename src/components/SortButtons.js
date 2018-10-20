@@ -1,13 +1,21 @@
 import React from 'react';
 
-const SortButtons = ({onClick}) => {
+const SortButtons = ({onClick, currentSort}) => {
+    let sortOptions = [
+        'Hot','New','Rising','Controversial','Top'
+    ];
+    
     return (
         <div className="sortButtons">
-            <span className="sortButton" onClick={onClick}>Hot</span>
-            <span className="sortButton" onClick={onClick}>New</span>
-            <span className="sortButton" onClick={onClick}>Rising</span>
-            <span className="sortButton" onClick={onClick}>Controversial</span>
-            <span className="sortButton" onClick={onClick}>Top</span>
+            {
+                sortOptions.map((option,i) => {
+                    let className = 'sortButton';
+                    if (option.toLowerCase() === currentSort){
+                        className += ' active';
+                    }
+                    return <span key={i} className={className} onClick={onClick}>{option.toLowerCase()}</span>
+                })
+            }
         </div>
     );
 };
