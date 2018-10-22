@@ -1,9 +1,11 @@
 import React from 'react';
 import Comments from './Comments';
+import SortButtons from './SortButtons';
 import './Post.css';
 
 const Post = (props) => {
     let {title, body, comments, url, media, author} = props.postDetails;
+    let {currentSort, commentSortMethod} = props;
     
     //check for image link to url and replace body with image if so
     let bodyTag = <div dangerouslySetInnerHTML={{ __html: body }}></div>;
@@ -32,6 +34,8 @@ const Post = (props) => {
                             <a className="postGoToURL" href={url} target="_blank" rel="noopener noreferrer"> | Go to URL ({shortUrl})</a>
                         </div>
                         {bodyTag}
+                        {/* <hr/> */}
+                        <SortButtons onClick={commentSortMethod} currentSort={currentSort} sortList={2}/>
                         <hr/>
                         <Comments comments={comments} author={author} />
                     </div>

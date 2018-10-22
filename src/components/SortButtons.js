@@ -1,9 +1,11 @@
 import React from 'react';
 
-const SortButtons = ({onClick, currentSort}) => {
-    let sortOptions = [
-        'Hot','New','Rising','Controversial','Top'
-    ];
+const SortButtons = ({onClick, currentSort, sortList}) => {
+    let sortChoices = {
+        1: ['Hot','New','Rising','Controversial','Top'],
+        2: ['Best','New','Top','Controversial','Old', 'Q&A'],
+    }
+    let sortOptions = sortChoices[sortList];
     
     return (
         <div className="sortButtons">
@@ -11,6 +13,10 @@ const SortButtons = ({onClick, currentSort}) => {
                 sortOptions.map((option,i) => {
                     let className = 'sortButton';
                     if (option.toLowerCase() === currentSort){
+                        className += ' active';
+                    } else if (option.toLowerCase() === 'best' && currentSort === 'confidence'){
+                        className += ' active';
+                    } else if (option.toLowerCase() === 'q&a' && currentSort === 'qa'){
                         className += ' active';
                     }
                     return <span key={i} className={className} onClick={onClick}>{option.toLowerCase()}</span>

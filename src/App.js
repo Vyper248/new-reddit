@@ -13,6 +13,7 @@ class Page extends Component {
             sub: '',
             postId: '',
             sortMethod: 'hot',
+            commentSortMethod: 'new',
             posts: [],
             postDetails: {title: '', body: '', id: '', comments: []}
         };
@@ -23,12 +24,12 @@ class Page extends Component {
             <div>
                 <SubList />
                 <Header heading={this.state.sub} onReload={this.onReload}/>
-                <SortButtons onClick={this.onChangeSortMethod} currentSort={this.state.sortMethod}/>
+                <SortButtons onClick={this.onChangeSortMethod} currentSort={this.state.sortMethod} sortList={1}/>
                 <hr/>
                 <Switch>
                     <Route exact path="/" render={props => <PostList {...props} posts={this.state.posts} sub={this.state.sub}/>} />
                     <Route exact path="/:sub" render={props => <PostList {...props} posts={this.state.posts} sub={this.state.sub}/>} />
-                    <Route exact path="/:sub/:post" render={props => <Post {...props} postDetails={this.state.postDetails} />} />
+                    <Route exact path="/:sub/:post" render={props => <Post {...props} postDetails={this.state.postDetails} commentSortMethod={this.onChangeCommentSortMethod} currentSort={this.state.commentSortMethod} />} />
                 </Switch>
             </div>
         );
@@ -41,6 +42,16 @@ class Page extends Component {
     onChangeSortMethod = (e) => {
         let sortMethod = e.target.innerText.toLowerCase();
         this.setState({sortMethod});
+    }
+    
+    onChangeCommentSortMethod = (e) => {
+        let commentSortMethod = e.target.innerText.toLowerCase();
+
+        switch(commentSortMethod){
+            case 'best': this.setState({commentSortMethod:'confidence'}); break;
+            case 'q&a': this.setState({commentSortMethod:'qa'}); break;
+            default: this.setState({commentSortMethod}); break;
+        }
     }
     
     parseBodyText(text){
@@ -122,7 +133,7 @@ class Page extends Component {
     
     getPostDetails = async (url) => {
         try {
-            let response = await fetch('https://www.reddit.com/r/'+url+'.json');
+            let response = await fetch('https://www.reddit.com/r/'+url+'.json?sort='+this.state.commentSortMethod);
             let data = await response.json();
             
             if (data.error){
@@ -187,6 +198,7 @@ class Page extends Component {
     componentDidUpdate(prevProps, prevState){
         let force = false;
         if (prevState.sortMethod !== this.state.sortMethod) force = true;
+        if (prevState.commentSortMethod !== this.state.commentSortMethod) force = true;
         this.checkUrlAndUpdate(force);        
     }
     

@@ -43,10 +43,15 @@ a {
 
 hr {
     margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .sortButton {
     border-top: 1px solid var(--fadedColor);
+}
+
+.sortButton:first-child {
+    border-left: 1px solid var(--fadedColor);
 }
 
 .sortButton.active {

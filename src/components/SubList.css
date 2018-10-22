@@ -5,6 +5,10 @@
     cursor: pointer;
 }
 
+.navLink:first-child {
+    border-left: 1px solid var(--fadedColor);
+}
+
 .navLink.active {
     background-color: #777;
 }
