@@ -1,3 +1,11 @@
 .postListDiv {
     padding: 20px;
+    max-width: var(--contentWidth);
+    margin: auto;
+}
+
+@media screen and (max-device-width: 480px){
+    .postListDiv {
+        padding: 2px;
+    }
 }

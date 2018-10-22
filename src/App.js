@@ -59,7 +59,10 @@ class Page extends Component {
         if (sub.length > 0) sub = 'r/'+sub;
         
         try {
-            let response = await fetch('https://www.reddit.com/'+sub+'/'+this.state.sortMethod+'/.json');
+            let url = 'https://www.reddit.com/'+sub+'/'+this.state.sortMethod+'/.json';
+            if (sub.length === 0) url = 'https://www.reddit.com/.json';
+
+            let response = await fetch(url);
             let data = await response.json();
 
             if (data.error){
@@ -188,7 +191,7 @@ class Page extends Component {
     }
     
     componentDidMount(){
-        this.checkUrlAndUpdate();
+        this.checkUrlAndUpdate(true);
     }
 }
 

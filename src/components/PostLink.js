@@ -64,8 +64,8 @@ const PostLink = (props) => {
     return (
         <div className={className}>
             {thumbnail}
-            <div>
-                <Link to={`${sub}/${post.id}`}>{post.title}</Link>
+            <div className="postLinkContent">
+                <Link to={`${sub}/${post.id}`} className="postLinkTitle">{post.title}</Link>
                 <div className="postLinkMiddle">
                     <a className="postLinkDomain" href={post.url} target="_blank" rel="noopener noreferrer">{post.domain} - </a>
                     <span className="postLinkAuthor">{post.author}</span>

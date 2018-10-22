@@ -1,7 +1,13 @@
 .postDiv {
     padding: 10px;
-    max-width: 1000px;
+    max-width: var(--contentWidth);
     margin: auto;
+}
+
+.postDiv iframe {
+    max-width: 95%;
+    margin: auto;
+    display: block;
 }
 
 .postGoToURL {
@@ -14,6 +20,6 @@
 }
 
 .postDiv img {
-    max-width: 90%;
+    max-width: 95%;
     max-height: 900px;
 }

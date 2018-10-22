@@ -22,14 +22,31 @@
     flex-direction: row;
     margin: 5px;
     color: white;
+    overflow: hidden;
+}
+
+.postLink iframe {
+    max-width: 100%;
+    margin: auto;
+    display: block;
+}
+
+.postLinkContent {
+    max-width: 100%;
 }
 
 .postLink.stickied {
     border: 1px solid rgb(80, 236, 17);
 }
 
+.postLinkTitle {
+    padding-right: 10px;
+    display: inline-block;
+}
+
 .postLinkAuthor, .postLinkDomain, .postLinkOpen {
     color: var(--fadedColor);
+    font-size: 0.9em;
 }
 
 .postLinkOpen {
@@ -46,7 +63,9 @@
 
 .postLinkBody {
     overflow: hidden;
+    word-wrap: break-word;
     height: 0px;
+    max-width: 90%;
 }
 
 .postLinkBody.open {
@@ -54,6 +73,10 @@
 }
 
 .postLinkBody img {
-    max-width: 90%;
+    max-width: 95%;
     max-height: 900px;
+}
+
+.postLinkFooter {
+    font-size: 0.9em;
 }
