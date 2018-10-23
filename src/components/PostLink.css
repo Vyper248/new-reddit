@@ -77,6 +77,10 @@
     max-height: 900px;
 }
 
+.postLinkBody a {
+    color: rgb(0, 225, 255);
+}
+
 .postLinkFooter {
     font-size: 0.9em;
 }

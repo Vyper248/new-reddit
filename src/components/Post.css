@@ -27,3 +27,7 @@
 .postDiv .sortButtons {
     margin-top: 20px;
 }
+
+.postDivBody a {
+    color: rgb(0, 225, 255);
+}

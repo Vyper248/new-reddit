@@ -8,7 +8,7 @@ const Post = (props) => {
     let {currentSort, commentSortMethod} = props;
     
     //check for image link to url and replace body with image if so
-    let bodyTag = <div dangerouslySetInnerHTML={{ __html: body }}></div>;
+    let bodyTag = <div dangerouslySetInnerHTML={{ __html: body }} className="postDivBody"></div>;
     if (/.(png|jpg|jpeg|bmp)$/.test(url)){
         bodyTag = <img src={url} alt="Preview of content"/>
     }
@@ -20,7 +20,7 @@ const Post = (props) => {
     //check for media embed and replace body with this
     if (media && media.length > 0){
         if (body.length > 0) media += '<br/>'+body;
-        bodyTag = <div dangerouslySetInnerHTML={{ __html: media }}></div>
+        bodyTag = <div dangerouslySetInnerHTML={{ __html: media }} className="postDivBody"></div>
     }
     
     return (
