@@ -3,7 +3,7 @@ import LoadingSpinner from './LoadingSpinner';
 import PostLink from './PostLink';
 import './PostList.css';
 
-const PostList = ({posts, sub}) => {    
+const PostList = ({posts}) => {    
     if (posts && posts.length === 0){
         return (
             <LoadingSpinner />
@@ -13,7 +13,7 @@ const PostList = ({posts, sub}) => {
             <div className="postListDiv">
                 {
                     posts.map(post => {
-                        return <PostLink key={post.id} post={post} sub={sub}/>
+                        return <PostLink key={post.id} post={post}/>
                     })
                 }
             </div>

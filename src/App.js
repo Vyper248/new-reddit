@@ -30,8 +30,8 @@ class Page extends Component {
                 <hr/>
                 <Switch>
                     <Redirect exact path='/' to={startPoint+'/'} />
-                    <Route exact path={startPoint+'/'} render={props => <PostList {...props} posts={this.state.posts} sub={this.state.sub}/>} />
-                    <Route exact path={startPoint+'/:sub'} render={props => <PostList {...props} posts={this.state.posts} sub={this.state.sub}/>} />
+                    <Route exact path={startPoint+'/'} render={props => <PostList {...props} posts={this.state.posts}/>} />
+                    <Route exact path={startPoint+'/:sub'} render={props => <PostList {...props} posts={this.state.posts}/>} />
                     <Route exact path={startPoint+"/:sub/:post"} render={props => <Post {...props} postDetails={this.state.postDetails} commentSortMethod={this.onChangeCommentSortMethod} currentSort={this.state.commentSortMethod} />} />
                 </Switch>
             </div>

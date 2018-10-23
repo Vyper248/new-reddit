@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './PostLink.css';
 
 const PostLink = (props) => {
-    const {sub, post} = props;
+    const {post} = props;
     
     //decide whether to show a thumbnail    
     let thumbnail = (
@@ -65,7 +65,7 @@ const PostLink = (props) => {
         <div className={className}>
             {thumbnail}
             <div className="postLinkContent">
-                <Link to={`${sub}/${post.id}`} className="postLinkTitle">{post.title}</Link>
+                <Link to={`${post.subreddit}/${post.id}`} className="postLinkTitle">{post.title}</Link>
                 <div className="postLinkMiddle">
                     <a className="postLinkDomain" href={post.url} target="_blank" rel="noopener noreferrer">{post.domain} - </a>
                     <span className="postLinkAuthor">{post.author}</span>
@@ -73,7 +73,7 @@ const PostLink = (props) => {
                 </div>
                 {bodyTag}
                 <div className="postLinkFooter">
-                    <Link to={`${sub}/${post.id}`} className="postLinkComments">{post.num_comments} Comments </Link>
+                    <Link to={`${post.subreddit}/${post.id}`} className="postLinkComments">{post.num_comments} Comments </Link>
                     - <a className="postLinkReddit" href={'https://www.reddit.com'+post.permalink} target="_blank" rel="noopener noreferrer">Open on Reddit</a>
                 </div>
             </div>
