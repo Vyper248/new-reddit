@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import SubList from './components/SubList';
 import PostList from './components/PostList';
 import Post from './components/Post';
 import Header from './components/Header';
 import SortButtons from './components/SortButtons';
+const pjson = require('../package.json');
 
 class Page extends Component {
     constructor(){
@@ -20,6 +21,7 @@ class Page extends Component {
     }
     
     render(){
+        let startPoint = pjson.startPoint;
         return (
             <div>
                 <SubList />
@@ -27,9 +29,10 @@ class Page extends Component {
                 <SortButtons onClick={this.onChangeSortMethod} currentSort={this.state.sortMethod} sortList={1}/>
                 <hr/>
                 <Switch>
-                    <Route exact path="/" render={props => <PostList {...props} posts={this.state.posts} sub={this.state.sub}/>} />
-                    <Route exact path="/:sub" render={props => <PostList {...props} posts={this.state.posts} sub={this.state.sub}/>} />
-                    <Route exact path="/:sub/:post" render={props => <Post {...props} postDetails={this.state.postDetails} commentSortMethod={this.onChangeCommentSortMethod} currentSort={this.state.commentSortMethod} />} />
+                    <Redirect exact path='/' to={startPoint+'/'} />
+                    <Route exact path={startPoint+'/'} render={props => <PostList {...props} posts={this.state.posts} sub={this.state.sub}/>} />
+                    <Route exact path={startPoint+'/:sub'} render={props => <PostList {...props} posts={this.state.posts} sub={this.state.sub}/>} />
+                    <Route exact path={startPoint+"/:sub/:post"} render={props => <Post {...props} postDetails={this.state.postDetails} commentSortMethod={this.onChangeCommentSortMethod} currentSort={this.state.commentSortMethod} />} />
                 </Switch>
             </div>
         );
@@ -161,22 +164,21 @@ class Page extends Component {
     };
 
     checkUrlAndUpdate(force = false){
-        let url = this.props.location.pathname.replace('/','');
-        
-        let matches = this.props.location.pathname.match(/\//g);
-        matches = matches ? matches.length : 0;
+        let startPoint = pjson.startPoint;
+        let url = this.props.location.pathname.replace(startPoint,'').replace('/','');
+        let parts = url.split('/');
 
-        if (matches === 1){
+        if (parts.length === 1){
+            let sub = parts[0];
             //on sub, so get post list
-            if (url !== this.state.sub || force){
-                this.setState({sub: url, posts:[]});
+            if (sub !== this.state.sub || force){
+                this.setState({sub: sub, posts:[]});
                 this.getPostList(url);
             }
-        } else if (matches === 2){
-            //on post, so get post list and post details if different to current state
-            let sub = url.replace(/\/[a-zA-Z0-9]+/,'');
-            let postId = url.replace(/[a-zA-Z0-9]+\//,'');
-            
+        } else if (parts.length === 2){
+            let sub = parts[0];
+            let postId = parts[1];
+
             if (sub !== this.state.sub || force){
                 this.setState({sub, posts: []});
                 this.getPostList(sub);
@@ -184,7 +186,8 @@ class Page extends Component {
             
             if (postId !== this.state.postId || force){
                 //check if post details already exists within the current post array, and if so, use that for quicker rendering
-                let postInfo = this.state.posts.find(post => post.id === postId);
+                let posts = this.state.posts || [];
+                let postInfo = posts.find(post => post.id === postId);
                 if (postInfo){
                     this.setState({sub, postId, postDetails: postInfo});
                 } else {
