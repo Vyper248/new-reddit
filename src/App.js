@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { HashRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import SubList from './components/SubList';
 import PostList from './components/PostList';
 import Post from './components/Post';
@@ -29,7 +29,6 @@ class Page extends Component {
                 <SortButtons onClick={this.onChangeSortMethod} currentSort={this.state.sortMethod} sortList={1}/>
                 <hr/>
                 <Switch>
-                    {/* <Redirect exact path='/' to={startPoint+'/'} /> */}
                     <Route exact path={startPoint+'/'} render={props => <PostList {...props} posts={this.state.posts}/>} />
                     <Route exact path={startPoint+'/:sub'} render={props => <PostList {...props} posts={this.state.posts}/>} />
                     <Route exact path={startPoint+"/:sub/:post"} render={props => <Post {...props} postDetails={this.state.postDetails} commentSortMethod={this.onChangeCommentSortMethod} currentSort={this.state.commentSortMethod} />} />
@@ -171,7 +170,7 @@ class Page extends Component {
         if (parts.length === 1){
             let sub = parts[0];
             //on sub, so get post list
-            if (sub !== this.state.sub || force){
+            if (sub.toLowerCase() !== this.state.sub.toLowerCase() || force){
                 this.setState({sub: sub, posts:[]});
                 this.getPostList(url);
             }
@@ -179,12 +178,12 @@ class Page extends Component {
             let sub = parts[0];
             let postId = parts[1];
 
-            if (sub !== this.state.sub || force){
+            if (sub.toLowerCase() !== this.state.sub.toLowerCase() || force){
                 this.setState({sub, posts: []});
                 this.getPostList(sub);
             }
             
-            if (postId !== this.state.postId || force){
+            if (postId.toLowerCase() !== this.state.postId.toLowerCase() || force){
                 //check if post details already exists within the current post array, and if so, use that for quicker rendering
                 let posts = this.state.posts || [];
                 let postInfo = posts.find(post => post.id === postId);
