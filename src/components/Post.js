@@ -1,11 +1,15 @@
 import React from 'react';
 import Comments from './Comments';
 import SortButtons from './SortButtons';
+import Shared from '../shared';
 import './Post.css';
 
 const Post = (props) => {
-    let {title, body, comments, url, media, author} = props.postDetails;
+    let {title, body, comments, url, media, author, created} = props.postDetails;
     let {currentSort, commentSortMethod} = props;
+    
+    //get relative time string
+    let dateString = Shared.getTimeString(created*1000);
     
     //check for image link to url and replace body with image if so
     let bodyTag = <div dangerouslySetInnerHTML={{ __html: body }} className="postDivBody"></div>;
@@ -31,6 +35,7 @@ const Post = (props) => {
                         <h1>{title}</h1>
                         <div className="postMiddle">
                             <span>{author}</span>
+                            <span className="postTime"> | {dateString}</span>
                             <a className="postGoToURL" href={url} target="_blank" rel="noopener noreferrer"> | Go to URL ({shortUrl})</a>
                         </div>
                         {bodyTag}

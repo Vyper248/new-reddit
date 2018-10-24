@@ -93,6 +93,7 @@ class Page extends Component {
                         }
                         
                         return {
+                            created: data.created_utc,
                             author: data.author,
                             domain: data.domain,
                             title: this.parseBodyText(data.title),
@@ -141,7 +142,7 @@ class Page extends Component {
             if (data.error){
                 this.setState({postDetails: {title: 'Not Found', body: '', id: ''}});
             } else {
-                let {title, selftext_html, id, url, media, author} = data[0].data.children[0].data;
+                let {title, selftext_html, id, url, media, author, created_utc} = data[0].data.children[0].data;
 
                 let comments = data[1].data.children.map(obj => {
                     return this.parseComment(obj.data);
@@ -155,7 +156,7 @@ class Page extends Component {
 
                 //if this exists, replace &lt etc with proper symbols, otherwise set to empty string
                 selftext_html = this.parseBodyText(selftext_html);
-                this.setState({postDetails: {title, body: selftext_html, id, url, media, comments, author}});
+                this.setState({postDetails: {title, body: selftext_html, id, url, media, comments, author, created: created_utc}});
             }
         } catch (error) {
             console.log(error);

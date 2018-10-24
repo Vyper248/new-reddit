@@ -1,10 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './PostLink.css';
+import Shared from '../shared';
 
 const PostLink = (props) => {
     const {post} = props;
     
+    //get relative time string
+    let dateString = Shared.getTimeString(post.created*1000);
+            
     //decide whether to show a thumbnail    
     let thumbnail = (
         <div className="postThumbnail">
@@ -68,6 +72,7 @@ const PostLink = (props) => {
                 <Link to={`${post.subreddit}/${post.id}`} className="postLinkTitle">{post.title}</Link>
                 <div className="postLinkMiddle">
                     <a className="postLinkDomain" href={post.url} target="_blank" rel="noopener noreferrer">{post.domain} - </a>
+                    <span className="postLinkTime">{dateString} - </span>
                     <span className="postLinkAuthor">{post.author}</span>
                     {openBtn}
                 </div>
@@ -88,5 +93,4 @@ export default PostLink;
 /*
 
 score: data.score,
-subreddit: data.subreddit,
 */

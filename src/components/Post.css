@@ -10,7 +10,7 @@
     display: block;
 }
 
-.postGoToURL {
+.postGoToURL, .postTime {
     color: var(--fadedColor);
 }
 
