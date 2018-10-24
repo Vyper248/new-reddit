@@ -37,3 +37,7 @@
 .commentText {
     padding: 5px;
 }
+
+.commentText a {
+    color: rgb(0, 225, 255);
+}
