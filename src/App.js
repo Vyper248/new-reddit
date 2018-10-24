@@ -29,7 +29,7 @@ class Page extends Component {
                 <SortButtons onClick={this.onChangeSortMethod} currentSort={this.state.sortMethod} sortList={1}/>
                 <hr/>
                 <Switch>
-                    <Redirect exact path='/' to={startPoint+'/'} />
+                    {/* <Redirect exact path='/' to={startPoint+'/'} /> */}
                     <Route exact path={startPoint+'/'} render={props => <PostList {...props} posts={this.state.posts}/>} />
                     <Route exact path={startPoint+'/:sub'} render={props => <PostList {...props} posts={this.state.posts}/>} />
                     <Route exact path={startPoint+"/:sub/:post"} render={props => <Post {...props} postDetails={this.state.postDetails} commentSortMethod={this.onChangeCommentSortMethod} currentSort={this.state.commentSortMethod} />} />

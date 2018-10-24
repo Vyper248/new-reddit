@@ -21,7 +21,7 @@
     "extends": "react-app"
   },
   "homepage": "https://vyper248.github.io/new-reddit",
-  "startPoint": "/new-reddit",
+  "startPoint": "",
   "browserslist": [
     ">0.2%",
     "not dead",
