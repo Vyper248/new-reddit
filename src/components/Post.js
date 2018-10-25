@@ -11,6 +11,9 @@ const Post = (props) => {
     //get relative time string
     let dateString = Shared.getTimeString(created*1000);
     
+    //make sure any links within the body open in a new tab
+    body = body.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
+    
     //check for image link to url and replace body with image if so
     let bodyTag = <div dangerouslySetInnerHTML={{ __html: body }} className="postDivBody"></div>;
     if (/.(png|jpg|jpeg|bmp)$/.test(url)){
@@ -26,7 +29,7 @@ const Post = (props) => {
         if (body.length > 0) media += '<br/>'+body;
         bodyTag = <div dangerouslySetInnerHTML={{ __html: media }} className="postDivBody"></div>
     }
-    
+        
     return (
         <div>
             {

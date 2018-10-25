@@ -40,6 +40,9 @@ const PostLink = (props) => {
     //     });
     // }
     
+    //make sure any links within the body open in a new tab
+    post.body = post.body.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
+    
     //decide whether to show image preview in body
     let bodyTag = <div className="postLinkBody" dangerouslySetInnerHTML={{__html: post.body}}></div>;
     let bodyHasImage = false;
