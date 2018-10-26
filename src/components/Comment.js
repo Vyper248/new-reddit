@@ -20,6 +20,9 @@ class Comment extends Component {
             else e.target.innerText = '[ - ] ';
         }
         
+        //make sure any links within the body open in a new tab
+        comment.body_html = comment.body_html.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
+        
         return (
             <div className="commentDiv">
                 <div className="commentHeader">

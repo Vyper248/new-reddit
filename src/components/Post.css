@@ -28,6 +28,10 @@
     margin-top: 20px;
 }
 
+.postDivBody {
+    word-wrap: break-word;
+}
+
 .postDivBody a {
     color: rgb(0, 225, 255);
 }
