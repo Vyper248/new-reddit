@@ -31,3 +31,17 @@
 .postDivBody a {
     color: rgb(0, 225, 255);
 }
+
+.postDiv .sortButtons {
+    flex-direction: row;
+}
+
+.postDiv .sortButton {
+    border-right: 1px solid var(--fadedColor);
+    border-top: 1px solid var(--fadedColor);
+    border-bottom: none;
+}
+
+.postDiv .sortButton:first-child {
+    border-left: 1px solid var(--fadedColor);
+}

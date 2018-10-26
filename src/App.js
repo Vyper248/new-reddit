@@ -5,6 +5,7 @@ import PostList from './components/PostList';
 import Post from './components/Post';
 import Header from './components/Header';
 import SortButtons from './components/SortButtons';
+import SideBar from './components/SideBar';
 const pjson = require('../package.json');
 
 class Page extends Component {
@@ -24,15 +25,15 @@ class Page extends Component {
         let startPoint = pjson.startPoint;
         return (
             <div>
-                <SubList />
-                <Header heading={this.state.sub} onReload={this.onReload}/>
-                <SortButtons onClick={this.onChangeSortMethod} currentSort={this.state.sortMethod} sortList={1}/>
-                <hr/>
-                <Switch>
-                    <Route exact path={startPoint+'/'} render={props => <PostList {...props} posts={this.state.posts}/>} />
-                    <Route exact path={startPoint+'/:sub'} render={props => <PostList {...props} posts={this.state.posts}/>} />
-                    <Route exact path={startPoint+"/:sub/:post"} render={props => <Post {...props} postDetails={this.state.postDetails} commentSortMethod={this.onChangeCommentSortMethod} currentSort={this.state.commentSortMethod} />} />
-                </Switch>
+                <SideBar onSortClick={this.onChangeSortMethod} currentSort={this.state.sortMethod}/>
+                <div className="pageContent">
+                    <Header heading={this.state.sub} onReload={this.onReload}/>
+                    <Switch>
+                        <Route exact path={startPoint+'/'} render={props => <PostList {...props} posts={this.state.posts}/>} />
+                        <Route exact path={startPoint+'/:sub'} render={props => <PostList {...props} posts={this.state.posts}/>} />
+                        <Route exact path={startPoint+"/:sub/:post"} render={props => <Post {...props} postDetails={this.state.postDetails} commentSortMethod={this.onChangeCommentSortMethod} currentSort={this.state.commentSortMethod} />} />
+                    </Switch>
+                </div>
             </div>
         );
     }

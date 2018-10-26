@@ -1,4 +1,5 @@
 import React from 'react';
+import './SortButtons.css';
 
 const SortButtons = ({onClick, currentSort, sortList}) => {
     let sortChoices = {

@@ -1,25 +1,26 @@
-.navLink, .sortButton {
+.navLink {
     padding: 5px 10px;
     display: inline-block;
-    border-right: 1px solid var(--fadedColor);
+    border-bottom: 1px solid var(--fadedColor);
     cursor: pointer;
+    text-align: center;
 }
 
 .navLink:first-child {
-    border-left: 1px solid var(--fadedColor);
+    border-top: 1px solid var(--fadedColor);
 }
 
 .navLink.active {
     background-color: #777;
 }
 
-.navLink:hover, .sortButton:hover {
+.navLink:hover {
     background-color: #777;
 }
 
 .subLinks {
-    border-bottom: 1px solid var(--fadedColor);
-    position: sticky;
     top: 0px;
     background-color: black;
+    display: flex;
+    flex-direction: column;
 }
