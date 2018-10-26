@@ -15,7 +15,7 @@
     background-color: #777;
 }
 
-@media screen and (max-device-width: 480px){
+@media screen and (max-device-width: 600px){
     .topMenu {
         display: flex;
         z-index: 2;

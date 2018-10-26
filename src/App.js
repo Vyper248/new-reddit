@@ -226,6 +226,7 @@ class Page extends Component {
     }
     
     componentDidMount(){
+        this.hideSidebar();
         this.checkUrlAndUpdate(true);
     }
 }

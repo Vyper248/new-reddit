@@ -63,7 +63,7 @@ hr {
     margin-left: 250px;
 }
 
-@media screen and (max-device-width: 480px){
+@media screen and (max-device-width: 600px){
     .pageContent {
         transform: translateX(100%);
         transition: 0.4s;
