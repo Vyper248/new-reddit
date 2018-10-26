@@ -11,6 +11,10 @@
     text-align: center;
 }
 
+.topMenuBtn:hover {
+    background-color: #777;
+}
+
 @media screen and (max-device-width: 480px){
     .topMenu {
         display: flex;
