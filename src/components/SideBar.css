@@ -6,6 +6,9 @@
     left: 0px;
     height: 100vh;
     background-color: black;
+    transition: left 0.5s;
+    overflow: scroll;
+    padding-bottom: 100px;
 }
 
 .sidebar h3 {
@@ -17,5 +20,9 @@
     .sidebar {
         width: 100%;
         border-right: none;
+    }
+    
+    .sidebar.hidden {
+        left: -100%;
     }
 }

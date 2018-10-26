@@ -59,5 +59,18 @@ hr {
 }
 
 .pageContent {
-    padding-left: 250px;
+    position: relative;
+    margin-left: 250px;
+}
+
+@media screen and (max-device-width: 480px){
+    .pageContent {
+        left: 100%;
+        transition: left 0.5s;
+        margin-left: 0px;
+    }
+    
+    .pageContent.active {
+        left: 0%;
+    }
 }

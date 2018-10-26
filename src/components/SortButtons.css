@@ -22,3 +22,9 @@
 .sortButton.active {
     background-color: #777;
 }
+
+@media screen and (max-device-width: 480px){
+    .sortButton {
+        padding: 10px;
+    }
+}

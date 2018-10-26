@@ -15,7 +15,7 @@ const SubList = (props) => {
             {
                 subs.map((sub,i) => {
                     const link = startPoint+'/'+sub;
-                    return <NavLink className="navLink" activeClassName="active" key={i} to={link}>{sub}</NavLink>
+                    return <NavLink className="navLink" activeClassName="active" key={i} to={link} onClick={props.onClick}>{sub}</NavLink>
                 })
             }
         </div>

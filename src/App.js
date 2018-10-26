@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
-import SubList from './components/SubList';
 import PostList from './components/PostList';
 import Post from './components/Post';
 import Header from './components/Header';
-import SortButtons from './components/SortButtons';
 import SideBar from './components/SideBar';
+import TopMenu from './components/TopMenu';
 const pjson = require('../package.json');
 
 class Page extends Component {
@@ -25,8 +24,9 @@ class Page extends Component {
         let startPoint = pjson.startPoint;
         return (
             <div>
-                <SideBar onSortClick={this.onChangeSortMethod} currentSort={this.state.sortMethod}/>
+                <SideBar onSubClick={this.hideSidebar} onSortClick={this.onChangeSortMethod} currentSort={this.state.sortMethod}/>
                 <div className="pageContent">
+                    <TopMenu onSubsClick={this.showSidebar} onBackClick={this.onBack}/>
                     <Header heading={this.state.sub} onReload={this.onReload}/>
                     <Switch>
                         <Route exact path={startPoint+'/'} render={props => <PostList {...props} posts={this.state.posts}/>} />
@@ -45,6 +45,7 @@ class Page extends Component {
     onChangeSortMethod = (e) => {
         let sortMethod = e.target.innerText.toLowerCase();
         this.setState({sortMethod});
+        this.hideSidebar();
     }
     
     onChangeCommentSortMethod = (e) => {
@@ -55,6 +56,25 @@ class Page extends Component {
             case 'q&a': this.setState({commentSortMethod:'qa'}); break;
             default: this.setState({commentSortMethod}); break;
         }
+    }
+    
+    onBack = () => {
+        console.log(this.props);
+        this.props.history.goBack();
+    }
+    
+    hideSidebar = () => {
+        let sidebar = document.querySelector('.sidebar');
+        sidebar.classList.add('hidden');
+        let page = document.querySelector('.pageContent');
+        page.classList.add('active');
+    }
+    
+    showSidebar = () => {
+        let sidebar = document.querySelector('.sidebar');
+        sidebar.classList.remove('hidden');
+        let page = document.querySelector('.pageContent');
+        page.classList.remove('active');
     }
     
     parseBodyText(text){

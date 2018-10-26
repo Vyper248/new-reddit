@@ -1,0 +1,22 @@
+.topMenu {
+    display: none;
+    background-color: black;
+}
+
+.topMenuBtn {
+    padding: 5px 10px;
+    display: inline-block;
+    border-right: 1px solid var(--fadedColor);
+    cursor: pointer;
+    text-align: center;
+}
+
+@media screen and (max-device-width: 480px){
+    .topMenu {
+        display: flex;
+        z-index: 2;
+        border-bottom: 1px solid red;
+        position: sticky;
+        top: 0px;
+    }
+}
