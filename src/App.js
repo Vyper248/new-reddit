@@ -59,7 +59,6 @@ class Page extends Component {
     }
     
     onBack = () => {
-        console.log(this.props);
         this.props.history.goBack();
     }
     
