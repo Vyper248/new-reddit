@@ -23,6 +23,9 @@ class Comment extends Component {
         //make sure any links within the body open in a new tab
         comment.body_html = comment.body_html.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
         
+        //make sure links to reddit are adjusted
+        comment.body_html = comment.body_html.replace(/href="\/(r|u)/, 'href="https://www.reddit.com/$1');
+        
         return (
             <div className="commentDiv">
                 <div className="commentHeader">

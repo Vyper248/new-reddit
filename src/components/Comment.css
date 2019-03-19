@@ -1,7 +1,13 @@
 .commentDiv {
     border: 1px solid var(--outlineColor);
+    border-right: none;
+    border-bottom: none;
     padding: 5px;
     margin: 5px;
+    margin-right: 0px;
+    padding-right: 0px;
+    margin-bottom: 0px;
+    padding-bottom: 2px;
 }
 
 .commentPermalink {

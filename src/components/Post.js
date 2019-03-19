@@ -14,6 +14,9 @@ const Post = (props) => {
     //make sure any links within the body open in a new tab
     body = body.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
     
+    //make sure links to reddit are adjusted
+    body = body.replace(/href="\/(r|u)/, 'href="https://www.reddit.com/$1');
+    
     //check for image link to url and replace body with image if so
     let bodyTag = <div dangerouslySetInnerHTML={{ __html: body }} className="postDivBody"></div>;
     if (/.(png|jpg|jpeg|bmp)$/.test(url)){
