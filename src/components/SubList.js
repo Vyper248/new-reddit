@@ -37,10 +37,14 @@ class SubList extends Component {
                         )
                     })
                 }
-                <div className="newSubDiv">
-                    <input className="newSubInput sideBarRow" type="text" placeholder="New Sub" onChange={this.onChangeNewSub} value={newSub}/>
-                    <button className="newSubBtn sideBarRow" onClick={this.onAddNewSub}>Add</button>
-                </div>
+                {
+                    this.state.editMode ? (
+                        <div className="newSubDiv">
+                            <input className="newSubInput sideBarRow" type="text" placeholder="New Sub" onChange={this.onChangeNewSub} value={newSub}/>
+                            <button className="newSubBtn sideBarRow" onClick={this.onAddNewSub}>Add</button>
+                        </div>
+                    ) : null
+                }
                 <img className="editSubIcon" src="edit-solid.svg" onClick={this.onToggleEditMode}/>
             </div>
         );

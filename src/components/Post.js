@@ -15,7 +15,10 @@ const Post = (props) => {
     body = body.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
     
     //make sure links to reddit are adjusted
-    body = body.replace(/href="\/(r|u)/, 'href="https://www.reddit.com/$1');
+    body = body.replace(/href="\/u/, 'href="https://www.reddit.com/$1');
+    
+    //but links to other reddit subs can be kept on this website
+    body = body.replace(/target="_blank" rel="noopener noreferrer" href="\/r/, 'href="#');
     
     //check for image link to url and replace body with image if so
     let bodyTag = <div dangerouslySetInnerHTML={{ __html: body }} className="postDivBody"></div>;

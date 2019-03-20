@@ -24,7 +24,10 @@ class Comment extends Component {
         comment.body_html = comment.body_html.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
         
         //make sure links to reddit are adjusted
-        comment.body_html = comment.body_html.replace(/href="\/(r|u)/, 'href="https://www.reddit.com/$1');
+        comment.body_html = comment.body_html.replace(/href="\/u/, 'href="https://www.reddit.com/$1');
+        
+        //but links to other reddit subs can be kept on this website
+        comment.body_html = comment.body_html.replace(/target="_blank" rel="noopener noreferrer" href="\/r/, 'href="#');
         
         return (
             <div className="commentDiv">
