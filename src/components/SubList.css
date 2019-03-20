@@ -18,11 +18,11 @@
 
 .navLink {
     cursor: pointer;
-    flex-grow: 1;
     padding: 5px 10px;
+    flex-grow: 1;
 }
 
-.subContainer:first-child {
+.subLinks > div:first-child {
     border-top: 1px solid var(--fadedColor);
 }
 
@@ -53,8 +53,10 @@
 
 .newSubInput {
     cursor: text;
-    flex-grow: 1;
     padding: 5px 10px;
+    flex-grow: 1;
+    width: 100%;
+    margin: 0px;
 }
 
 .sideBarRow {
@@ -71,6 +73,7 @@
     width: 60px;
     border-left: 1px solid var(--fadedColor);
     cursor: pointer;
+    margin: 0px;
 }
 
 .deleteSubBtn {

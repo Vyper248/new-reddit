@@ -54,7 +54,9 @@ class SubList extends Component {
         // const subs = ['PSVR','PS4','Apple','iPhone','NoMansSkyTheGame','Minecraft','PS4Deals','PS4Dreams','FirewallZeroHour'];
         let subs = localStorage.getItem('subs');
         subs = subs ? JSON.parse(subs) : [];
-        this.setState({subs});
+        let editMode = this.state.editMode;
+        if (subs.length === 0) editMode = true;
+        this.setState({subs, editMode});
     }
     
     onChangeNewSub = (e) => {
