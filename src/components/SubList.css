@@ -1,12 +1,28 @@
-.navLink {
-    padding: 5px 10px;
-    display: inline-block;
-    border-bottom: 1px solid var(--fadedColor);
+.editSubIcon {
+    width: 40px;
+    position: absolute;
+    right: 0px;
+    top: -36px;
     cursor: pointer;
-    text-align: center;
+    padding: 10px;
 }
 
-.navLink:first-child {
+.editSubIcon:hover {
+    filter: contrast(0);
+}
+
+.subContainer {
+    width: 100%;
+    display: flex;
+}
+
+.navLink {
+    cursor: pointer;
+    flex-grow: 1;
+    padding: 5px 10px;
+}
+
+.subContainer:first-child {
     border-top: 1px solid var(--fadedColor);
 }
 
@@ -14,8 +30,12 @@
     background-color: #777;
 }
 
-.navLink:hover {
+.navLink:hover, .newSubBtn:hover {
     background-color: #777;
+}
+
+.newSubBtn:focus, .newSubInput {
+    outline: none;
 }
 
 .subLinks {
@@ -23,6 +43,60 @@
     background-color: black;
     display: flex;
     flex-direction: column;
+    position: relative;
+}
+
+.newSubDiv {
+    display: flex;
+    width: 100%;
+}
+
+.newSubInput {
+    cursor: text;
+    flex-grow: 1;
+    padding: 5px 10px;
+}
+
+.sideBarRow {
+    background-color: black;
+    color: white;
+    border: none;
+    border-bottom: 1px solid var(--fadedColor);
+    font-size: 1em;
+    text-align: center;
+    position: relative;
+}
+
+.newSubBtn {
+    width: 60px;
+    border-left: 1px solid var(--fadedColor);
+    cursor: pointer;
+}
+
+.deleteSubBtn {
+    background-color: black;
+    color: white;
+    font-size: 1.5em;
+    position: absolute;
+    right: 0px;
+    border: none;
+    border-left: 1px solid var(--fadedColor);
+    cursor: pointer;
+    height: 100%;
+    width: 40px;
+    padding: 0px;
+}
+
+.deleteSubBtn:hover {
+    background-color: #777;
+}
+
+.deleteSubBtn:focus {
+    outline: none;
+}
+
+.deleteSubBtn div {
+    transform: rotate(45deg) translateY(-2px);
 }
 
 @media screen and (max-device-width: 600px){
