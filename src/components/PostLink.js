@@ -94,7 +94,7 @@ const PostComments = styled.div`
     display: inline-block;
     margin-bottom: 10px;
 
-    & > svg {
+    & > a > svg {
         position: relative;
         top: 2px;
         margin-left: 2px;
@@ -116,7 +116,7 @@ const PostBody = styled.div`
     }
 `;
 
-const PostLink = ({post, sub}) => {
+const PostLink = ({post, sub, sort}) => {
     const [expanded, setExpanded] = useState(false);
 
     if (post === undefined) return <span></span>;
@@ -166,11 +166,11 @@ const PostLink = ({post, sub}) => {
                     <div>
                         <PostTitle><NavLink to={`/${sub}/comments/${post.id}`}>{post.title}</NavLink></PostTitle>
                         <PostDetails>
-                            <span>{post.subreddit}</span> - <span><a href={post.url} target="_blank" rel='noreferrer noopener'>{post.domain}</a></span> - <span>{dateString}</span>
+                            <NavLink to={`/${post.subreddit}/${sort}`}>{post.subreddit}</NavLink> - <span><a href={post.url} target="_blank" rel='noreferrer noopener'>{post.domain}</a></span> - <span>{dateString}</span>
                         </PostDetails>
                         { expanded ? bodyContent : null }
                         <div>
-                            <PostComments>{post.num_comments} <FaRegComment/></PostComments>
+                            <PostComments><NavLink to={`/${sub}/comments/${post.id}`}>{post.num_comments} <FaRegComment/></NavLink></PostComments>
                             <span style={{marginLeft: '15px'}}><a href={`https://www.reddit.com/${post.permalink}`} target="_blank" rel="noreferrer noopener">Open on Reddit</a></span>
                         </div>
                     </div>

@@ -39,16 +39,20 @@ const Page = ({location, history}) => {
 
     let {sub, newSort, postId} = parseURL(location.pathname);  
 
-    let subCheck = sub.toLowerCase();
+    // let subCheck = sub.toLowerCase();
 
-    useEffect(() => {        
+    useEffect(() => {  
+        console.log('getting post list');
+              
         setSubMenuOpen(false);
         setSortMenuOpen(false);
         getPostList(sub, sort, setPosts);
-    }, [subCheck, sort]);
+    }, [sort, sub]);
 
     useEffect(() => {
         if (postId.length > 0 ) {
+            console.log('getting comments');
+            
             let post = undefined;
             if (postId.length > 0) post = posts.find(post => post.id === postId);
             if (post === undefined) setPostDetails({});
@@ -56,7 +60,7 @@ const Page = ({location, history}) => {
             getComments(`${sub}/comments/${postId}/`, setComments, setNoComments, setPostDetails, true);
             window.scrollTo(0,0);        
         }
-    }, [postId]);
+    }, [postId, posts, sub]);
 
     if (newSort !== undefined && newSort.length > 0 && newSort !== sort) {
         setSort(newSort);
@@ -86,8 +90,8 @@ const Page = ({location, history}) => {
         return (
             <React.Fragment>
                 <Route path={'/'} render={props => <Header {...props} heading={sub} onReload={onReload}/>} />
-                <Route exact path={'/:sub'} render={props => <PostList {...props} posts={posts} sub={sub}/>} />
-                <Route exact path={'/:sub/:sort'} render={props => <PostList {...props} posts={posts} sub={sub}/>} />
+                <Route exact path={'/:sub'} render={props => <PostList {...props} posts={posts} sub={sub} sort={sort}/>} />
+                <Route exact path={'/:sub/:sort'} render={props => <PostList {...props} posts={posts} sub={sub} sort={sort}/>} />
                 <Route exact path={'/:sub/comments/:id'} render={props => <Post {...props} post={postDetails} comments={comments} noComments={noComments}/>} />
             </React.Fragment>
         );

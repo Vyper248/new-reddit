@@ -46,11 +46,7 @@ const Comment = ({comment, author}) => {
         replies = <Comments comments={comment.replies} author={author}/>;
     }
 
-    //make sure any links within the body open in a new tab
-    comment.body_html = comment.body_html.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
-    
-    //make sure links to reddit are adjusted
-    comment.body_html = comment.body_html.replace(/href="\/u/, 'href="https://www.reddit.com/$1');
+    let body_html = parseBody(comment.body_html);
 
     const toggleClosed = () => {
         setClosed(!closed);
@@ -61,11 +57,24 @@ const Comment = ({comment, author}) => {
             <CommentClose onClick={toggleClosed}>{ closed ? '[ + ] ' : '[ - ] ' }</CommentClose>
             <CommentAuthor original={comment.author === author}>{comment.author}</CommentAuthor>
             <span style={{color: 'gray'}}> | {comment.score}</span>
-            { closed ? null : <div dangerouslySetInnerHTML={{ __html: comment.body_html }}></div> }
+            { closed ? null : <div dangerouslySetInnerHTML={{ __html: body_html }}></div> }
             { closed ? null : <CommentFooter><a href={`https://www.reddit.com/${comment.permalink}`} target="_blank" rel="noreferrer noopener">Permalink</a></CommentFooter> }
             { closed ? null : replies }
         </StyledComment>
     );
+}
+
+const parseBody = (body) => {    
+    //make sure any links within the body open in a new tab
+    let newBody = body.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
+    
+    //make sure links to reddit are adjusted
+    newBody = newBody.replace(/href="\/u/g, 'href="https://www.reddit.com/$1');
+
+    //but links to other reddit subs can be kept on this website
+    newBody = newBody.replace(/target="_blank" rel="noopener noreferrer" href="\/r/g, 'href="#');
+
+    return newBody; 
 }
 
 export default Comment;
