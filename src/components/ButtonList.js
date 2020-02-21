@@ -11,6 +11,35 @@ const ButtonList = styled.div`
     & * {
         color: white;
     }
+
+    & a {
+        display: block;
+        padding: 5px;
+        min-height: 29px;
+        border-top: 1px solid gray;
+    }
+
+    & a:hover {
+        background-color: gray;
+    }
+
+    & a.active, & > a.selected {
+        background-color: gray;
+    }
+
+    & > a:last-of-type {
+        border-bottom: 1px solid gray;
+    }
+
+    & > div:last-child > * {
+        border-bottom: 1px solid gray;
+    }
+
+    @media screen and (max-device-width: 600px){
+        & div:last-child > * {
+            border-bottom: none;
+        }   
+    }
 `;
 
 export default ButtonList;

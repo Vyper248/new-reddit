@@ -14,6 +14,7 @@ const Button = styled.button`
     font-size: 1em;
     width: 100%;
     margin: 0px;
+    border-top: 1px solid gray;
 
     &:hover {
         cursor: pointer;
@@ -37,6 +38,8 @@ const SubInput = styled.input`
     border: none;
     font-size: 1em;
     text-align: center;
+    border-top: 1px solid gray;
+    border-radius: 0px;
 `;
 
 const Icon = styled.div`
@@ -95,6 +98,10 @@ const SubList = ({currentSub, currentSort}) => {
 
     return (
         <ButtonList>
+            <h3>General</h3>
+            <NavLink to={`/My Subreddits/${currentSort}`} className={'My Subreddits' === currentSub ? 'selected' : ''}>My Subreddits</NavLink>
+            <NavLink to={`/Popular/${currentSort}`} className={'Popular' === currentSub ? 'selected' : ''}>Popular</NavLink>
+            <NavLink to={`/All/${currentSort}`} className={'All' === currentSub ? 'selected' : ''}>All</NavLink>
             <h3>Subs</h3>
             <Icon onClick={onToggleEdit}><FaEdit/></Icon>
             {
@@ -116,10 +123,19 @@ const SubList = ({currentSub, currentSort}) => {
                 ) : null
             }
             {
-                !subs.includes(currentSub) && currentSub.length > 0 ? <ButtonGroup><Button onClick={addCurrentSub}>Add Current Sub</Button></ButtonGroup> : null
+                !checkIfSubbed(subs, currentSub) ? <ButtonGroup><Button onClick={addCurrentSub}>Add Current Sub</Button></ButtonGroup> : null
             }
         </ButtonList>
     );
+}
+
+const checkIfSubbed = (subs, currentSub) => {
+    if (currentSub.length === 0) return true;
+    if (currentSub === 'Popular') return true;
+    if (currentSub === 'All') return true;
+    if (currentSub === 'My Subreddits') return true;
+    if (subs.includes(currentSub)) return true;
+    return false;
 }
 
 export default SubList;

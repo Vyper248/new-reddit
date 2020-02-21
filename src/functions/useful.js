@@ -42,6 +42,12 @@ const parseURL = (url) => {
 const getPostList = async (sub, sort, setPosts) => {
     if (sub.length > 0) sub = 'r/'+sub;
     setPosts([]);
+
+    if (sub === 'r/My Subreddits') {        
+        let storedSubs = localStorage.getItem('subs');
+        storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
+        sub = 'r/'+storedSubs.join('+');
+    }
     
     try {
         let url = `https://www.reddit.com/${sub}/${sort}/.json`;
