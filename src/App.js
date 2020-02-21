@@ -39,11 +39,7 @@ const Page = ({location, history}) => {
 
     let {sub, newSort, postId} = parseURL(location.pathname);  
 
-    // let subCheck = sub.toLowerCase();
-
-    useEffect(() => {  
-        console.log('getting post list');
-              
+    useEffect(() => {
         setSubMenuOpen(false);
         setSortMenuOpen(false);
         getPostList(sub, sort, setPosts);
@@ -51,8 +47,6 @@ const Page = ({location, history}) => {
 
     useEffect(() => {
         if (postId.length > 0 ) {
-            console.log('getting comments');
-            
             let post = undefined;
             if (postId.length > 0) post = posts.find(post => post.id === postId);
             if (post === undefined) setPostDetails({});
