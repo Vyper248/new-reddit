@@ -39,9 +39,17 @@ const Page = ({location, history}) => {
 
     let {sub, newSort, postId} = parseURL(location.pathname);  
 
+    if (sub.length === 0) {
+        let storedSubs = localStorage.getItem('subs');
+        storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
+        if (storedSubs.length > 0) sub = storedSubs[0];
+        else sub = 'Popular';
+        history.push(`/${sub}`);
+    }
+
     useEffect(() => {
         setSubMenuOpen(false);
-        setSortMenuOpen(false);
+        setSortMenuOpen(false);        
         getPostList(sub, sort, setPosts);
     }, [sort, sub]);
 

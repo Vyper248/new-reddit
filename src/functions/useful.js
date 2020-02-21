@@ -47,10 +47,14 @@ const getPostList = async (sub, sort, setPosts) => {
         let storedSubs = localStorage.getItem('subs');
         storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
         sub = 'r/'+storedSubs.join('+');
+        if (storedSubs.length === 0) sub = '/r/All';
     }
     
     try {
         let url = `https://www.reddit.com/${sub}/${sort}/.json`;
+        //search url = https://www.reddit.com/r/PS4/search?q=God+of+war&restrict_sr=on&include_over_18=on&sort=relevance
+        //sort = relevance / new
+        //restrict sub - restrict_sr=on (remove for not doing it)
         if (sub.length === 0) url = 'https://www.reddit.com/.json';
 
         let response = await fetch(url);
