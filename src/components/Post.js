@@ -1,62 +1,126 @@
 import React from 'react';
-import Comments from './Comments';
-import SortButtons from './SortButtons';
-import Shared from '../shared';
-import './Post.css';
+import styled from 'styled-components';
+import { formatDistanceStrict } from 'date-fns';
 
-const Post = (props) => {
-    let {title, body, comments, url, media, author, created} = props.postDetails;
-    let {currentSort, commentSortMethod} = props;
-    
-    //get relative time string
-    let dateString = Shared.getTimeString(created*1000);
-    
-    //make sure any links within the body open in a new tab
-    body = body.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
-    
-    //make sure links to reddit are adjusted
-    body = body.replace(/href="\/u/, 'href="https://www.reddit.com/$1');
-    
-    //but links to other reddit subs can be kept on this website
-    body = body.replace(/target="_blank" rel="noopener noreferrer" href="\/r/, 'href="#');
-    
-    //check for image link to url and replace body with image if so
-    let bodyTag = <div dangerouslySetInnerHTML={{ __html: body }} className="postDivBody"></div>;
-    if (/.(png|jpg|jpeg|bmp)$/.test(url)){
-        bodyTag = <img src={url} alt="Preview of content"/>
+import CommentList from './CommentList';
+import LoadingSpinner from './LoadingSpinner';
+
+import { parseBodyText } from '../functions/useful';
+
+const StyledPost = styled.div`
+    background-color: black;
+    padding: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+
+    & h1 {
+        text-align: left;
+        margin-bottom: 10px;
+    }
+`;
+
+const PostDetails = styled.div`
+    color: gray;
+    text-align: left;
+    margin-bottom: 5px;
+
+    & a {
+        color: gray;
+    }
+`;
+
+const PostBody = styled.div`
+    border-bottom: 1px solid gray;
+    margin-bottom: 5px;
+    padding-bottom: 10px;
+
+    & > img {
+        max-width: 100%;
+        margin-top: 10px;
     }
     
+    & iframe {
+        max-width: 100%;
+        margin: auto;
+        display: block;
+    }
+
+    & a {
+     color: rgb(0, 225, 255);
+    }
+
+    & h1 {
+        font-size: 1.2em;
+    }
+
+    & h2 {
+        font-size: 1.1em;
+    }
+
+    & h3 {
+        font-size: 1em;
+    }
+`;
+
+const Post = ({post, comments, noComments}) => {
+    if (post.body === undefined) {
+        return <div style={{textAlign: 'center'}}><LoadingSpinner/></div>;
+    }
+
+    let {url, title, author, created, body, media, permalink} = post;  
+
+    //get parsed body tag
+    let bodyTag = parsePostBody(body, url, media);  
+
+    //get relative time string
+    let dateString = formatDistanceStrict(new Date(), created*1000);
+
     //if URL is too long, make shorter
     let shortUrl = url || '';
     if (shortUrl.length > 40) shortUrl = shortUrl.substr(0,40) + '...';
-    
-    //check for media embed and replace body with this
-    if (media && media.length > 0){
-        if (body.length > 0) media += '<br/>'+body;
-        bodyTag = <div dangerouslySetInnerHTML={{ __html: media }} className="postDivBody"></div>
-    }
-        
+
     return (
-        <div>
-            {
-                title.length === 0 ? <h1 className="loading">Loading...</h1> : (
-                    <div className="postDiv">
-                        <h1>{title}</h1>
-                        <div className="postMiddle">
-                            <span>{author}</span>
-                            <span className="postTime"> | {dateString}</span>
-                            <a className="postGoToURL" href={url} target="_blank" rel="noopener noreferrer"> | Go to URL ({shortUrl})</a>
-                        </div>
-                        {bodyTag}
-                        {/* <hr/> */}
-                        <SortButtons onClick={commentSortMethod} currentSort={currentSort} sortList={2}/>
-                        <hr/>
-                        <Comments comments={comments} author={author} />
-                    </div>
-                )
-            }
-        </div>
+        <StyledPost>
+            <div>
+                <h2 dangerouslySetInnerHTML={{ __html: title}}></h2>
+                <PostDetails>{author} | {dateString} | <a href={url} target="_blank" rel="noopener noreferrer">Go to URL ({shortUrl})</a></PostDetails>
+                <PostDetails><a href={`https://www.reddit.com/${permalink}`} target="_blank" rel="noopener noreferrer">Open on Reddit</a></PostDetails>
+                { bodyTag }
+            </div>
+            { comments.length === 0 && noComments === false ? <LoadingSpinner/> : null }
+            { noComments ? <div>No Comments</div> : null }
+            <CommentList comments={comments} author={author}/>
+        </StyledPost>
     );
+}
+
+const parsePostBody = (body, url, media) => {
+    //make sure any links within the body open in a new tab
+    body = body.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
+    
+    //make sure links to reddit users are adjusted
+    body = body.replace(/href="\/u/g, 'href="https://www.reddit.com/$1');
+    
+    //but links to other reddit subs can be kept on this website
+    body = body.replace(/target="_blank" rel="noopener noreferrer" href="\/r/g, 'href="#');    
+    
+    //check for image link to url and replace body with image if so
+    let bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: body }} className="postDivBody"></PostBody>;
+    if (/.(png|jpg|jpeg|bmp)$/.test(url)){
+        bodyTag = <PostBody><img src={url} alt="Preview of content"/></PostBody>;
+    }
+
+    //check for media embed and replace body with this
+    if (media && media.oembed){
+        media = parseBodyText(media.oembed.html);
+        if (body.length > 0) media += '<br/>'+body;
+        bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: media }} className="postDivBody"></PostBody>;
+    } else {
+        media = '';
+    }
+
+    return bodyTag;
 }
 
 export default Post;

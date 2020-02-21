@@ -1,240 +1,126 @@
-import React, { Component } from "react";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import styled from 'styled-components';
+import { HashRouter as Router, Route } from "react-router-dom";
+import { useMediaQuery } from 'react-responsive';
+
+import SubList from './components/SubList';
+import SortMenu from './components/SortMenu';
+import TopMenu from './components/TopMenu';
 import PostList from './components/PostList';
 import Post from './components/Post';
 import Header from './components/Header';
-import SideBar from './components/SideBar';
-import TopMenu from './components/TopMenu';
-const pjson = require('../package.json');
+import SideMenu from './components/SideMenu';
 
-class Page extends Component {
-    constructor(){
-        super();
-        this.state = {
-            sub: '',
-            postId: '',
-            sortMethod: 'hot',
-            commentSortMethod: 'new',
-            posts: [],
-            postDetails: {title: '', body: '', id: '', comments: []}
-        };
+import { getPostList, getComments, parseURL } from './functions/useful';
+
+const Dropdown = styled.div`
+    position: fixed;
+    width: 250px;
+    background-color: black;
+    z-index: 5;
+    top: 37px;
+    border-right: 1px solid red;
+    border-bottom: 1px solid red;
+    ${ props => props.right 
+            ? 'right: 0px; border-left: 1px solid red; border-right: none;' 
+            : '' };
+`;
+
+const Page = ({location, history}) => {
+    const [sort, setSort] = useState('hot');
+    const [posts, setPosts] = useState([]);
+    const [comments, setComments] = useState([]);
+    const [noComments, setNoComments] = useState(false);
+    const [postDetails, setPostDetails] = useState({});
+    const [sortMenuOpen, setSortMenuOpen] = useState(false);
+    const [subMenuOpen, setSubMenuOpen] = useState(false);
+
+    const isMobile = useMediaQuery({ maxWidth: 600 });
+
+    let {sub, newSort, postId} = parseURL(location.pathname);  
+
+    let subCheck = sub.toLowerCase();
+
+    useEffect(() => {        
+        setSubMenuOpen(false);
+        setSortMenuOpen(false);
+        getPostList(sub, sort, setPosts);
+    }, [subCheck, sort]);
+
+    useEffect(() => {
+        if (postId.length > 0 ) {
+            let post = undefined;
+            if (postId.length > 0) post = posts.find(post => post.id === postId);
+            if (post === undefined) setPostDetails({});
+            else setPostDetails(post);
+            getComments(`${sub}/comments/${postId}/`, setComments, setNoComments, setPostDetails, true);
+            window.scrollTo(0,0);        
+        }
+    }, [postId]);
+
+    if (newSort !== undefined && newSort.length > 0 && newSort !== sort) {
+        setSort(newSort);
+        return (<div></div>);
     }
-    
-    render(){
-        let startPoint = pjson.startPoint;
+
+    const onReload = () => {
+        setPosts([]);
+        getPostList(sub, sort, setPosts);
+    }
+
+    const onToggleSortMenu = () => {
+        if (!sortMenuOpen) setSubMenuOpen(false);
+        setSortMenuOpen(!sortMenuOpen);
+    }
+
+    const onToggleSubsMenu = () => {
+        if (!subMenuOpen) setSortMenuOpen(false);
+        setSubMenuOpen(!subMenuOpen);        
+    }    
+
+    const onBackClick = () => {
+        history.goBack();
+    }    
+
+    const MainPage = () => {
         return (
-            <div>
-                <SideBar onSubClick={this.hideSidebar} onSortClick={this.onChangeSortMethod} currentSort={this.state.sortMethod}/>
-                <div className="pageContent">
-                    <TopMenu onSubsClick={this.showSidebar} onBackClick={this.onBack}/>
-                    <Header heading={this.state.sub} onReload={this.onReload}/>
-                    <Switch>
-                        <Route exact path={startPoint+'/'} render={props => <PostList {...props} posts={this.state.posts}/>} />
-                        <Route exact path={startPoint+'/:sub'} render={props => <PostList {...props} posts={this.state.posts}/>} />
-                        <Route exact path={startPoint+"/:sub/:post"} render={props => <Post {...props} postDetails={this.state.postDetails} commentSortMethod={this.onChangeCommentSortMethod} currentSort={this.state.commentSortMethod} />} />
-                    </Switch>
+            <React.Fragment>
+                <Route path={'/'} render={props => <Header {...props} heading={sub} onReload={onReload}/>} />
+                <Route exact path={'/:sub'} render={props => <PostList {...props} posts={posts} sub={sub}/>} />
+                <Route exact path={'/:sub/:sort'} render={props => <PostList {...props} posts={posts} sub={sub}/>} />
+                <Route exact path={'/:sub/comments/:id'} render={props => <Post {...props} post={postDetails} comments={comments} noComments={noComments}/>} />
+            </React.Fragment>
+        );
+    }
+
+    if (isMobile) {
+        return (
+            <div style={{height: '100%', overflow: 'hidden'}}>
+                <TopMenu onClickSubs={onToggleSubsMenu} onClickSort={onToggleSortMenu} showBackButton={postId.length > 0 ? true : false} onBackClick={onBackClick} sortMenuOpen={sortMenuOpen} subMenuOpen={subMenuOpen}/>
+                { subMenuOpen ? <Dropdown><SubList currentSub={sub} currentSort={sort}/></Dropdown> : null }
+                { sortMenuOpen ? <Dropdown right={true}><SortMenu currentSub={sub} currentSort={sort}/></Dropdown> : null }
+                <div style={{marginTop: '50px'}}></div>
+                { <MainPage/> }
+            </div>
+        );
+    } else {
+        return (
+            <div style={{display: 'flex', height: '100%'}}>
+                <div>
+                    <Route path={'/'} render={props => <SideMenu {...props} currentSub={sub} currentSort={sort}/>} />
+                </div>
+                <div style={{width: 'calc(100% - 250px)', height: '100%', overflow: 'scroll', marginLeft: '250px'}}>
+                    { <MainPage/> }
                 </div>
             </div>
         );
-    }
-    
-    onReload = () => {
-        this.checkUrlAndUpdate(true);
-    }
-    
-    onChangeSortMethod = (e) => {
-        let sortMethod = e.target.innerText.toLowerCase();
-        this.setState({sortMethod});
-        this.hideSidebar();
-    }
-    
-    onChangeCommentSortMethod = (e) => {
-        let commentSortMethod = e.target.innerText.toLowerCase();
-
-        switch(commentSortMethod){
-            case 'best': this.setState({commentSortMethod:'confidence'}); break;
-            case 'q&a': this.setState({commentSortMethod:'qa'}); break;
-            default: this.setState({commentSortMethod}); break;
-        }
-    }
-    
-    onBack = () => {
-        this.props.history.goBack();
-    }
-    
-    hideSidebar = () => {
-        let sidebar = document.querySelector('.sidebar');
-        sidebar.classList.add('hidden');
-        let page = document.querySelector('.pageContent');
-        page.classList.add('active');
-    }
-    
-    showSidebar = () => {
-        let sidebar = document.querySelector('.sidebar');
-        sidebar.classList.remove('hidden');
-        let page = document.querySelector('.pageContent');
-        page.classList.remove('active');
-    }
-    
-    parseBodyText(text){
-        text ? text = text
-                        .replace(/&lt;/g,'<')
-                        .replace(/&gt;/g,'>')
-                        .replace(/&amp;#39;/g,"'")
-                        .replace(/&amp;quot;/g,'"')
-                        .replace(/&amp;/g,"&")
-                        .replace(/&#x200B;/g,' ')
-                         : text = '';
-        return text;
-    }
-
-    getPostList = async (sub) => {
-        if (sub.length > 0) sub = 'r/'+sub;
-        
-        try {
-            let url = 'https://www.reddit.com/'+sub+'/'+this.state.sortMethod+'/.json';
-            if (sub.length === 0) url = 'https://www.reddit.com/.json';
-
-            let response = await fetch(url);
-            let data = await response.json();
-
-            if (data.error){
-                this.setState({posts: null});
-            } else {
-                if (data && data.data && data.data.children){
-                    let posts = data.data.children.map(post => {
-                        const data = post.data;
-
-                        let media = data.media;
-                        if (media && media.oembed){
-                            media = this.parseBodyText(media.oembed.html);
-                        } else {
-                            media = '';
-                        }
-                        
-                        return {
-                            created: data.created_utc,
-                            author: data.author,
-                            domain: data.domain,
-                            title: this.parseBodyText(data.title),
-                            id: data.id,
-                            body: this.parseBodyText(data.selftext_html),
-                            num_comments: data.num_comments,
-                            score: data.score,
-                            subreddit: data.subreddit,
-                            stickied: data.stickied,
-                            url: data.url,
-                            thumbnail: data.thumbnail, //if no thumbnail - "self"
-                            permalink: data.permalink,
-                            media: media
-                        };
-                    });
-                    
-                    if (posts.length === 0) posts = null;
-                    this.setState({posts});
-                }
-            }
-        } catch (error) {
-            console.log(error);
-            this.setState({posts:null});
-        }
-    };
-    
-    parseComment(comment){
-        let {body_html, id, author, permalink, replies, score} = comment;
-        body_html = this.parseBodyText(body_html);
-        
-        replies = typeof replies === 'object' ? replies.data.children : [];
-        
-        replies = replies.map(comment => {
-            //console.log(comment);
-            return this.parseComment(comment.data);
-        });
-        
-        return {body_html, id, author, permalink, replies, score};
-    }
-    
-    getPostDetails = async (url) => {
-        try {
-            let response = await fetch('https://www.reddit.com/r/'+url+'.json?sort='+this.state.commentSortMethod);
-            let data = await response.json();
-            
-            if (data.error){
-                this.setState({postDetails: {title: 'Not Found', body: '', id: ''}});
-            } else {
-                let {title, selftext_html, id, url, media, author, created_utc} = data[0].data.children[0].data;
-
-                let comments = data[1].data.children.map(obj => {
-                    return this.parseComment(obj.data);
-                });
-                
-                if (media && media.oembed){
-                    media = this.parseBodyText(media.oembed.html);
-                } else {
-                    media = '';
-                }
-
-                //if this exists, replace &lt etc with proper symbols, otherwise set to empty string
-                selftext_html = this.parseBodyText(selftext_html);
-                this.setState({postDetails: {title, body: selftext_html, id, url, media, comments, author, created: created_utc}});
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    checkUrlAndUpdate(force = false){
-        let startPoint = pjson.startPoint;
-        let url = this.props.location.pathname.replace(startPoint,'').replace('/','');
-        let parts = url.split('/');
-
-        if (parts.length === 1){
-            let sub = parts[0];
-            //on sub, so get post list
-            if (sub.toLowerCase() !== this.state.sub.toLowerCase() || force){
-                this.setState({sub: sub, posts:[]});
-                this.getPostList(url);
-            }
-        } else if (parts.length === 2){
-            let sub = parts[0];
-            let postId = parts[1];
-
-            if (sub.toLowerCase() !== this.state.sub.toLowerCase() || force){
-                this.setState({sub, posts: []});
-                this.getPostList(sub);
-            }
-            
-            if (postId.toLowerCase() !== this.state.postId.toLowerCase() || force){
-                //check if post details already exists within the current post array, and if so, use that for quicker rendering
-                let posts = this.state.posts || [];
-                let postInfo = posts.find(post => post.id === postId);
-                if (postInfo){
-                    this.setState({sub, postId, postDetails: postInfo});
-                } else {
-                    this.setState({sub, postId, postDetails: {title:'', body:'', id:''}});
-                }
-                this.getPostDetails(`${sub}/${postId}`);
-            }
-        }
-    }
-    
-    componentDidUpdate(prevProps, prevState){
-        let force = false;
-        if (prevState.sortMethod !== this.state.sortMethod) force = true;
-        if (prevState.commentSortMethod !== this.state.commentSortMethod) force = true;
-        this.checkUrlAndUpdate(force);        
-    }
-    
-    componentDidMount(){
-        this.hideSidebar();
-        this.checkUrlAndUpdate(true);
     }
 }
 
 const App = () => {
     return (
         <Router>
-            <Route path='/' component={Page} />
+            <Route path="/" component={Page}/>
         </Router>
     );
 }

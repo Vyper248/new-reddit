@@ -1,28 +1,20 @@
 import React from 'react';
-import LoadingSpinner from './LoadingSpinner';
-import PostLink from './PostLink';
-import './PostList.css';
 
-const PostList = ({posts}) => {    
-    if (posts && posts.length === 0){
-        return (
-            <LoadingSpinner />
-        );
-    } else if (posts) {
-        return (
-            <div className="postListDiv">
-                {
-                    posts.map(post => {
-                        return <PostLink key={post.id} post={post}/>
-                    })
-                }
-            </div>
-        );
-    } else {
-        return (
-            <div className="postListDiv">No Posts Found</div>
-        )
-    }
-};
+import PostLink from './PostLink';
+import LoadingSpinner from './LoadingSpinner';
+
+const PostList = ({posts, sub}) => {
+    if (posts.length === 0) return <div><LoadingSpinner/></div>;    
+
+    return (
+        <div style={{margin: 'auto'}}>
+            {
+                posts.map(post => {
+                    return <PostLink key={post.id} post={post} sub={sub}/>
+                })
+            }
+        </div>
+    );
+}
 
 export default PostList;

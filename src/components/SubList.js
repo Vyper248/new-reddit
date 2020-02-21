@@ -1,85 +1,125 @@
-import React, { Component } from 'react';
-import {NavLink} from 'react-router-dom';
-import './SubList.css';
-let pjson = require('../../package.json');
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
+import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 
-class SubList extends Component {
-// const SubList = (props) => {
-    constructor(){
-        super();
-        this.state = {
-            subs: [],
-            newSub: '',
-            editMode: false
-        }
+import ButtonGroup from './ButtonGroup';
+import ButtonList from './ButtonList';
+
+const Button = styled.button`
+    background-color: black;
+    border: none;
+    text-align: center;
+    padding: 5px;
+    font-size: 1em;
+    width: 100%;
+    margin: 0px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: gray;
     }
-    
-    render(){
-        let props = this.props;
-        let startPoint = pjson.startPoint;
-        //temp sub list (maybe change to browser storage?)
-        const {subs, newSub} = this.state;
-        
-        return (
-            <div className="subLinks">
-                {
-                    subs.map((sub,i) => {
-                        const link = startPoint+'/'+sub;
-                        return (
-                            <div className="subContainer sideBarRow" key={i}>
-                                <NavLink className="navLink" activeClassName="active" to={link} onClick={props.onClick}>
-                                    {sub}
-                                </NavLink>
-                                {
-                                    this.state.editMode ? <button className="deleteSubBtn" onClick={this.onDeleteSub(sub)}><div>+</div></button> : null 
-                                }
-                            </div>
-                        )
-                    })
-                }
-                {
-                    this.state.editMode ? (
-                        <div className="newSubDiv">
-                            <input className="newSubInput sideBarRow" type="text" placeholder="New Sub" onChange={this.onChangeNewSub} value={newSub}/>
-                            <button className="newSubBtn sideBarRow" onClick={this.onAddNewSub}>Add</button>
-                        </div>
-                    ) : null
-                }
-                <img className="editSubIcon" src="edit-solid.svg" onClick={this.onToggleEditMode}/>
-            </div>
-        );
+`;
+
+const SideButton = styled(Button)`
+    border-left: 1px solid gray;
+    min-width: 60px;
+    width: auto;
+`;
+
+const SubInput = styled.input`
+    cursor: text;
+    padding: 5px 10px;
+    flex-grow: 1;
+    width: 100%;
+    margin: 0px;
+    background-color: black;
+    border: none;
+    font-size: 1em;
+    text-align: center;
+`;
+
+const Icon = styled.div`
+    padding: 5px;
+    font-size: 1.3em;
+    position: absolute;
+    right: 10px;
+    top: -5px;
+
+    :hover {
+        cursor: pointer;
     }
-    
-    componentDidMount(){
-        // const subs = ['PSVR','PS4','Apple','iPhone','NoMansSkyTheGame','Minecraft','PS4Deals','PS4Dreams','FirewallZeroHour'];
-        let subs = localStorage.getItem('subs');
-        subs = subs ? JSON.parse(subs) : [];
-        let editMode = this.state.editMode;
-        if (subs.length === 0) editMode = true;
-        this.setState({subs, editMode});
+`;
+
+const SubList = ({currentSub, currentSort}) => {
+    const [subs, setSubs] = useState([]);
+    const [editMode, setEditMode] = useState(false);
+    const [newSub, setNewSub] = useState('');
+
+    useEffect(() => {
+        let storedSubs = localStorage.getItem('subs');
+        storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
+        if (storedSubs.length === 0) setEditMode(true);
+        setSubs(storedSubs);
+    }, []);
+
+    const onToggleEdit = () => {
+        setEditMode(!editMode);
     }
-    
-    onChangeNewSub = (e) => {
-        this.setState({newSub: e.target.value});
+
+    const onChangeNewSub = (e) => {
+        setNewSub(e.target.value);
     }
-    
-    onAddNewSub = () => {
-        const {subs, newSub} = this.state;
-        if (subs.includes(newSub)) return this.setState({newSub: ''});
-        subs.push(newSub);
-        this.setState({subs, newSub:''});
-        localStorage.setItem('subs', JSON.stringify(subs));
+
+    const onAddNewSub = () => {
+        if (newSub.length === 0) return;
+        addSubToStorage(subs, newSub);
     }
-    
-    onDeleteSub = (sub) => () => {
-        const subs = this.state.subs.filter(subName => subName !== sub);
-        this.setState({subs});
-        localStorage.setItem('subs', JSON.stringify(subs));
+
+    const onDeleteSub = (sub) => () => {
+        let newSubArr = subs.filter(subName => subName !== sub);
+        setSubs(newSubArr);
+        localStorage.setItem('subs', JSON.stringify(newSubArr));
     }
-    
-    onToggleEditMode = () => {
-        this.setState({editMode: !this.state.editMode});
+
+    const addCurrentSub = () => {
+        addSubToStorage(subs, currentSub);
     }
-};
+
+    const addSubToStorage = (arr, sub) => {
+        let newSubArr = [...arr, sub];  
+        setSubs(newSubArr);
+        setNewSub('');
+        localStorage.setItem('subs', JSON.stringify(newSubArr));
+    }
+
+    return (
+        <ButtonList>
+            <h3>Subs</h3>
+            <Icon onClick={onToggleEdit}><FaEdit/></Icon>
+            {
+                subs.map(sub => {
+                    return (
+                        <ButtonGroup key={'sub-'+sub}>
+                            <NavLink to={`/${sub}/${currentSort}`} className={sub === currentSub ? 'selected' : ''}>{sub}</NavLink>
+                            { editMode ? <SideButton className="subBtn" onClick={onDeleteSub(sub)}><FaTrashAlt/></SideButton> : null }
+                        </ButtonGroup>
+                    )
+                })
+            }
+            {
+                editMode ? (
+                    <ButtonGroup>
+                        <SubInput className="newSubInput" type="text" placeholder="New Sub" onChange={onChangeNewSub} value={newSub}/>
+                        <SideButton className="subBtn" onClick={onAddNewSub}>Add</SideButton>
+                    </ButtonGroup>
+                ) : null
+            }
+            {
+                !subs.includes(currentSub) && currentSub.length > 0 ? <ButtonGroup><Button onClick={addCurrentSub}>Add Current Sub</Button></ButtonGroup> : null
+            }
+        </ButtonList>
+    );
+}
 
 export default SubList;

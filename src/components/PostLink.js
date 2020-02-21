@@ -1,99 +1,183 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './PostLink.css';
-import Shared from '../shared';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
+import { FaRegComment, FaPlus, FaMinus } from 'react-icons/fa';
+import { formatDistanceStrict } from 'date-fns';
 
-const PostLink = (props) => {
-    const {post} = props;
-    
+const StyledPostLink = styled.div`
+    border: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
+    padding: 0px 0px 0px 10px;
+    margin: 5px auto;
+    width: 95%;
+    max-width: 1200px;
+    display: flex;
+    position: relative;
+`;
+
+const PostThumbnail = styled.div`
+    min-width: 70px;
+    max-width: 70px;
+    max-height: 70px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+
+    & > img {
+        height: 70px;
+        width: auto;
+        margin: auto;
+    }
+`;
+
+const PostTextGroup = styled.div`
+    display: flex;
+    flex-direction: column; 
+    height: 100%;
+    align-content: center;
+
+    & > div {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+`;
+
+const PostTitle = styled.div`
+    margin-top: 10px;
+    padding-right: 5px;
+
+    :hover {
+        cursor: pointer;
+    }
+
+    @media screen and (max-device-width: 600px){
+        font-size: 0.9em;
+    }
+`;
+
+const PostDetails = styled.div`
+    font-size: 0.9em;
+    color: gray;
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+    & a {
+        color: gray;
+    }
+`;
+
+const PostExpand = styled.div`
+    display: inline-flex;
+    position: relative;
+    float: right;
+    border-bottom: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
+    border-left: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
+    color: gray;
+    width: 32px;
+    height: 32px;
+
+    & > svg {
+        margin: auto;
+    }
+
+    &:hover {
+        cursor: pointer;
+        color: white;
+    }
+`;
+
+const PostComments = styled.div`
+    font-size: 0.9em;
+    display: inline-block;
+    margin-bottom: 10px;
+
+    & > svg {
+        position: relative;
+        top: 2px;
+        margin-left: 2px;
+    }
+`;
+
+const PostBody = styled.div`
+    padding: 5px;
+
+    & img {
+        max-width: 95%;
+        max-height: 900px;
+    }
+
+    & iframe {
+        max-width: 100%;
+        margin: auto;
+        display: block;
+    }
+`;
+
+const PostLink = ({post, sub}) => {
+    const [expanded, setExpanded] = useState(false);
+
+    if (post === undefined) return <span></span>;
+
     //get relative time string
-    let dateString = Shared.getTimeString(post.created*1000);
-            
-    //decide whether to show a thumbnail    
-    let thumbnail = (
-        <div className="postThumbnail">
-            <img src={post.thumbnail} alt="Thumbnail for post" />
-        </div>
-    )
+    let dateString = formatDistanceStrict(new Date(), post.created*1000);
 
-    if (/(.jpg|.png|.bmp|.jpeg)/.test(post.thumbnail) === false){
-        thumbnail = <span></span>;
-    }
+    //set whether to show a thumbnail or not
+    let showThumbnail = false;
+    if (/(.jpg|.png|.bmp|.jpeg)/.test(post.thumbnail) === true) showThumbnail = true;
 
-    //toggle post body text open and closed
-    function toggleBodyOpen(e){
-        e.preventDefault();
-        const postDiv = e.target.parentNode.parentNode.parentNode;
-        const bodyDiv = postDiv.querySelector('.postLinkBody');
-
-        bodyDiv.classList.toggle('open');
-        if (bodyDiv.classList.contains('open')) e.target.innerText = '[ - ] ';
-        else e.target.innerText = '[ + ] ';
-    }
-    
-    //if there's a link to an image, replace that link with an img tag (maybe remove?)
-    // const imageLinksInBodyFull = post.body.match(/<a href=.+?(\.(png|jpg|jpeg|bmp)).+?(<\/a>)/g);
-    // if (imageLinksInBodyFull){
-    //     imageLinksInBodyFull.forEach(linkTag => {
-    //         const imageLinkInBody = linkTag.match(/"http([a-zA-Z0-9\W]+(.png|.jpg|.jpeg))"/)[0].replace(/"/g,'');
-    //         post.body = post.body.replace(linkTag, '<img src="'+imageLinkInBody+'"/>');
-    //     });
-    // }
-    
     //make sure any links within the body open in a new tab
     post.body = post.body.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
-    
+
     //decide whether to show image preview in body
-    let bodyTag = <div className="postLinkBody" dangerouslySetInnerHTML={{__html: post.body}}></div>;
+    let bodyContent = <PostBody dangerouslySetInnerHTML={{__html: post.body}}></PostBody>;
     let bodyHasImage = false;
     if (post.url.match(/.jpg$/)){
-        bodyTag = (<div className="postLinkBody">
-            <img src={post.url} alt="Preview user linked to" />
-        </div>);
+        bodyContent = (<PostBody><img src={post.url} alt="Preview user linked to" /></PostBody>);
         bodyHasImage = true;
     }
-    
+
     //decide whether to show embeded media
     if (post.media.length > 0){
         if (post.body.length > 0) post.media += "<br/>"+post.body;
-        bodyTag = <div className="postLinkBody" dangerouslySetInnerHTML={{__html: post.media}}></div>;
+        bodyContent = <PostBody dangerouslySetInnerHTML={{__html: post.media}}></PostBody>;
         bodyHasImage = true;
     }
-    
+
     //decide whether to show an open button for post body
-    let openBtn = (<span> - <span className="postLinkOpen" onClick={toggleBodyOpen}>[ + ] </span></span>);
-    if (post.body.length === 0 && bodyHasImage === false) openBtn = <span></span>;
+    let openBtn = true;
+    if (post.body.length === 0 && bodyHasImage === false) openBtn = false;
     
     //check if sticked and add another class
-    let className = 'postLink';
-    if (post.stickied) className += ' stickied';
-    
+    let stickied = post.stickied ? true : false;
+
+    const onToggleExpand = () => {
+        setExpanded(!expanded);
+    }
+
     return (
-        <div className={className}>
-            {thumbnail}
-            <div className="postLinkContent">
-                <Link to={`${post.subreddit}/${post.id}`} className="postLinkTitle">{post.title}</Link>
-                <div className="postLinkMiddle">
-                    <a className="postLinkDomain" href={post.url} target="_blank" rel="noopener noreferrer">{post.domain} - </a>
-                    <span className="postLinkTime">{dateString} - </span>
-                    <span className="postLinkAuthor">{post.author}</span>
-                    {openBtn}
-                </div>
-                {bodyTag}
-                <div className="postLinkFooter">
-                    <Link to={`${post.subreddit}/${post.id}`} className="postLinkComments">{post.num_comments} Comments </Link>
-                    - <a className="postLinkReddit" href={'https://www.reddit.com'+post.permalink} target="_blank" rel="noopener noreferrer">Open on Reddit</a>
-                </div>
+        <StyledPostLink stickied={stickied}>
+            { showThumbnail ? <PostThumbnail><img src={post.thumbnail} alt="Thumbnail"/></PostThumbnail> : null }
+            <div style={{width: '100%'}}>
+                { openBtn ? <PostExpand onClick={onToggleExpand} stickied={stickied}>{ expanded ? <FaMinus/> : <FaPlus/> }</PostExpand> : null }
+                <PostTextGroup>
+                    <div>
+                        <PostTitle><NavLink to={`/${sub}/comments/${post.id}`}>{post.title}</NavLink></PostTitle>
+                        <PostDetails>
+                            <span>{post.subreddit}</span> - <span><a href={post.url} target="_blank" rel='noreferrer noopener'>{post.domain}</a></span> - <span>{dateString}</span>
+                        </PostDetails>
+                        { expanded ? bodyContent : null }
+                        <div>
+                            <PostComments>{post.num_comments} <FaRegComment/></PostComments>
+                            <span style={{marginLeft: '15px'}}><a href={`https://www.reddit.com/${post.permalink}`} target="_blank" rel="noreferrer noopener">Open on Reddit</a></span>
+                        </div>
+                    </div>
+                </PostTextGroup>
             </div>
-        </div>
+        </StyledPostLink>
     );
-};
+}
 
 export default PostLink;
-
-
-
-/*
-
-score: data.score,
-*/
