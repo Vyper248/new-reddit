@@ -5,42 +5,9 @@ import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 
 import ButtonGroup from './ButtonGroup';
 import ButtonList from './ButtonList';
-
-const Button = styled.button`
-    background-color: black;
-    border: none;
-    text-align: center;
-    padding: 5px;
-    font-size: 1em;
-    width: 100%;
-    margin: 0px;
-    border-top: 1px solid gray;
-
-    &:hover {
-        cursor: pointer;
-        background-color: gray;
-    }
-`;
-
-const SideButton = styled(Button)`
-    border-left: 1px solid gray;
-    min-width: 60px;
-    width: auto;
-`;
-
-const SubInput = styled.input`
-    cursor: text;
-    padding: 5px 10px;
-    flex-grow: 1;
-    width: 100%;
-    margin: 0px;
-    background-color: black;
-    border: none;
-    font-size: 1em;
-    text-align: center;
-    border-top: 1px solid gray;
-    border-radius: 0px;
-`;
+import Input from './Input';
+import Button from './Button';
+import SideButton from './SideButton';
 
 const Icon = styled.div`
     padding: 5px;
@@ -117,8 +84,8 @@ const SubList = ({currentSub, currentSort}) => {
             {
                 editMode ? (
                     <ButtonGroup>
-                        <SubInput className="newSubInput" type="text" placeholder="New Sub" onChange={onChangeNewSub} value={newSub}/>
-                        <SideButton className="subBtn" onClick={onAddNewSub}>Add</SideButton>
+                        <Input type="text" placeholder="New Sub" onChange={onChangeNewSub} value={newSub}/>
+                        <SideButton onClick={onAddNewSub}>Add</SideButton>
                     </ButtonGroup>
                 ) : null
             }

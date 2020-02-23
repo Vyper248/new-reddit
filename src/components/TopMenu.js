@@ -8,7 +8,7 @@ const StyledTopMenu = styled.div`
     background-color: black;
     z-index: 6;
 
-    & > div:last-child {
+    & > div:last-child,  & > div:nth-last-child(2){
         float: right;
         border-right: none;
         border-left: 1px solid gray;
@@ -24,12 +24,13 @@ const MenuButton = styled.div`
     background-color: ${props => props.selected ? 'gray' : 'none'};
 `;
 
-const TopMenu = ({onClickSubs, onClickSort, showBackButton, onBackClick, sortMenuOpen, subMenuOpen}) => {
+const TopMenu = ({onClickSubs, onClickSort, onClickSearch, showBackButton, onBackClick, sortMenuOpen, subMenuOpen, searchMenuOpen}) => {
     return (
         <StyledTopMenu>
             <MenuButton onClick={onClickSubs} selected={subMenuOpen}>Subs</MenuButton>
             { showBackButton ? <MenuButton onClick={onBackClick}>Back</MenuButton> : null }
             <MenuButton onClick={onClickSort} selected={sortMenuOpen}>Sort</MenuButton>
+            <MenuButton onClick={onClickSearch} selected={searchMenuOpen}>Search</MenuButton>
         </StyledTopMenu>
     );
 };

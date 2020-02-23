@@ -103,6 +103,7 @@ const PostComments = styled.div`
 
 const PostBody = styled.div`
     padding: 5px;
+    overflow: hidden;
 
     & img {
         max-width: 95%;
@@ -134,7 +135,7 @@ const PostLink = ({post, sub, sort}) => {
     //decide whether to show image preview in body
     let bodyContent = <PostBody dangerouslySetInnerHTML={{__html: post.body}}></PostBody>;
     let bodyHasImage = false;
-    if (post.url.match(/.jpg$/)){
+    if (post.url.match(/.(jpg|png)$/)){
         bodyContent = (<PostBody><img src={post.url} alt="Preview user linked to" /></PostBody>);
         bodyHasImage = true;
     }
@@ -160,7 +161,7 @@ const PostLink = ({post, sub, sort}) => {
     return (
         <StyledPostLink stickied={stickied}>
             { showThumbnail ? <PostThumbnail><img src={post.thumbnail} alt="Thumbnail"/></PostThumbnail> : null }
-            <div style={{width: '100%'}}>
+            <div style={ showThumbnail ? {width: '100%', maxWidth: 'calc(100% - 80px)'} : {width: '100%', maxWidth: '100%'}}>
                 { openBtn ? <PostExpand onClick={onToggleExpand} stickied={stickied}>{ expanded ? <FaMinus/> : <FaPlus/> }</PostExpand> : null }
                 <PostTextGroup>
                     <div>

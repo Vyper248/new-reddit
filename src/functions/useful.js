@@ -39,7 +39,7 @@ const parseURL = (url) => {
     return {sub, newSort, postId};
 }
 
-const getPostList = async (sub, sort, setPosts) => {
+const getPostList = async (sub, sort, setPosts, setNoPosts, searchStr='', searchSort='new', thisSub=true) => {
     if (sub.length > 0) sub = 'r/'+sub;
     setPosts([]);
 
@@ -52,9 +52,14 @@ const getPostList = async (sub, sort, setPosts) => {
     
     try {
         let url = `https://www.reddit.com/${sub}/${sort}/.json`;
-        //search url = https://www.reddit.com/r/PS4/search?q=God+of+war&restrict_sr=on&include_over_18=on&sort=relevance
-        //sort = relevance / new
-        //restrict sub - restrict_sr=on (remove for not doing it)
+
+        if (searchStr.length > 0) {
+            let parsedStr = searchStr.split(' ').join('+');
+            url = `https://www.reddit.com/${sub}/search.json?q=${parsedStr}${thisSub ? '&restrict_sr=on' : ''}&include_over_18=on&sort=${searchSort}`;
+        }
+
+        //next page url = (add to end) ?after=t3_f6zx4z   (so just add post Id after t3_)
+
         if (sub.length === 0) url = 'https://www.reddit.com/.json';
 
         let response = await fetch(url);
@@ -62,6 +67,8 @@ const getPostList = async (sub, sort, setPosts) => {
 
         if (data.error){
             console.log('Getting Post List - Error: ', data.error);
+            setNoPosts(true);
+            setPosts([]);
         } else {
             if (data && data.data && data.data.children){
                 let posts = data.data.children.map(post => {
@@ -98,6 +105,7 @@ const getPostList = async (sub, sort, setPosts) => {
     } catch (error) {
         console.log('Getting Post List - URL Error: ', error);
         setPosts([]);
+        setNoPosts(true);
     }
 };
 

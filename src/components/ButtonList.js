@@ -12,7 +12,8 @@ const ButtonList = styled.div`
         color: white;
     }
 
-    & a {
+    & a, & label {
+        width: 100%;
         display: block;
         padding: 5px;
         min-height: 29px;
@@ -27,7 +28,7 @@ const ButtonList = styled.div`
         background-color: gray;
     }
 
-    & > a:last-of-type {
+    & > a:last-of-type, & > button:last-of-type {
         border-bottom: 1px solid gray;
     }
 

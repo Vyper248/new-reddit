@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import SortMenu from './SortMenu';
 import SubList from './SubList';
+import SearchMenu from './SearchMenu';
 
 const StyledSideMenu = styled.div`
     width: 250px;
@@ -12,9 +13,10 @@ const StyledSideMenu = styled.div`
     overflow: scroll;
 `;
 
-const SideMenu = ({currentSub, currentSort}) => {
+const SideMenu = ({currentSub, currentSort, onSearch, onClearSearch, currentSearch}) => {
     return (
         <StyledSideMenu>
+            <SearchMenu onSearch={onSearch} currentSearch={currentSearch} onClearSearch={onClearSearch}/>
             <SortMenu currentSub={currentSub} currentSort={currentSort}/>
             <SubList currentSub={currentSub} currentSort={currentSort}/>
         </StyledSideMenu>
