@@ -13,10 +13,10 @@ const StyledSideMenu = styled.div`
     overflow: scroll;
 `;
 
-const SideMenu = ({currentSub, currentSort, onSearch, onClearSearch, currentSearch}) => {
+const SideMenu = ({currentSub, currentSort, onSearch, onClearSearch}) => {
     return (
         <StyledSideMenu>
-            <SearchMenu onSearch={onSearch} currentSearch={currentSearch} onClearSearch={onClearSearch}/>
+            <SearchMenu onSearch={onSearch} onClearSearch={onClearSearch}/>
             <SortMenu currentSub={currentSub} currentSort={currentSort}/>
             <SubList currentSub={currentSub} currentSort={currentSort}/>
         </StyledSideMenu>

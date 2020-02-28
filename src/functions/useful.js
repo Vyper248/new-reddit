@@ -39,9 +39,9 @@ const parseURL = (url) => {
     return {sub, newSort, postId};
 }
 
-const getPostList = async (sub, sort, setPosts, setNoPosts, searchStr='', searchSort='new', thisSub=true) => {
+const getPostList = async (currentPosts, sub, sort, setPosts, setNoPosts, setLatestPost, searchStr='', searchSort='new', thisSub=true, loadMore=false, latest='') => {
     if (sub.length > 0) sub = 'r/'+sub;
-    setPosts([]);
+    if (!loadMore) setPosts([]);
 
     if (sub === 'r/My Subreddits') {        
         let storedSubs = localStorage.getItem('subs');
@@ -52,10 +52,12 @@ const getPostList = async (sub, sort, setPosts, setNoPosts, searchStr='', search
     
     try {
         let url = `https://www.reddit.com/${sub}/${sort}/.json`;
+        if (loadMore) url += `?after=t3_${latest}`;
 
         if (searchStr.length > 0) {
             let parsedStr = searchStr.split(' ').join('+');
             url = `https://www.reddit.com/${sub}/search.json?q=${parsedStr}${thisSub ? '&restrict_sr=on' : ''}&include_over_18=on&sort=${searchSort}`;
+            if (loadMore) url += `&after=t3_${latest}`;
         }
 
         //next page url = (add to end) ?after=t3_f6zx4z   (so just add post Id after t3_)
@@ -98,7 +100,10 @@ const getPostList = async (sub, sort, setPosts, setNoPosts, searchStr='', search
                         media: media
                     };
                 });
-                                
+
+                if (loadMore) posts = [...currentPosts, ...posts];
+
+                setLatestPost(posts[posts.length-1].id);                                
                 setPosts(posts);
             }
         }

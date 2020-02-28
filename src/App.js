@@ -33,6 +33,7 @@ const Page = ({location, history}) => {
     const [sort, setSort] = useState('hot');
     const [posts, setPosts] = useState([]);
     const [noPosts, setNoPosts] = useState(false);
+    const [latestPost, setLatestPost] = useState('');
 
     const [comments, setComments] = useState([]);
     const [noComments, setNoComments] = useState(false);
@@ -42,15 +43,14 @@ const Page = ({location, history}) => {
     const [sortMenuOpen, setSortMenuOpen] = useState(false);
     const [subMenuOpen, setSubMenuOpen] = useState(false);
     const [searchMenuOpen, setSearchMenuOpen] = useState(false);
-    const [currentSearch, setCurrentSearch] = useState('');
 
-    // const [searchStr, setSearchStr] = useState('');
-    // const [searchSort, setSearchSort] = useState('new');
-    // const [thisSub, setThisSub] = useState(true);
+    const [currentSearch, setCurrentSearch] = useState('');
+    const [currentSearchSort, setCurrentSearchSort] = useState('relevance');
+    const [currentSearchSub, setCurrentSearchSub] = useState(true);
 
     const isMobile = useMediaQuery({ maxWidth: 700 });
 
-    let {sub, newSort, postId} = parseURL(location.pathname);  
+    let {sub, newSort, postId} = parseURL(location.pathname);
 
     if (sub.length === 0) {
         let storedSubs = localStorage.getItem('subs');
@@ -62,8 +62,9 @@ const Page = ({location, history}) => {
 
     useEffect(() => {
         setSubMenuOpen(false);
-        setSortMenuOpen(false);        
-        getPostList(sub, sort, setPosts, setNoPosts);
+        setSortMenuOpen(false);     
+        onClearSearch(false);           
+        getPostList(posts, sub, sort, setPosts, setNoPosts, setLatestPost);
     }, [sort, sub]);
 
     useEffect(() => {
@@ -84,7 +85,7 @@ const Page = ({location, history}) => {
 
     const onReload = () => {
         setPosts([]);
-        getPostList(sub, sort, setPosts);
+        getPostList(posts, sub, sort, setPosts, setNoPosts, setLatestPost);
     }
 
     const onToggleSortMenu = () => {
@@ -114,21 +115,29 @@ const Page = ({location, history}) => {
         setSortMenuOpen(false);      
         setSearchMenuOpen(false);  
         setCurrentSearch(value);
-        getPostList(sub, sort, setPosts, setNoPosts, value, sortMethod, thisSub);
+        setCurrentSearchSort(sortMethod);
+        setCurrentSearchSub(thisSub);
+        getPostList(posts, sub, sort, setPosts, setNoPosts, setLatestPost, value, sortMethod, thisSub);
     }
 
-    const onClearSearch = () => {
-        getPostList(sub, sort, setPosts, setNoPosts);
+    const onClearSearch = (getNewPosts=true) => {
+        if (getNewPosts) getPostList(posts, sub, sort, setPosts, setNoPosts, setLatestPost);
         setCurrentSearch('');
+        setCurrentSearchSort('relevance');
+        setCurrentSearchSub(true);
         setSearchMenuOpen(false); 
+    }
+
+    const loadMorePosts = () => {
+        getPostList(posts, sub, sort, setPosts, setNoPosts, setLatestPost, currentSearch, currentSearchSort, currentSearchSub, true, latestPost);
     }
 
     const MainPage = () => {
         return (
             <React.Fragment>
                 <Route path={'/'} render={props => <Header {...props} heading={sub} onReload={onReload}/>} />
-                <Route exact path={'/:sub'} render={props => <PostList {...props} posts={posts} sub={sub} sort={sort} noPosts={noPosts}/>} />
-                <Route exact path={'/:sub/:sort'} render={props => <PostList {...props} posts={posts} sub={sub} sort={sort} noPosts={noPosts}/>} />
+                <Route exact path={'/:sub'} render={props => <PostList {...props} posts={posts} sub={sub} sort={sort} noPosts={noPosts} loadMorePosts={loadMorePosts}/>} />
+                <Route exact path={'/:sub/:sort'} render={props => <PostList {...props} posts={posts} sub={sub} sort={sort} noPosts={noPosts} loadMorePosts={loadMorePosts}/>} />
                 <Route exact path={'/:sub/comments/:id'} render={props => <Post {...props} post={postDetails} comments={comments} noComments={noComments}/>} />
             </React.Fragment>
         );
@@ -140,7 +149,7 @@ const Page = ({location, history}) => {
                 <TopMenu onClickSubs={onToggleSubsMenu} onClickSort={onToggleSortMenu} onClickSearch={onToggleSearchMenu} showBackButton={postId.length > 0 ? true : false} onBackClick={onBackClick} sortMenuOpen={sortMenuOpen} subMenuOpen={subMenuOpen} searchMenuOpen={searchMenuOpen}/>
                 { subMenuOpen ? <Dropdown><SubList currentSub={sub} currentSort={sort}/></Dropdown> : null }
                 { sortMenuOpen ? <Dropdown right={true}><SortMenu currentSub={sub} currentSort={sort}/></Dropdown> : null }
-                { searchMenuOpen ? <Dropdown right={true}><SearchMenu onSearch={onSearch} currentSearch={currentSearch} onClearSearch={onClearSearch}/></Dropdown> : null }
+                { searchMenuOpen ? <Dropdown right={true}><SearchMenu onSearch={onSearch} currentSearch={currentSearch} currentSearchSort={currentSearchSort} currentSearchSub={currentSearchSub} onClearSearch={onClearSearch}/></Dropdown> : null }
                 <div style={{marginTop: '50px'}}></div>
                 { <MainPage/> }
             </div>
@@ -149,9 +158,9 @@ const Page = ({location, history}) => {
         return (
             <div style={{display: 'flex', height: '100%'}}>
                 <div>
-                    <Route path={'/'} render={props => <SideMenu {...props} currentSub={sub} currentSort={sort} onSearch={onSearch} currentSearch={currentSearch} onClearSearch={onClearSearch}/>} />
+                    <Route path={'/'} render={props => <SideMenu {...props} currentSub={sub} currentSort={sort} onSearch={onSearch} onClearSearch={onClearSearch}/>} />
                 </div>
-                <div style={{width: 'calc(100% - 250px)', height: '100%', overflow: 'scroll', marginLeft: '250px'}}>
+                <div style={{width: 'calc(100% - 250px)', height: '100%', overflow: 'scroll', marginLeft: '250px'}} id='mainPage'>
                     { <MainPage/> }
                 </div>
             </div>

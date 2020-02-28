@@ -7,11 +7,14 @@ import Button from './Button';
 import SideButton from './SideButton';
 import Checkbox from './Checkbox';
 
-const SearchMenu = ({onSearch, onClearSearch, currentSearch}) => {
-    let startValue = currentSearch.length > 0 ? currentSearch : '';
-    const [value, setValue] = useState(startValue);
-    const [sortMethod, setSortMethod] = useState('relevance');
-    const [thisSub, setThisSub] = useState(true);
+const SearchMenu = ({onSearch, onClearSearch, currentSearch, currentSearchSort, currentSearchSub}) => {
+    let startSearchValue = currentSearch !== undefined && currentSearch.length > 0 ? currentSearch : '';
+    let startSortValue = currentSearchSort !== undefined && currentSearchSort.length > 0 ? currentSearchSort : 'relevance';
+    let startSubValue = currentSearchSub !== undefined ? currentSearchSub : true;
+
+    const [value, setValue] = useState(startSearchValue);
+    const [sortMethod, setSortMethod] = useState(startSortValue);
+    const [thisSub, setThisSub] = useState(startSubValue);
 
     const onClickSearch = () => {
         onSearch(value, sortMethod, thisSub);
