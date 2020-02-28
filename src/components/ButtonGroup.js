@@ -11,8 +11,12 @@ const ButtonGroup = styled.div`
         border-left: 1px solid gray;
     }
 
-    & > button:last-of-type {
+    & > *:last-child {
         border-left: 1px solid gray;
+    }
+
+    & > *:first-child {
+        border-left: none;
     }
 `;
 

@@ -90,7 +90,7 @@ const SubList = ({currentSub, currentSort}) => {
                 ) : null
             }
             {
-                !checkIfSubbed(subs, currentSub) ? <ButtonGroup><Button onClick={addCurrentSub}>Add Current Sub</Button></ButtonGroup> : null
+                !checkIfSubbed(subs, currentSub) ? <Button onClick={addCurrentSub}>Add Current Sub</Button> : null
             }
         </ButtonList>
     );
