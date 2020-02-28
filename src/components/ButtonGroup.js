@@ -7,6 +7,10 @@ const ButtonGroup = styled.div`
         flex-grow: 1;
     }
 
+    & > a.selected {
+        background-color: gray;
+    }
+
     & > label {
         border-left: 1px solid gray;
     }
