@@ -49,7 +49,7 @@ const PostTitle = styled.div`
     margin-top: 10px;
     padding-right: 5px;
 
-    :hover {
+    & :hover {
         cursor: pointer;
     }
 
@@ -93,8 +93,9 @@ const PostComments = styled.div`
     font-size: 0.9em;
     display: inline-block;
     margin-bottom: 10px;
+    cursor: pointer;
 
-    & > a > svg {
+    & > span > svg {
         position: relative;
         top: 2px;
         margin-left: 2px;
@@ -117,7 +118,7 @@ const PostBody = styled.div`
     }
 `;
 
-const PostLink = ({post, sub, sort}) => {
+const PostLink = ({post, sub, sort, onClickLink}) => {
     const [expanded, setExpanded] = useState(false);
 
     if (post === undefined) return <span></span>;
@@ -165,13 +166,13 @@ const PostLink = ({post, sub, sort}) => {
                 { openBtn ? <PostExpand onClick={onToggleExpand} stickied={stickied}>{ expanded ? <FaMinus/> : <FaPlus/> }</PostExpand> : null }
                 <PostTextGroup>
                     <div>
-                        <PostTitle><NavLink to={`/${sub}/comments/${post.id}`}>{post.title}</NavLink></PostTitle>
+                        <PostTitle><span onClick={onClickLink(`/${sub}/comments/${post.id}`)}>{post.title}</span></PostTitle>
                         <PostDetails>
                             <NavLink to={`/${post.subreddit}/${sort}`}>{post.subreddit}</NavLink> - <span><a href={post.url} target="_blank" rel='noreferrer noopener'>{post.domain}</a></span> - <span>{dateString}</span>
                         </PostDetails>
                         { expanded ? bodyContent : null }
                         <div>
-                            <PostComments><NavLink to={`/${sub}/comments/${post.id}`}>{post.num_comments} <FaRegComment/></NavLink></PostComments>
+                            <PostComments><span onClick={onClickLink(`/${sub}/comments/${post.id}`)}>{post.num_comments} <FaRegComment/></span></PostComments>
                             <span style={{marginLeft: '15px'}}><a href={`https://www.reddit.com/${post.permalink}`} target="_blank" rel="noreferrer noopener">Open on Reddit</a></span>
                         </div>
                     </div>

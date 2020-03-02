@@ -4,7 +4,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import PostLink from './PostLink';
 import LoadingSpinner from './LoadingSpinner';
 
-const PostList = ({posts, sub, sort, noPosts, loadMorePosts}) => {
+const PostList = ({posts, sub, sort, noPosts, loadMorePosts, onClickLink}) => {
     if (noPosts) return <div style={{textAlign:'center'}}>No Posts Found</div>
     if (posts.length === 0) return <div><LoadingSpinner/></div>;
 
@@ -20,7 +20,7 @@ const PostList = ({posts, sub, sort, noPosts, loadMorePosts}) => {
             >
             {
                 posts.map(post => {
-                    return <PostLink key={post.id} post={post} sub={sub} sort={sort}/>
+                    return <PostLink key={post.id} post={post} sub={sub} sort={sort} onClickLink={onClickLink}/>
                 })
             }
             </InfiniteScroll>

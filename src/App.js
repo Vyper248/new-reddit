@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from 'styled-components';
-import { HashRouter as Router, Route } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import { useMediaQuery } from 'react-responsive';
 
 import SubList from './components/SubList';
@@ -34,6 +34,7 @@ const Page = ({location, history}) => {
     const [posts, setPosts] = useState([]);
     const [noPosts, setNoPosts] = useState(false);
     const [latestPost, setLatestPost] = useState('');
+    const [scrollPos, setScrollPos] = useState(0);
 
     const [comments, setComments] = useState([]);
     const [noComments, setNoComments] = useState(false);
@@ -74,13 +75,26 @@ const Page = ({location, history}) => {
             if (post === undefined) setPostDetails({});
             else setPostDetails(post);
             getComments(`${sub}/comments/${postId}/`, setComments, setNoComments, setPostDetails, true);
-            window.scrollTo(0,0);        
+            window.scrollTo(0,0);  
         }
     }, [postId, posts, sub]);
+
+    useEffect(() => {
+        if (postId.length === 0) {
+            console.log('Updating Scroll Pos');
+            window.scrollTo(0,scrollPos);
+        }
+    }, [postId]);
 
     if (newSort !== undefined && newSort.length > 0 && newSort !== sort) {
         setSort(newSort);
         return (<div></div>);
+    }
+
+    const onClickLink = (url) => (e) => {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        setScrollPos(scrollTop);
+        history.push(url);
     }
 
     const onReload = () => {
@@ -135,10 +149,14 @@ const Page = ({location, history}) => {
     const MainPage = () => {
         return (
             <React.Fragment>
-                <Route path={'/'} render={props => <Header {...props} heading={sub} onReload={onReload}/>} />
-                <Route exact path={'/:sub'} render={props => <PostList {...props} posts={posts} sub={sub} sort={sort} noPosts={noPosts} loadMorePosts={loadMorePosts}/>} />
-                <Route exact path={'/:sub/:sort'} render={props => <PostList {...props} posts={posts} sub={sub} sort={sort} noPosts={noPosts} loadMorePosts={loadMorePosts}/>} />
-                <Route exact path={'/:sub/comments/:id'} render={props => <Post {...props} post={postDetails} comments={comments} noComments={noComments}/>} />
+                <Header heading={sub} onReload={onReload}/>
+                {/* <PostList posts={posts} sub={sub} sort={sort} noPosts={noPosts} loadMorePosts={loadMorePosts} onClickLink={onClickLink}/> */}
+                {/* <Post post={postDetails} comments={comments} noComments={noComments}/> */}
+                {/* <Route exact path={'/:sub/comments/:id'} render={props => <Post {...props} post={postDetails} comments={comments} noComments={noComments}/>} /> */}
+                <Switch>
+                    <Route path={'/:sub/comments/:id'} render={props => <Post {...props} post={postDetails} comments={comments} noComments={noComments}/>} />
+                    <Route path={'/:sub/:sort'} render={props => <PostList {...props} posts={posts} sub={sub} sort={sort} noPosts={noPosts} loadMorePosts={loadMorePosts} onClickLink={onClickLink}/>} />
+                </Switch>
             </React.Fragment>
         );
     }
@@ -160,7 +178,7 @@ const Page = ({location, history}) => {
                 <div>
                     <Route path={'/'} render={props => <SideMenu {...props} currentSub={sub} currentSort={sort} onSearch={onSearch} onClearSearch={onClearSearch}/>} />
                 </div>
-                <div style={{width: 'calc(100% - 250px)', height: '100%', overflow: 'scroll', marginLeft: '250px'}} id='mainPage'>
+                <div style={{width: 'calc(100% - 250px)', height: '100%', overflow: 'scroll', marginLeft: '250px', position: 'relative'}} id='mainPage'>
                     { <MainPage/> }
                 </div>
             </div>
