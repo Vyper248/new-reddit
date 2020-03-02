@@ -103,8 +103,10 @@ const getPostList = async (currentPosts, sub, sort, setPosts, setNoPosts, setLat
 
                 if (loadMore) posts = [...currentPosts, ...posts];
 
-                setLatestPost(posts[posts.length-1].id);                                
-                setPosts(posts);
+                ReactDOM.unstable_batchedUpdates(() => {
+                    setLatestPost(posts[posts.length-1].id);                                
+                    setPosts(posts);
+                });
             }
         }
     } catch (error) {
