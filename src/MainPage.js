@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import styled from 'styled-components';
 import { Route, Switch } from "react-router-dom";
 import { useMediaQuery } from 'react-responsive';
@@ -42,63 +42,61 @@ const Page = ({location, history}) => {
     const clearSearch = () => dispatch({type: 'CLEAR_SEARCH'});
     const closeMenus = () => dispatch({type: 'CLOSE_MENUS'});
 
-    const currentSearch = useSelector(state => state.currentSearch);
-    const currentSearchSort = useSelector(state => state.currentSearchSort);
-    const currentSearchSub = useSelector(state => state.currentSearchSub);
-
     const searchMenuOpen = useSelector(state => state.searchMenuOpen);
     const subMenuOpen = useSelector(state => state.subMenuOpen);
     const sortMenuOpen = useSelector(state => state.sortMenuOpen);
 
-    const [noPosts, setNoPosts] = useState(false);
-    const [latestPost, setLatestPost] = useState('');
-    const [scrollPos, setScrollPos] = useState(0);
+    const scrollPos = useSelector(state => state.scrollPos);
+    const setScrollPos = (val) => dispatch({type: 'SET_SCROLL_POS', payload: val});
 
-    const [comments, setComments] = useState([]);
-    const [noComments, setNoComments] = useState(false);
+    const currentSub = useSelector(state => state.currentSub);
+    const setCurrentSub = (val) => dispatch({type: 'SET_SUB', payload: val});
 
-    const [postDetails, setPostDetails] = useState({});
+    const currentPostId = useSelector(state => state.currentPostId);
+    const setCurrentPostId = (val) => dispatch({type: 'SET_POSTID', payload: val});
+
+    // const [scrollPos, setScrollPos] = useState(0);
+
+    const setPostDetails = (val) => dispatch({type: 'SET_POST_DETAILS', payload: val});
 
     const isMobile = useMediaQuery({ maxWidth: 700 });
 
     let {sub, newSort, postId} = parseURL(location.pathname);
+
+    if (sub !== currentSub) setCurrentSub(sub);
+    if (postId !== currentPostId) setCurrentPostId(postId);
 
     if (sub.length === 0) {
         let storedSubs = localStorage.getItem('subs');
         storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
         if (storedSubs.length > 0) sub = storedSubs[0];
         else sub = 'Popular';
-        history.push(`/${sub}`);
-    }
-
-    const onClearSearch = (getNewPosts=true) => {
-        if (getNewPosts) getPostList(posts, sub, sort, setPosts, setNoPosts, setLatestPost);
-        clearSearch();
+        history.push(`/${sub}/${sort}`);
     }
 
     useEffect(() => {   
         closeMenus(); 
-        onClearSearch(false);           
-        getPostList(posts, sub, sort, setPosts, setNoPosts, setLatestPost);
+        clearSearch(); //comment out if want to change subs while still searching         
+        getPostList();
     }, [sort, sub]);
 
     useEffect(() => {
-        if (postId.length > 0 ) {
+        if (currentPostId.length > 0 ) {
             let post = undefined;
-            if (postId.length > 0) post = posts.find(post => post.id === postId);
+            if (currentPostId.length > 0) post = posts.find(post => post.id === currentPostId);
             if (post === undefined) setPostDetails({});
             else setPostDetails(post);
-            getComments(`${sub}/comments/${postId}/`, setComments, setNoComments, setPostDetails, true);
+            getComments();
             window.scrollTo(0,0);  
         }
-    }, [postId, posts, sub]);
+    }, [currentPostId, posts, sub]);
 
     useEffect(() => {
-        if (postId.length === 0) {
+        if (currentPostId.length === 0) {
             console.log('Updating Scroll Pos');
             window.scrollTo(0,scrollPos);
         }
-    }, [postId]);
+    }, [currentPostId]);
 
     if (newSort !== undefined && newSort.length > 0 && newSort !== sort) {
         setSort(newSort);
@@ -113,20 +111,11 @@ const Page = ({location, history}) => {
 
     const onReload = () => {
         setPosts([]);
-        getPostList(posts, sub, sort, setPosts, setNoPosts, setLatestPost);
+        getPostList();
     }
 
     const onBackClick = () => {
         history.goBack();
-    }
-
-    const onSearch = () => {
-        closeMenus();
-        getPostList(posts, sub, sort, setPosts, setNoPosts, setLatestPost, currentSearch, currentSearchSort, currentSearchSub);
-    }
-
-    const loadMorePosts = () => {
-        getPostList(posts, sub, sort, setPosts, setNoPosts, setLatestPost, currentSearch, currentSearchSort, currentSearchSub, true, latestPost);
     }
 
     const MainPage = () => {
@@ -134,8 +123,8 @@ const Page = ({location, history}) => {
             <React.Fragment>
                 <Header heading={sub} onReload={onReload}/>
                 <Switch>
-                    <Route path={'/:sub/comments/:id'} render={props => <Post {...props} post={postDetails} comments={comments} noComments={noComments}/>} />
-                    <Route path={'/:sub/:sort'} render={props => <PostList {...props} posts={posts} sub={sub} sort={sort} noPosts={noPosts} loadMorePosts={loadMorePosts} onClickLink={onClickLink}/>} />
+                    <Route path={'/:sub/comments/:id'} render={props => <Post {...props}/>} />
+                    <Route path={'/:sub'} render={props => <PostList {...props} onClickLink={onClickLink}/>} />
                 </Switch>
             </React.Fragment>
         );
@@ -144,10 +133,10 @@ const Page = ({location, history}) => {
     if (isMobile) {
         return (
             <div style={{height: '100%', overflow: 'hidden'}}>
-                <TopMenu showBackButton={postId.length > 0 ? true : false} onBackClick={onBackClick}/>
-                { subMenuOpen ? <Dropdown><SubList currentSub={sub} currentSort={sort}/></Dropdown> : null }
-                { sortMenuOpen ? <Dropdown right={true}><SortMenu currentSub={sub} currentSort={sort}/></Dropdown> : null }
-                { searchMenuOpen ? <Dropdown right={true}><SearchMenu onSearch={onSearch} currentSearch={currentSearch} currentSearchSort={currentSearchSort} currentSearchSub={currentSearchSub} onClearSearch={onClearSearch}/></Dropdown> : null }
+                <TopMenu onBackClick={onBackClick}/>
+                { subMenuOpen ? <Dropdown><SubList/></Dropdown> : null }
+                { sortMenuOpen ? <Dropdown right={true}><SortMenu/></Dropdown> : null }
+                { searchMenuOpen ? <Dropdown right={true}><SearchMenu/></Dropdown> : null }
                 <div style={{marginTop: '50px'}}></div>
                 { <MainPage/> }
             </div>
@@ -156,7 +145,7 @@ const Page = ({location, history}) => {
         return (
             <div style={{display: 'flex', height: '100%'}}>
                 <div>
-                    <Route path={'/'} render={props => <SideMenu {...props} currentSub={sub} currentSort={sort} onSearch={onSearch} onClearSearch={onClearSearch}/>} />
+                    <Route path={'/'} render={props => <SideMenu {...props}/>} />
                 </div>
                 <div style={{width: 'calc(100% - 250px)', height: '100%', overflow: 'scroll', marginLeft: '250px', position: 'relative'}} id='mainPage'>
                     { <MainPage/> }

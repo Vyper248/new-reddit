@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 import ButtonGroup from './ButtonGroup';
 import ButtonList from './ButtonList';
@@ -21,7 +22,10 @@ const Icon = styled.div`
     }
 `;
 
-const SubList = ({currentSub, currentSort}) => {
+const SubList = () => {
+    const currentSub = useSelector(state => state.currentSub);
+    const currentSort = useSelector(state => state.currentSort);
+
     const [subs, setSubs] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [newSub, setNewSub] = useState('');

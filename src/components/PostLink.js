@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { FaRegComment, FaPlus, FaMinus } from 'react-icons/fa';
 import { formatDistanceStrict } from 'date-fns';
+import { useSelector } from 'react-redux';
 
 const StyledPostLink = styled.div`
     border: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
@@ -118,8 +119,11 @@ const PostBody = styled.div`
     }
 `;
 
-const PostLink = ({post, sub, sort, onClickLink}) => {
+const PostLink = ({post, onClickLink}) => {
     const [expanded, setExpanded] = useState(false);
+
+    const currentSub = useSelector(state => state.currentSub);
+    const currentSort = useSelector(state => state.currentSort);
 
     if (post === undefined) return <span></span>;
 
@@ -166,13 +170,13 @@ const PostLink = ({post, sub, sort, onClickLink}) => {
                 { openBtn ? <PostExpand onClick={onToggleExpand} stickied={stickied}>{ expanded ? <FaMinus/> : <FaPlus/> }</PostExpand> : null }
                 <PostTextGroup>
                     <div>
-                        <PostTitle><span onClick={onClickLink(`/${sub}/comments/${post.id}`)}>{post.title}</span></PostTitle>
+                        <PostTitle><span onClick={onClickLink(`/${currentSub}/comments/${post.id}`)}>{post.title}</span></PostTitle>
                         <PostDetails>
-                            <NavLink to={`/${post.subreddit}/${sort}`}>{post.subreddit}</NavLink> - <span><a href={post.url} target="_blank" rel='noreferrer noopener'>{post.domain}</a></span> - <span>{dateString}</span>
+                            <NavLink to={`/${post.subreddit}/${currentSort}`}>{post.subreddit}</NavLink> - <span><a href={post.url} target="_blank" rel='noreferrer noopener'>{post.domain}</a></span> - <span>{dateString}</span>
                         </PostDetails>
                         { expanded ? bodyContent : null }
                         <div>
-                            <PostComments><span onClick={onClickLink(`/${sub}/comments/${post.id}`)}>{post.num_comments} <FaRegComment/></span></PostComments>
+                            <PostComments><span onClick={onClickLink(`/${currentSub}/comments/${post.id}`)}>{post.num_comments} <FaRegComment/></span></PostComments>
                             <span style={{marginLeft: '15px'}}><a href={`https://www.reddit.com/${post.permalink}`} target="_blank" rel="noreferrer noopener">Open on Reddit</a></span>
                         </div>
                     </div>

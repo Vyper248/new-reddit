@@ -1,4 +1,5 @@
 import ReactDOM from 'react-dom';
+import store from '../redux/store';
 
 const parseComment = (comment) => {
     let {body_html, id, author, permalink, replies, score} = comment;
@@ -39,41 +40,47 @@ const parseURL = (url) => {
     return {sub, newSort, postId};
 }
 
-const getPostList = async (currentPosts, sub, sort, setPosts, setNoPosts, setLatestPost, searchStr='', searchSort='new', thisSub=true, loadMore=false, latest='') => {
-    if (sub.length > 0) sub = 'r/'+sub;
+const getPostList = async (loadMore=false) => {
+    const state = store.getState();
+    let { posts, currentSub, currentSort, currentSearch, currentSearchSort, currentSearchSub, latestPost } = state;
+    const setLatestPost = (val) => store.dispatch({type: 'SET_LATEST_POST', payload: val});
+    const setPosts = (val) => store.dispatch({type: 'SET_POSTS', payload: val});
+    const setNoPosts = (val) => store.dispatch({type: 'SET_NO_POSTS', payload: val});
+
+    if (currentSub.length > 0) currentSub = 'r/'+currentSub;
     if (!loadMore) setPosts([]);
 
-    if (sub === 'r/My Subreddits') {        
+    if (currentSub === 'r/My Subreddits') {        
         let storedSubs = localStorage.getItem('subs');
         storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
-        sub = 'r/'+storedSubs.join('+');
-        if (storedSubs.length === 0) sub = '/r/All';
+        currentSub = 'r/'+storedSubs.join('+');
+        if (storedSubs.length === 0) currentSub = '/r/All';
     }
     
     try {
-        let url = `https://www.reddit.com/${sub}/${sort}/.json`;
-        if (loadMore) url += `?after=t3_${latest}`;
+        let url = `https://www.reddit.com/${currentSub}/${currentSort}/.json`;
+        if (loadMore) url += `?after=t3_${latestPost}`;
 
-        if (searchStr.length > 0) {
-            let parsedStr = searchStr.split(' ').join('+');
-            url = `https://www.reddit.com/${sub}/search.json?q=${parsedStr}${thisSub ? '&restrict_sr=on' : ''}&include_over_18=on&sort=${searchSort}`;
-            if (loadMore) url += `&after=t3_${latest}`;
+        if (currentSearch.length > 0) {
+            let parsedStr = currentSearch.split(' ').join('+');
+            url = `https://www.reddit.com/${currentSub}/search.json?q=${parsedStr}${currentSearchSub ? '&restrict_sr=on' : ''}&include_over_18=on&sort=${currentSearchSort}`;
+            if (loadMore) url += `&after=t3_${latestPost}`;
         }
 
-        //next page url = (add to end) ?after=t3_f6zx4z   (so just add post Id after t3_)
-
-        if (sub.length === 0) url = 'https://www.reddit.com/.json';
+        if (currentSub.length === 0) url = 'https://www.reddit.com/.json';        
 
         let response = await fetch(url);
         let data = await response.json();
 
         if (data.error){
             console.log('Getting Post List - Error: ', data.error);
-            setNoPosts(true);
-            setPosts([]);
+            if (!loadMore) {
+                setNoPosts(true);
+                setPosts([]);
+            }
         } else {
             if (data && data.data && data.data.children){
-                let posts = data.data.children.map(post => {
+                let newPosts = data.data.children.map(post => {
                     const data = post.data;
 
                     let media = data.media;
@@ -101,22 +108,32 @@ const getPostList = async (currentPosts, sub, sort, setPosts, setNoPosts, setLat
                     };
                 });
 
-                if (loadMore) posts = [...currentPosts, ...posts];
+                if (loadMore) newPosts = [...posts, ...newPosts];
 
-                ReactDOM.unstable_batchedUpdates(() => {
-                    setLatestPost(posts[posts.length-1].id);                                
-                    setPosts(posts);
+                ReactDOM.unstable_batchedUpdates(() => {                    
+                    setLatestPost(newPosts[newPosts.length-1].id);                                
+                    setPosts(newPosts);
                 });
             }
         }
     } catch (error) {
         console.log('Getting Post List - URL Error: ', error);
-        setPosts([]);
-        setNoPosts(true);
+        if (!loadMore) {
+            setPosts([]);
+            setNoPosts(true);
+        }
     }
 };
 
-const getComments = async (url, setComments, setNoComments, setPostDetails, getDetails) => {    
+const getComments = async () => {
+    const state = store.getState();
+    const { currentSub, currentPostId } = state;
+    const setComments = (val) => store.dispatch({type: 'SET_COMMENTS', payload: val});
+    const setNoComments = (val) => store.dispatch({type: 'SET_NO_COMMENTS', payload: val});
+    const setPostDetails = (val) => store.dispatch({type: 'SET_POST_DETAILS', payload: val});
+
+    let url = `${currentSub}/comments/${currentPostId}/`;
+
     ReactDOM.unstable_batchedUpdates(() => {
         setComments([]);
         setNoComments(false);
@@ -135,7 +152,7 @@ const getComments = async (url, setComments, setNoComments, setPostDetails, getD
             });
 
             ReactDOM.unstable_batchedUpdates(() => {
-                if (getDetails) setPostDetails({id, url, title, author, created:created_utc, body: parseBodyText(selftext_html), media, permalink});
+                setPostDetails({id, url, title, author, created:created_utc, body: parseBodyText(selftext_html), media, permalink});
                 setComments(comments);
                 if (comments.length === 0) setNoComments(true);
             });

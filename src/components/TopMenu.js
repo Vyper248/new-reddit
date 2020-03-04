@@ -25,7 +25,7 @@ const MenuButton = styled.div`
     background-color: ${props => props.selected ? 'gray' : 'none'};
 `;
 
-const TopMenu = ({showBackButton, onBackClick}) => {
+const TopMenu = ({onBackClick}) => {
     const dispatch = useDispatch();
 
     const searchMenuOpen = useSelector(state => state.searchMenuOpen);
@@ -37,11 +37,13 @@ const TopMenu = ({showBackButton, onBackClick}) => {
     const sortMenuOpen = useSelector(state => state.sortMenuOpen);
     const onClickSort = () => sortMenuOpen ? dispatch({type: 'CLOSE_SORT'}) : dispatch({type: 'OPEN_SORT'});
 
+    const currentPostId = useSelector(state => state.currentPostId);
+
     return (
         <React.Fragment>
             <StyledTopMenu>
                 <MenuButton onClick={onClickSubs} selected={subMenuOpen}>Subs</MenuButton>
-                { showBackButton ? <MenuButton onClick={onBackClick}>Back</MenuButton> : null }
+                { currentPostId.length > 0 ? <MenuButton onClick={onBackClick}>Back</MenuButton> : null }
                 <MenuButton onClick={onClickSort} selected={sortMenuOpen}>Sort</MenuButton>
                 <MenuButton onClick={onClickSearch} selected={searchMenuOpen}>Search</MenuButton>
             </StyledTopMenu>

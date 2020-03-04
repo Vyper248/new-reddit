@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { formatDistanceStrict } from 'date-fns';
+import { useSelector } from 'react-redux';
 
 import CommentList from './CommentList';
 import LoadingSpinner from './LoadingSpinner';
@@ -63,7 +64,11 @@ const PostBody = styled.div`
     }
 `;
 
-const Post = ({post, comments, noComments}) => {
+const Post = () => {
+    const comments = useSelector(state => state.comments);
+    const noComments = useSelector(state => state.noComments);
+    const post = useSelector(state => state.postDetails);
+
     if (post.body === undefined) {
         return <div style={{textAlign: 'center'}}><LoadingSpinner/></div>;
     }

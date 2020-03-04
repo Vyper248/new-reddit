@@ -1,10 +1,14 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import ButtonGroup from './ButtonGroup';
 import ButtonList from './ButtonList';
 
-const SortMenu = ({currentSub, currentSort}) => {
+const SortMenu = () => {
+    const currentSub = useSelector(state => state.currentSub);
+    const currentSort = useSelector(state => state.currentSort);
+
     let sortOptions = ['hot', 'new', 'rising', 'controversial', 'top'];
 
     return (
