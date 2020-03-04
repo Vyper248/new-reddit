@@ -2,6 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 
+import SubList from './SubList';
+import SortMenu from './SortMenu';
+import SearchMenu from './SearchMenu';
+
 const StyledTopMenu = styled.div`
     border-bottom: 1px solid red;
     position: fixed;
@@ -23,6 +27,21 @@ const MenuButton = styled.div`
     min-width: 50px;
     text-align: center;
     background-color: ${props => props.selected ? 'gray' : 'none'};
+`;
+
+const Dropdown = styled.div`
+    position: fixed;
+    width: 250px;
+    background-color: black;
+    z-index: 5;
+    top: 35px;
+    border-right: 1px solid red;
+    border-bottom: 1px solid red;
+    max-height: calc(100% - 50px);
+    overflow: scroll;
+    ${ props => props.right 
+            ? 'right: 0px; border-left: 1px solid red; border-right: none;' 
+            : '' };
 `;
 
 const TopMenu = ({onBackClick}) => {
@@ -47,6 +66,9 @@ const TopMenu = ({onBackClick}) => {
                 <MenuButton onClick={onClickSort} selected={sortMenuOpen}>Sort</MenuButton>
                 <MenuButton onClick={onClickSearch} selected={searchMenuOpen}>Search</MenuButton>
             </StyledTopMenu>
+            { subMenuOpen ? <Dropdown><SubList/></Dropdown> : null }
+            { sortMenuOpen ? <Dropdown right={true}><SortMenu/></Dropdown> : null }
+            { searchMenuOpen ? <Dropdown right={true}><SearchMenu/></Dropdown> : null }
         </React.Fragment>
     );
 };

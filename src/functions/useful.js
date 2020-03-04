@@ -110,10 +110,8 @@ const getPostList = async (loadMore=false) => {
 
                 if (loadMore) newPosts = [...posts, ...newPosts];
 
-                ReactDOM.unstable_batchedUpdates(() => {                    
-                    setLatestPost(newPosts[newPosts.length-1].id);                                
-                    setPosts(newPosts);
-                });
+                setLatestPost(newPosts[newPosts.length-1].id);                                
+                setPosts(newPosts);
             }
         }
     } catch (error) {
@@ -134,10 +132,9 @@ const getComments = async () => {
 
     let url = `${currentSub}/comments/${currentPostId}/`;
 
-    ReactDOM.unstable_batchedUpdates(() => {
-        setComments([]);
-        setNoComments(false);
-    });
+    setComments([]);
+    setNoComments(false);
+    
     try {        
         let response = await fetch('https://www.reddit.com/r/'+url+'.json?sort=new');
         let data = await response.json();
@@ -151,11 +148,9 @@ const getComments = async () => {
                 return parseComment(obj.data);
             });
 
-            ReactDOM.unstable_batchedUpdates(() => {
-                setPostDetails({id, url, title, author, created:created_utc, body: parseBodyText(selftext_html), media, permalink});
-                setComments(comments);
-                if (comments.length === 0) setNoComments(true);
-            });
+            setPostDetails({id, url, title, author, created:created_utc, body: parseBodyText(selftext_html), media, permalink});
+            setComments(comments);
+            if (comments.length === 0) setNoComments(true);
         }
     } catch (error) {
         console.log('Getting Comments - URL Error: ', error);
