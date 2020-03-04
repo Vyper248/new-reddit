@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom';
 import store from '../redux/store';
 
 const parseComment = (comment) => {
@@ -29,13 +28,15 @@ const parseBodyText = (text) => {
 
 const parseURL = (url) => {
     let parts = url.split('/');
-    let sub, newSort, postId;
+    let sub = '';
+    let newSort = '';
+    let postId = '';
 
     if (parts.length > 0) {
         parts[1] !== undefined ? sub = parts[1] : sub = '';
-        parts[2] === 'comments' ? postId = parts[3] : postId = '';
-        parts[2] !== 'comments' ? newSort = parts[2] : newSort = '';
-    }
+        parts[2] === 'comments' && parts[3] !== undefined ? postId = parts[3] : postId = '';
+        parts[2] !== 'comments' && parts[2] !== undefined ? newSort = parts[2] : newSort = '';
+    }    
 
     return {sub, newSort, postId};
 }
@@ -47,7 +48,10 @@ const getPostList = async (loadMore=false) => {
     const setPosts = (val) => store.dispatch({type: 'SET_POSTS', payload: val});
     const setNoPosts = (val) => store.dispatch({type: 'SET_NO_POSTS', payload: val});
 
-    if (currentSub.length > 0) currentSub = 'r/'+currentSub;
+    //if no sub, then don't get anything
+    if (currentSub.length === 0) return;
+
+    if (currentSub.length > 0) currentSub = 'r/'+currentSub;    
     if (!loadMore) setPosts([]);
 
     if (currentSub === 'r/My Subreddits') {        

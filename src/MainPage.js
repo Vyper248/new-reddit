@@ -36,20 +36,11 @@ const Page = ({location, history}) => {
 
     const isMobile = useMediaQuery({ maxWidth: 700 });
 
-    let {sub, newSort, postId} = parseURL(location.pathname);
+    let {sub, newSort, postId} = parseURL(location.pathname);    
 
     if (sub !== currentSub) setCurrentSub(sub);
     if (postId !== currentPostId) setCurrentPostId(postId);
     if (newSort.length > 0 && newSort !== currentSort) setCurrentSort(newSort);
-
-    if (sub.length === 0) {
-        let redirectSub = '';
-        let storedSubs = localStorage.getItem('subs');
-        storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
-        if (storedSubs.length > 0) redirectSub = storedSubs[0];
-        else redirectSub = 'Popular';
-        history.push(`/${redirectSub}/${currentSort}`);
-    }
 
     useEffect(() => {   
         closeMenus(); 
@@ -75,6 +66,16 @@ const Page = ({location, history}) => {
     }, [currentPostId]);
     
     if (sub !== currentSub || postId !== currentPostId || (newSort.length > 0 && newSort !== currentSort)) return <div></div>;
+
+    if (currentSub.length === 0) {
+        let redirectSub = '';
+        let storedSubs = localStorage.getItem('subs');
+        storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
+        if (storedSubs.length > 0) redirectSub = storedSubs[0];
+        else redirectSub = 'Popular';
+        history.push(`/${redirectSub}/${currentSort}`);
+        return <div></div>;
+    }
 
     const onClickLink = (url) => (e) => {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
