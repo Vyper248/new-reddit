@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,10 +9,11 @@ import Post from './components/Post';
 import Header from './components/Header';
 import SideMenu from './components/SideMenu';
 
-import { getPostList, getComments, parseURL } from './functions/useful';
+import { getPostList, getComments, parseURL, updatePostDetails } from './functions/useful';
 
 const Page = ({location, history}) => {
     const dispatch = useDispatch();
+    const [scrollPos, setScrollPos] = useState(0);
 
     const currentSort = useSelector(state => state.currentSort);
     const setCurrentSort = (sort) => dispatch({type: 'SET_SORT', payload: sort});
@@ -23,16 +24,11 @@ const Page = ({location, history}) => {
     const clearSearch = () => dispatch({type: 'CLEAR_SEARCH'});
     const closeMenus = () => dispatch({type: 'CLOSE_MENUS'});
 
-    const scrollPos = useSelector(state => state.scrollPos);
-    const setScrollPos = (val) => dispatch({type: 'SET_SCROLL_POS', payload: val});
-
     const currentSub = useSelector(state => state.currentSub);
     const setCurrentSub = (val) => dispatch({type: 'SET_SUB', payload: val});
 
     const currentPostId = useSelector(state => state.currentPostId);
     const setCurrentPostId = (val) => dispatch({type: 'SET_POSTID', payload: val});
-
-    const setPostDetails = (val) => dispatch({type: 'SET_POST_DETAILS', payload: val});
 
     const isMobile = useMediaQuery({ maxWidth: 700 });
 
@@ -43,28 +39,32 @@ const Page = ({location, history}) => {
     if (newSort.length > 0 && newSort !== currentSort) setCurrentSort(newSort);
 
     useEffect(() => {   
-        closeMenus(); 
+        if (isMobile) closeMenus(); 
         clearSearch(); //comment out if want to change subs while still searching         
         getPostList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentSort, currentSub]);
-
-    useEffect(() => {
-        if (currentPostId.length > 0 ) {
-            let post = undefined;
-            if (currentPostId.length > 0) post = posts.find(post => post.id === currentPostId);
-            if (post === undefined) setPostDetails({});
-            else setPostDetails(post);
-            getComments();
-            window.scrollTo(0,0);  
-        }
-    }, [currentPostId, posts, currentSub]);
 
     useEffect(() => {
         if (currentPostId.length === 0) {
             window.scrollTo(0,scrollPos);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPostId]);
-    
+
+    //get post details for immediate display from existing array, then query server for more details
+    useEffect(() => {
+        if (currentPostId.length > 0) {            
+            getComments();
+            window.scrollTo(0,0);  
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPostId]);
+
+    if (currentPostId.length > 0 && postId.length > 0) {        
+        updatePostDetails(posts, currentPostId);
+    }
+
     if (sub !== currentSub || postId !== currentPostId || (newSort.length > 0 && newSort !== currentSort)) return <div></div>;
 
     if (currentSub.length === 0) {

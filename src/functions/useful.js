@@ -1,4 +1,5 @@
 import store from '../redux/store';
+import { batch } from 'react-redux';
 
 const parseComment = (comment) => {
     let {body_html, id, author, permalink, replies, score} = comment;
@@ -79,8 +80,10 @@ const getPostList = async (loadMore=false) => {
         if (data.error){
             console.log('Getting Post List - Error: ', data.error);
             if (!loadMore) {
-                setNoPosts(true);
-                setPosts([]);
+                batch(() => {
+                    setNoPosts(true);
+                    setPosts([]);
+                });
             }
         } else {
             if (data && data.data && data.data.children){
@@ -114,15 +117,19 @@ const getPostList = async (loadMore=false) => {
 
                 if (loadMore) newPosts = [...posts, ...newPosts];
 
-                setLatestPost(newPosts[newPosts.length-1].id);                                
-                setPosts(newPosts);
+                batch(() => {
+                    setLatestPost(newPosts[newPosts.length-1].id);                                
+                    setPosts(newPosts);
+                });
             }
         }
     } catch (error) {
         console.log('Getting Post List - URL Error: ', error);
         if (!loadMore) {
-            setPosts([]);
-            setNoPosts(true);
+            batch(() => {
+                setNoPosts(true);
+                setPosts([]);
+            });
         }
     }
 };
@@ -134,10 +141,9 @@ const getComments = async () => {
     const setNoComments = (val) => store.dispatch({type: 'SET_NO_COMMENTS', payload: val});
     const setPostDetails = (val) => store.dispatch({type: 'SET_POST_DETAILS', payload: val});
 
-    let url = `${currentSub}/comments/${currentPostId}/`;
+    if (currentPostId.length === 0) return;
 
-    setComments([]);
-    setNoComments(false);
+    let url = `${currentSub}/comments/${currentPostId}/`;
     
     try {        
         let response = await fetch('https://www.reddit.com/r/'+url+'.json?sort=new');
@@ -152,19 +158,36 @@ const getComments = async () => {
                 return parseComment(obj.data);
             });
 
-            setPostDetails({id, url, title, author, created:created_utc, body: parseBodyText(selftext_html), media, permalink});
-            setComments(comments);
-            if (comments.length === 0) setNoComments(true);
+            batch(() => {
+                setPostDetails({id, url, title, author, created:created_utc, body: parseBodyText(selftext_html), media, permalink});
+                setComments(comments);
+                if (comments.length === 0) setNoComments(true);
+            });
         }
     } catch (error) {
         console.log('Getting Comments - URL Error: ', error);
     }
 };
 
+const updatePostDetails = (posts, id) => {
+    const setPostDetails = (val) => store.dispatch({type: 'SET_POST_DETAILS', payload: val});
+    const setComments = (val) => store.dispatch({type: 'SET_COMMENTS', payload: val});
+    const setNoComments = (val) => store.dispatch({type: 'SET_NO_COMMENTS', payload: val});
+
+    let post = undefined;
+    if (id.length > 0) post = posts.find(post => post.id === id);
+    if (post === undefined) setPostDetails({});
+    else setPostDetails(post);
+
+    setComments([]);
+    setNoComments(false);
+}
+
 export {
     parseComment, 
     parseBodyText,
     parseURL,
     getPostList,
-    getComments
+    getComments,
+    updatePostDetails
 }
