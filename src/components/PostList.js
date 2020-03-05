@@ -12,17 +12,24 @@ const PostList = ({onClickLink}) => {
     const noPosts = useSelector(state => state.noPosts);
     const currentSub = useSelector(state => state.currentSub);
     const currentSort = useSelector(state => state.currentSort);
+    const currentPostId = useSelector(state => state.currentPostId);
     const loadMorePosts = () => getPostList(true);
 
     if (noPosts) return <div style={{textAlign:'center'}}>No Posts Found</div>
-    if (posts.length === 0) return <div><LoadingSpinner/></div>;
+    if (posts.length === 0 && currentPostId.length === 0) return <div><LoadingSpinner/></div>;
+
+    let hide = currentPostId.length > 0;
+    let position = hide ? 'absolute' : 'relative';
+    let top = hide ? '-1000000px' : '0px';
+    let right = hide ? '-20000px' : '0px';
+    let hasMore = hide ? false : true;
 
     return (
-        <div style={{margin: 'auto'}}>
+        <div style={{margin: 'auto', position: position, top: top, right: right}}>
             <InfiniteScroll
                 dataLength={posts.length} //This is important field to render the next data
                 next={loadMorePosts}
-                hasMore={true} //change to false when don't want to load more or nothing left
+                hasMore={hasMore} //change to false when don't want to load more or nothing left
                 loader={<div style={{textAlign: 'center', margin: '10px'}}>Loading More...</div>}
                 scrollableTarget={'#mainPage'}
                 scrollThreshold={'500px'}

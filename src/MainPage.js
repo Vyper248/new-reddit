@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Route, Switch } from "react-router-dom";
 import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -65,6 +64,7 @@ const Page = ({location, history}) => {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         setScrollPos(oldVal => scrollTop);
         history.push(url);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     if (currentPostId.length > 0 && postId.length > 0) {        
@@ -96,10 +96,8 @@ const Page = ({location, history}) => {
         return (
             <React.Fragment>
                 <Header heading={currentSub} onReload={onReload}/>
-                <Switch>
-                    <Route path={'/:sub/comments/:id'} render={props => <Post {...props}/>} />
-                    <Route path={'/:sub'} render={props => <PostList {...props} onClickLink={onClickLink}/>} />
-                </Switch>
+                { currentPostId.length > 0 ? <Post/> : null }
+                <PostList onClickLink={onClickLink}/>
             </React.Fragment>
         );
     }
@@ -116,7 +114,7 @@ const Page = ({location, history}) => {
         return (
             <div style={{display: 'flex', height: '100%'}}>
                 <div>
-                    <Route path={'/'} render={props => <SideMenu {...props}/>} />
+                    <SideMenu/>
                 </div>
                 <div style={{width: 'calc(100% - 250px)', height: '100%', overflow: 'scroll', marginLeft: '250px', position: 'relative'}} id='mainPage'>
                     { getMainPage() }
