@@ -143,6 +143,9 @@ const getComments = async () => {
 
     if (currentPostId.length === 0) return;
 
+    setComments([]);
+    setNoComments(false);
+
     let url = `${currentSub}/comments/${currentPostId}/`;
     
     try {        
@@ -171,16 +174,11 @@ const getComments = async () => {
 
 const updatePostDetails = (posts, id) => {
     const setPostDetails = (val) => store.dispatch({type: 'SET_POST_DETAILS', payload: val});
-    const setComments = (val) => store.dispatch({type: 'SET_COMMENTS', payload: val});
-    const setNoComments = (val) => store.dispatch({type: 'SET_NO_COMMENTS', payload: val});
 
     let post = undefined;
     if (id.length > 0) post = posts.find(post => post.id === id);
     if (post === undefined) setPostDetails({});
-    else setPostDetails(post);
-
-    setComments([]);
-    setNoComments(false);
+    else setPostDetails(post);  
 }
 
 export {
