@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Route, Switch } from "react-router-dom";
 import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
@@ -61,6 +61,12 @@ const Page = ({location, history}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPostId]);
 
+    const onClickLink = useCallback((url) => (e) => {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        setScrollPos(oldVal => scrollTop);
+        history.push(url);
+    }, [])
+
     if (currentPostId.length > 0 && postId.length > 0) {        
         updatePostDetails(posts, currentPostId);
     }
@@ -77,12 +83,6 @@ const Page = ({location, history}) => {
         return <div></div>;
     }
 
-    const onClickLink = (url) => (e) => {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        setScrollPos(scrollTop);
-        history.push(url);
-    }
-
     const onReload = () => {
         setPosts([]);
         getPostList();
@@ -92,7 +92,7 @@ const Page = ({location, history}) => {
         history.goBack();
     }
 
-    const MainPage = () => {
+    const getMainPage = () => {
         return (
             <React.Fragment>
                 <Header heading={currentSub} onReload={onReload}/>
@@ -102,14 +102,14 @@ const Page = ({location, history}) => {
                 </Switch>
             </React.Fragment>
         );
-    }    
+    }
 
     if (isMobile) {
         return (
             <div style={{height: '100%', overflow: 'hidden'}}>
                 <TopMenu onBackClick={onBackClick}/>
                 <div style={{marginTop: '50px'}}></div>
-                { <MainPage/> }
+                { getMainPage() }
             </div>
         );
     } else {
@@ -119,7 +119,7 @@ const Page = ({location, history}) => {
                     <Route path={'/'} render={props => <SideMenu {...props}/>} />
                 </div>
                 <div style={{width: 'calc(100% - 250px)', height: '100%', overflow: 'scroll', marginLeft: '250px', position: 'relative'}} id='mainPage'>
-                    { <MainPage/> }
+                    { getMainPage() }
                 </div>
             </div>
         );

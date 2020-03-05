@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { FaRegComment, FaPlus, FaMinus } from 'react-icons/fa';
 import { formatDistanceStrict } from 'date-fns';
-import { useSelector } from 'react-redux';
 
 const StyledPostLink = styled.div`
     border: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
@@ -119,11 +118,12 @@ const PostBody = styled.div`
     }
 `;
 
-const PostLink = ({post, onClickLink}) => {
+const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
     const [expanded, setExpanded] = useState(false);
 
-    const currentSub = useSelector(state => state.currentSub);
-    const currentSort = useSelector(state => state.currentSort);
+    const onToggleExpand = () => {
+        setExpanded(!expanded);
+    }
 
     if (post === undefined) return <span></span>;
 
@@ -159,9 +159,7 @@ const PostLink = ({post, onClickLink}) => {
     //check if sticked and add another class
     let stickied = post.stickied ? true : false;
 
-    const onToggleExpand = () => {
-        setExpanded(!expanded);
-    }
+    // console.log('Rendering Post Link with ID: ', post.id)
 
     return (
         <StyledPostLink stickied={stickied}>
@@ -186,4 +184,9 @@ const PostLink = ({post, onClickLink}) => {
     );
 }
 
-export default PostLink;
+const areEqual = (prevProps, nextProps) => {    
+    if (prevProps.post.id === nextProps.post.id) return true;
+    return false;
+}
+
+export default React.memo(PostLink, areEqual);
