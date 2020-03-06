@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { getPostList } from '../functions/useful';
@@ -31,6 +31,12 @@ const SearchMenu = () => {
         getPostList();
     }
 
+    const onEnter = (e) => {
+        if (e.key === 'Enter') {
+            onSearch();
+        }
+    }
+
     const onClearSearch = (getNewPosts=true) => {
         if (currentSearch.length === 0) return; //if there's nothing to clear, don't do anything
         clearSearch();
@@ -41,7 +47,7 @@ const SearchMenu = () => {
         <ButtonList>
             <h3>Search</h3>
             <ButtonGroup>
-                <Input type="text" placeholder="Search" onChange={setCurrentSearch} value={currentSearch}/>
+                <Input type="text" placeholder="Search" onChange={setCurrentSearch} value={currentSearch} onKeyPress={onEnter}/>
                 <SideButton onClick={onSearch}>Search</SideButton>
             </ButtonGroup>
             <ButtonGroup>
