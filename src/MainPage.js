@@ -8,7 +8,7 @@ import Post from './components/Post';
 import Header from './components/Header';
 import SideMenu from './components/SideMenu';
 
-import { getPostList, getComments, parseURL, updatePostDetails } from './functions/useful';
+import { getPostList, parseURL } from './functions/useful';
 
 const Page = ({location, history}) => {
     const dispatch = useDispatch();
@@ -17,7 +17,6 @@ const Page = ({location, history}) => {
     const currentSort = useSelector(state => state.currentSort);
     const setCurrentSort = (sort) => dispatch({type: 'SET_SORT', payload: sort});
 
-    const posts = useSelector(state => state.posts);
     const setPosts = (posts) => dispatch({type: 'SET_POSTS', payload: posts});
     
     const clearSearch = () => dispatch({type: 'CLEAR_SEARCH'});
@@ -37,6 +36,7 @@ const Page = ({location, history}) => {
     if (postId !== currentPostId) setCurrentPostId(postId);
     if (newSort.length > 0 && newSort !== currentSort) setCurrentSort(newSort);
 
+    //when changing sub or sort method, get post list and clear search
     useEffect(() => {   
         if (isMobile) closeMenus(); 
         clearSearch(); //comment out if want to change subs while still searching         
@@ -44,18 +44,10 @@ const Page = ({location, history}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentSort, currentSub]);
 
+    //return to scroll positiong before going to a post
     useEffect(() => {
         if (currentPostId.length === 0) {
             window.scrollTo(0,scrollPos);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPostId]);
-
-    //get post details for immediate display from existing array, then query server for more details
-    useEffect(() => {
-        if (currentPostId.length > 0) {            
-            getComments();
-            window.scrollTo(0,0);  
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPostId]);
@@ -66,10 +58,6 @@ const Page = ({location, history}) => {
         history.push(url);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
-    if (currentPostId.length > 0 && postId.length > 0) {        
-        updatePostDetails(posts, currentPostId);
-    }
 
     if (sub !== currentSub || postId !== currentPostId || (newSort.length > 0 && newSort !== currentSort)) return <div></div>;
 

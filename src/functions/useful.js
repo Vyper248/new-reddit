@@ -172,11 +172,13 @@ const getComments = async () => {
     }
 };
 
-const updatePostDetails = (posts, id) => {
+const updatePostDetails = () => {
+    const posts = store.getState().posts;
+    const currentPostId = store.getState().currentPostId;
     const setPostDetails = (val) => store.dispatch({type: 'SET_POST_DETAILS', payload: val});
 
     let post = undefined;
-    if (id.length > 0) post = posts.find(post => post.id === id);
+    if (currentPostId.length > 0) post = posts.find(post => post.id === currentPostId);
     if (post === undefined) setPostDetails({});
     else setPostDetails(post);  
 }

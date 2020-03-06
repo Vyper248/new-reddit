@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { formatDistanceStrict } from 'date-fns';
 import { useSelector } from 'react-redux';
@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import CommentList from './CommentList';
 import LoadingSpinner from './LoadingSpinner';
 
-import { parseBodyText } from '../functions/useful';
+import { parseBodyText, updatePostDetails, getComments } from '../functions/useful';
 
 const StyledPost = styled.div`
     background-color: black;
@@ -67,9 +67,18 @@ const PostBody = styled.div`
 const Post = () => {
     const comments = useSelector(state => state.comments);
     const noComments = useSelector(state => state.noComments);
-    const post = useSelector(state => state.postDetails);
+    let post = useSelector(state => state.postDetails);
+    const currentPostId = useSelector(state => state.currentPostId);
 
-    if (post.body === undefined) {
+    useEffect(() => {
+        //get quick details from posts array
+        updatePostDetails();
+        //query server for more details and comments
+        getComments();
+        window.scrollTo(0,0); 
+    }, []);
+
+    if (post.body === undefined || post.id !== currentPostId) {
         return <div style={{textAlign: 'center'}}><LoadingSpinner/></div>;
     }
 
