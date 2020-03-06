@@ -19,7 +19,6 @@ const Page = ({location, history}) => {
 
     const setPosts = (posts) => dispatch({type: 'SET_POSTS', payload: posts});
     
-    const clearSearch = () => dispatch({type: 'CLEAR_SEARCH'});
     const closeMenus = () => dispatch({type: 'CLOSE_MENUS'});
 
     const currentSub = useSelector(state => state.currentSub);
@@ -56,7 +55,6 @@ const Page = ({location, history}) => {
     //when changing sub or sort method, get post list and clear search
     useEffect(() => {   
         if (isMobile) closeMenus(); 
-        // clearSearch(); //comment out if want to change subs while still searching
         if (currentSub.length === 0) return;
         getPostList();
         
