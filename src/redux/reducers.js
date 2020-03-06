@@ -6,6 +6,7 @@ const initialState = {
     postDetails: {},
     posts: [],
     noPosts: false,
+    noMorePosts: false,
     latestPost: '',
 
     comments: [],
@@ -47,6 +48,7 @@ export const reducer = (state = initialState, action={}) => {
 
         case 'SET_NO_POSTS': return {...state, noPosts: data};
         case 'SET_LATEST_POST': return {...state, latestPost: data};
+        case 'SET_NO_MORE_POSTS': return {...state, noMorePosts: data};
 
         case 'SET_COMMENTS': return {...state, comments: data};
         case 'SET_NO_COMMENTS': return {...state, noComments: data};

@@ -48,12 +48,17 @@ const getPostList = async (loadMore=false) => {
     const setLatestPost = (val) => store.dispatch({type: 'SET_LATEST_POST', payload: val});
     const setPosts = (val) => store.dispatch({type: 'SET_POSTS', payload: val});
     const setNoPosts = (val) => store.dispatch({type: 'SET_NO_POSTS', payload: val});
+    const setNoMorePosts = (val) => store.dispatch({type: 'SET_NO_MORE_POSTS', payload: val});
 
     //if no sub, then don't get anything
     if (currentSub.length === 0) return;
 
     if (currentSub.length > 0) currentSub = 'r/'+currentSub;    
-    if (!loadMore) setPosts([]);
+
+    if (!loadMore) {
+        setPosts([]);
+        setNoMorePosts(false);
+    }
 
     if (currentSub === 'r/My Subreddits') {        
         let storedSubs = localStorage.getItem('subs');
@@ -115,11 +120,13 @@ const getPostList = async (loadMore=false) => {
                     };
                 });
 
+                let noMore = newPosts.length === 0 ? true : false;
                 if (loadMore) newPosts = [...posts, ...newPosts];
 
                 batch(() => {
                     setLatestPost(newPosts[newPosts.length-1].id);                                
                     setPosts(newPosts);
+                    if (noMore) setNoMorePosts(true);
                 });
             }
         }

@@ -13,6 +13,7 @@ const PostList = ({onClickLink}) => {
     const currentSub = useSelector(state => state.currentSub);
     const currentSort = useSelector(state => state.currentSort);
     const currentPostId = useSelector(state => state.currentPostId);
+    const noMorePosts = useSelector(state => state.noMorePosts);
     const loadMorePosts = () => getPostList(true);
 
     if (noPosts) return <div style={{textAlign:'center'}}>No Posts Found</div>
@@ -22,7 +23,7 @@ const PostList = ({onClickLink}) => {
     let position = hide ? 'absolute' : 'relative';
     let top = hide ? '-1000000px' : '0px';
     let right = hide ? '-20000px' : '0px';
-    let hasMore = hide ? false : true;
+    let hasMore = hide || noMorePosts ? false : true;    
 
     return (
         <div style={{margin: 'auto', position: position, top: top, right: right}}>
@@ -38,6 +39,9 @@ const PostList = ({onClickLink}) => {
                 posts.map(post => {
                     return <PostLink key={post.id} post={post} currentSub={currentSub} currentSort={currentSort} onClickLink={onClickLink}/>
                 })
+            }
+            {
+                noMorePosts ? <div style={{textAlign: 'center', margin: '10px'}}>No More Posts</div> : null
             }
             </InfiniteScroll>
         </div>
