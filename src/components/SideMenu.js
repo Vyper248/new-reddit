@@ -1,7 +1,9 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import SortMenu from './SortMenu';
+import CommentSortMenu from './CommentSortMenu';
 import SubList from './SubList';
 import SearchMenu from './SearchMenu';
 
@@ -14,10 +16,12 @@ const StyledSideMenu = styled.div`
 `;
 
 const SideMenu = () => {
+    const currentPostId = useSelector(state => state.currentPostId);
+
     return (
         <StyledSideMenu>
             <SearchMenu/>
-            <SortMenu/>
+            { currentPostId.length > 0 ? <CommentSortMenu/> : <SortMenu/> }
             <SubList/>
         </StyledSideMenu>
     );

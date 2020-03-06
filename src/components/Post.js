@@ -69,6 +69,7 @@ const Post = () => {
     const noComments = useSelector(state => state.noComments);
     let post = useSelector(state => state.postDetails);
     const currentPostId = useSelector(state => state.currentPostId);
+    const commentSort = useSelector(state => state.commentSort);
 
     useEffect(() => {
         //get quick details from posts array
@@ -77,6 +78,11 @@ const Post = () => {
         getComments();
         window.scrollTo(0,0); 
     }, []);
+
+    useEffect(() => {
+        //if comment sort method is changed, then get comments again using new sorting
+        getComments();
+    }, [commentSort]);
 
     if (post.body === undefined || post.id !== currentPostId) {
         return <div style={{textAlign: 'center'}}><LoadingSpinner/></div>;

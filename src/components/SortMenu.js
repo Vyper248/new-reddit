@@ -13,12 +13,12 @@ const SortMenu = () => {
 
     return (
         <ButtonList>
-            <h3>Sort</h3>
+            <h3>Sort Posts</h3>
             {
                 sortOptions.map(option => {
                     return (
                         <ButtonGroup key={'sort-'+option}>
-                            <NavLink to={`/${currentSub}/${option}`} className={option === currentSort ? 'selected' : ''}>{option}</NavLink>
+                            <NavLink to={`/${currentSub}/${option}`} className={option === currentSort ? 'selected' : ''} style={{textTransform: 'capitalize'}}>{option}</NavLink>
                         </ButtonGroup>
                     );
                 })

@@ -11,6 +11,7 @@ const initialState = {
 
     comments: [],
     noComments: false,
+    commentSort: 'new',
 
     sortMenuOpen: false,
     searchMenuOpen: false,
@@ -52,6 +53,7 @@ export const reducer = (state = initialState, action={}) => {
 
         case 'SET_COMMENTS': return {...state, comments: data};
         case 'SET_NO_COMMENTS': return {...state, noComments: data};
+        case 'SET_COMMENT_SORT': return {...state, commentSort: data};
         default: return state;
     }
 };

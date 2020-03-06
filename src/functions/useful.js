@@ -58,6 +58,15 @@ const parseSearch = (searchStr) => {
     return {search, searchSort, searchSub};
 }
 
+const getMySubs = (prepend) => {
+    let currentSub = '';
+    let storedSubs = localStorage.getItem('subs');
+    storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
+    currentSub = prepend+storedSubs.join('+');
+    if (storedSubs.length === 0) currentSub = prepend+'All';
+    return currentSub;
+}
+
 const getPostList = async (loadMore=false) => {
     const state = store.getState();
     let { posts, currentSub, currentSort, currentSearch, currentSearchSort, currentSearchSub, latestPost } = state;
@@ -77,12 +86,7 @@ const getPostList = async (loadMore=false) => {
         setNoMorePosts(false);
     }
 
-    if (currentSub === 'r/My Subreddits') {        
-        let storedSubs = localStorage.getItem('subs');
-        storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
-        currentSub = 'r/'+storedSubs.join('+');
-        if (storedSubs.length === 0) currentSub = '/r/All';
-    }
+    if (currentSub === 'r/My Subreddits') currentSub = getMySubs('r/');
     
     try {
         let url = `https://www.reddit.com/${currentSub}/${currentSort}/.json`;
@@ -161,7 +165,7 @@ const getPostList = async (loadMore=false) => {
 
 const getComments = async () => {
     const state = store.getState();
-    const { currentSub, currentPostId } = state;
+    let { currentSub, currentPostId, commentSort } = state;
     const setComments = (val) => store.dispatch({type: 'SET_COMMENTS', payload: val});
     const setNoComments = (val) => store.dispatch({type: 'SET_NO_COMMENTS', payload: val});
     const setPostDetails = (val) => store.dispatch({type: 'SET_POST_DETAILS', payload: val});
@@ -170,11 +174,13 @@ const getComments = async () => {
 
     setComments([]);
     setNoComments(false);
+    
+    if (currentSub === 'My Subreddits') currentSub = getMySubs();
 
     let url = `${currentSub}/comments/${currentPostId}/`;
     
     try {        
-        let response = await fetch('https://www.reddit.com/r/'+url+'.json?sort=new');
+        let response = await fetch(`https://www.reddit.com/r/${url}.json?sort=${commentSort}`);
         let data = await response.json();
         
         if (data.error){

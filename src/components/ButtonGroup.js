@@ -7,7 +7,7 @@ const ButtonGroup = styled.div`
         flex-grow: 1;
     }
 
-    & > a.selected {
+    & > a.selected, & > button.selected {
         background-color: gray;
     }
 

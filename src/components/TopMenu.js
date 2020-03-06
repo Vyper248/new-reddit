@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import SubList from './SubList';
 import SortMenu from './SortMenu';
+import CommentSortMenu from './CommentSortMenu';
 import SearchMenu from './SearchMenu';
 
 const StyledTopMenu = styled.div`
@@ -67,7 +68,8 @@ const TopMenu = ({onBackClick}) => {
                 <MenuButton onClick={onClickSearch} selected={searchMenuOpen}>Search</MenuButton>
             </StyledTopMenu>
             { subMenuOpen ? <Dropdown><SubList/></Dropdown> : null }
-            { sortMenuOpen ? <Dropdown right={true}><SortMenu/></Dropdown> : null }
+            { sortMenuOpen && currentPostId.length === 0 ? <Dropdown right={true}><SortMenu/></Dropdown> : null }
+            { sortMenuOpen && currentPostId.length > 0 ? <Dropdown right={true}><CommentSortMenu/></Dropdown> : null }
             { searchMenuOpen ? <Dropdown right={true}><SearchMenu/></Dropdown> : null }
         </React.Fragment>
     );
