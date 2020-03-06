@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useMediaQuery } from 'react-responsive';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, batch } from 'react-redux';
 
 import TopMenu from './components/TopMenu';
 import PostList from './components/PostList';
@@ -8,7 +8,7 @@ import Post from './components/Post';
 import Header from './components/Header';
 import SideMenu from './components/SideMenu';
 
-import { getPostList, parseURL } from './functions/useful';
+import { getPostList, parseURL, parseSearch } from './functions/useful';
 
 const Page = ({location, history}) => {
     const dispatch = useDispatch();
@@ -28,21 +28,40 @@ const Page = ({location, history}) => {
     const currentPostId = useSelector(state => state.currentPostId);
     const setCurrentPostId = (val) => dispatch({type: 'SET_POSTID', payload: val});
 
+    const currentSearch = useSelector(state => state.currentSearch);    
+    const setCurrentSearch = (val) => dispatch({type: 'SET_CURRENT_SEARCH', payload: val});
+
+    const currentSearchSort = useSelector(state => state.currentSearchSort);
+    const setCurrentSearchSort = (val) => dispatch({type: 'SET_CURRENT_SEARCH_SORT', payload: val});
+
+    const currentSearchSub = useSelector(state => state.currentSearchSub);
+    const setCurrentSearchSub = (val) => dispatch({type: 'SET_CURRENT_SEARCH_SUB', payload: val});
+
     const isMobile = useMediaQuery({ maxWidth: 700 });
 
-    let {sub, newSort, postId} = parseURL(location.pathname);    
+    let {sub, newSort, postId} = parseURL(location.pathname); 
+    let {search, searchSort, searchSub} = parseSearch(location.search);    
 
-    if (sub !== currentSub) setCurrentSub(sub);
-    if (postId !== currentPostId) setCurrentPostId(postId);
-    if (newSort.length > 0 && newSort !== currentSort) setCurrentSort(newSort);
+    batch(() => {
+        if (sub !== currentSub) setCurrentSub(sub);
+        if (postId !== currentPostId) setCurrentPostId(postId);
+        if (newSort.length > 0 && newSort !== currentSort) setCurrentSort(newSort);
+
+        if (postId.length > 0 || currentPostId.length > 0) return;
+        if (search !== currentSearch) setCurrentSearch(search);
+        if (searchSort !== currentSearchSort) setCurrentSearchSort(searchSort);
+        if (searchSub !== currentSearchSub) setCurrentSearchSub(searchSub);
+    });
 
     //when changing sub or sort method, get post list and clear search
     useEffect(() => {   
         if (isMobile) closeMenus(); 
-        clearSearch(); //comment out if want to change subs while still searching         
+        // clearSearch(); //comment out if want to change subs while still searching
+        if (currentSub.length === 0) return;
         getPostList();
+        
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentSort, currentSub]);
+    }, [currentSort, currentSub, currentSearch, currentSearchSort, currentSearchSub]);
 
     //return to scroll positiong before going to a post
     useEffect(() => {

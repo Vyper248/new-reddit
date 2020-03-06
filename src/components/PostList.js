@@ -26,7 +26,7 @@ const PostList = ({onClickLink}) => {
     let hasMore = hide || noMorePosts ? false : true;    
 
     return (
-        <div style={{margin: 'auto', position: position, top: top, right: right}}>
+        <div style={{margin: 'auto', position: position, top: top, right: right, marginBottom: '20px'}}>
             <InfiniteScroll
                 dataLength={posts.length} //This is important field to render the next data
                 next={loadMorePosts}

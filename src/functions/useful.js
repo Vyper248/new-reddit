@@ -42,6 +42,22 @@ const parseURL = (url) => {
     return {sub, newSort, postId};
 }
 
+const parseBool = (str) => {
+    return str === 'true' ? true : false;
+}
+
+const parseSearch = (searchStr) => {
+    let search = searchStr.match(/search=([a-zA-Z0-9 ]+)/);
+    let searchSort = searchStr.match(/searchSort=(relevance|new)/);
+    let searchSub = searchStr.match(/searchSub=(true|false)/);
+    
+    search = search === null ? '' : search[1];
+    searchSort = searchSort === null ? 'relevance' : searchSort[1];
+    searchSub = searchSub === null ? true : parseBool(searchSub[1]);
+    
+    return {search, searchSort, searchSub};
+}
+
 const getPostList = async (loadMore=false) => {
     const state = store.getState();
     let { posts, currentSub, currentSort, currentSearch, currentSearchSort, currentSearchSub, latestPost } = state;
@@ -57,6 +73,7 @@ const getPostList = async (loadMore=false) => {
 
     if (!loadMore) {
         setPosts([]);
+        setNoPosts(false);
         setNoMorePosts(false);
     }
 
@@ -124,9 +141,10 @@ const getPostList = async (loadMore=false) => {
                 if (loadMore) newPosts = [...posts, ...newPosts];
 
                 batch(() => {
-                    setLatestPost(newPosts[newPosts.length-1].id);                                
+                    if (!noMore) setLatestPost(newPosts[newPosts.length-1].id);                                
                     setPosts(newPosts);
                     if (noMore) setNoMorePosts(true);
+                    if (noMore && !loadMore) setNoPosts(true);
                 });
             }
         }
@@ -194,6 +212,7 @@ export {
     parseComment, 
     parseBodyText,
     parseURL,
+    parseSearch,
     getPostList,
     getComments,
     updatePostDetails
