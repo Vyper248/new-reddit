@@ -36,6 +36,10 @@ const PostBody = styled.div`
     margin-bottom: 5px;
     padding-bottom: 10px;
 
+    & pre {
+        overflow: scroll;
+    }
+
     & > img {
         max-width: 100%;
         margin-top: 10px;
