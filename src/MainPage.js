@@ -8,7 +8,7 @@ import Post from './components/Post';
 import Header from './components/Header';
 import SideMenu from './components/SideMenu';
 
-import { getPostList, parseURL, parseSearch } from './functions/useful';
+import { getPostList, getComments, parseURL, parseSearch } from './functions/useful';
 
 const Page = ({location, history}) => {
     const dispatch = useDispatch();
@@ -16,8 +16,6 @@ const Page = ({location, history}) => {
 
     const currentSort = useSelector(state => state.currentSort);
     const setCurrentSort = (sort) => dispatch({type: 'SET_SORT', payload: sort});
-
-    const setPosts = (posts) => dispatch({type: 'SET_POSTS', payload: posts});
     
     const closeMenus = () => dispatch({type: 'CLOSE_MENUS'});
 
@@ -89,8 +87,8 @@ const Page = ({location, history}) => {
     }
 
     const onReload = () => {
-        setPosts([]);
-        getPostList();
+        if (currentPostId.length > 0) getComments();
+        else getPostList();
     }
 
     const onBackClick = () => {
