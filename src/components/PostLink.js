@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
-import { FaRegComment, FaPlus, FaMinus } from 'react-icons/fa';
+import { FaRegComment, FaChevronUp, FaChevronDown } from 'react-icons/fa';
 import { formatDistanceStrict } from 'date-fns';
+
+import PostTitle from './Styled/PostTitle';
+import PostTextGroup from './Styled/PostTextGroup';
+import PostDetails from './Styled/PostDetails';
+import PostExpand from './Styled/PostExpand';
 
 const StyledPostLink = styled.div`
     border: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
@@ -30,62 +35,6 @@ const PostThumbnail = styled.div`
         height: 70px;
         width: auto;
         margin: auto;
-    }
-`;
-
-const PostTextGroup = styled.div`
-    display: flex;
-    flex-direction: column; 
-    height: 100%;
-    align-content: center;
-
-    & > div {
-        margin-top: auto;
-        margin-bottom: auto;
-    }
-`;
-
-const PostTitle = styled.div`
-    margin-top: 10px;
-    padding-right: 5px;
-
-    & :hover {
-        cursor: pointer;
-    }
-
-    @media screen and (max-device-width: 600px){
-        font-size: 0.9em;
-    }
-`;
-
-const PostDetails = styled.div`
-    font-size: 0.9em;
-    color: gray;
-    margin-top: 5px;
-    margin-bottom: 5px;
-
-    & a {
-        color: gray;
-    }
-`;
-
-const PostExpand = styled.div`
-    display: inline-flex;
-    position: relative;
-    float: right;
-    border-bottom: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
-    border-left: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
-    color: gray;
-    width: 32px;
-    height: 32px;
-
-    & > svg {
-        margin: auto;
-    }
-
-    &:hover {
-        cursor: pointer;
-        color: white;
     }
 `;
 
@@ -163,7 +112,7 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
         <StyledPostLink stickied={stickied}>
             { showThumbnail ? <PostThumbnail><img src={post.thumbnail} alt="Thumbnail"/></PostThumbnail> : null }
             <div style={ showThumbnail ? {width: '100%', maxWidth: 'calc(100% - 80px)'} : {width: '100%', maxWidth: '100%'}}>
-                { openBtn ? <PostExpand onClick={onToggleExpand} stickied={stickied}>{ expanded ? <FaMinus/> : <FaPlus/> }</PostExpand> : null }
+                { openBtn ? <PostExpand onClick={onToggleExpand} stickied={stickied}>{ expanded ? <FaChevronUp/> : <FaChevronDown/> }</PostExpand> : null }
                 <PostTextGroup>
                     <div>
                         <PostTitle><span onClick={onClickLink(`/${currentSub}/comments/${post.id}`)}>{post.title}</span></PostTitle>

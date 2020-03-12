@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import ButtonGroup from './ButtonGroup';
-import ButtonList from './ButtonList';
-import Button from './Button';
+import ButtonGroup from './Styled/ButtonGroup';
+import ButtonList from './Styled/ButtonList';
+import Button from './Styled/Button';
 
 const CommentSortMenu = () => {
     const dispatch = useDispatch();

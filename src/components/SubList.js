@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
-import ButtonGroup from './ButtonGroup';
-import ButtonList from './ButtonList';
-import Input from './Input';
-import Button from './Button';
-import SideButton from './SideButton';
+import ButtonGroup from './Styled/ButtonGroup';
+import ButtonList from './Styled/ButtonList';
+import Input from './Styled/Input';
+import Button from './Styled/Button';
+import SideButton from './Styled/SideButton';
 
 const Icon = styled.div`
     padding: 5px;
@@ -23,10 +23,13 @@ const Icon = styled.div`
 `;
 
 const SubList = () => {
+    const dispatch = useDispatch();
     const currentSub = useSelector(state => state.currentSub);
     const currentSort = useSelector(state => state.currentSort);
 
-    const [subs, setSubs] = useState([]);
+    const subs = useSelector(state => state.subs);
+    const setSubs = (val) => dispatch({type: 'SET_SUBS', payload: val});
+
     const [editMode, setEditMode] = useState(false);
     const [newSub, setNewSub] = useState('');
 
@@ -35,6 +38,7 @@ const SubList = () => {
         storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
         if (storedSubs.length === 0) setEditMode(true);
         setSubs(storedSubs);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onToggleEdit = () => {
@@ -79,7 +83,7 @@ const SubList = () => {
                 subs.map(sub => {
                     return (
                         <ButtonGroup key={'sub-'+sub}>
-                            <NavLink to={`/${sub}/${currentSort}`} className={sub === currentSub ? 'selected' : ''}>{sub}</NavLink>
+                            <NavLink to={`/${sub}/${currentSort}`} className={sub === currentSub ? 'selected' : ''} style={{textTransform: 'capitalize'}}>{sub}</NavLink>
                             { editMode ? <SideButton className="subBtn" onClick={onDeleteSub(sub)}><FaTrashAlt/></SideButton> : null }
                         </ButtonGroup>
                     )

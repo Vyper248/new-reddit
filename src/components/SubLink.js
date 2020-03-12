@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
-import { FaPlus, FaMinus } from 'react-icons/fa';
+import { FaPlus, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { formatDistanceStrict } from 'date-fns';
+import { useSelector, useDispatch } from 'react-redux';
+
+import PostTitle from './Styled/PostTitle';
+import PostTextGroup from './Styled/PostTextGroup';
+import PostDetails from './Styled/PostDetails';
+import PostExpand from './Styled/PostExpand';
 
 const StyledPostLink = styled.div`
     border: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
@@ -14,64 +20,30 @@ const StyledPostLink = styled.div`
     position: relative;
 `;
 
-const PostTextGroup = styled.div`
+const AddSubBtn = styled.div`
+    width: 45px;
+    height: 45px;
+    margin: 5px 5px 5px -5px;
+    border: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
     display: flex;
-    flex-direction: column; 
-    height: 100%;
-    align-content: center;
-
-    & > div {
-        margin-top: auto;
-        margin-bottom: auto;
-    }
-`;
-
-const PostTitle = styled.div`
-    margin-top: 10px;
-    padding-right: 5px;
-
-    & :hover {
-        cursor: pointer;
-    }
-
-    @media screen and (max-device-width: 600px){
-        font-size: 0.9em;
-    }
-`;
-
-const PostDetails = styled.div`
-    font-size: 0.9em;
-    color: gray;
-    margin-top: 5px;
-    margin-bottom: 5px;
-
-    & a {
-        color: gray;
-    }
-`;
-
-const PostExpand = styled.div`
-    display: inline-flex;
-    position: relative;
-    float: right;
-    border-bottom: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
-    border-left: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
-    color: gray;
-    width: 32px;
-    height: 32px;
+    align-items: center;
 
     & > svg {
+        font-size: 1.5em;
         margin: auto;
     }
 
-    &:hover {
+    :hover {
         cursor: pointer;
-        color: white;
+        background-color: gray;
     }
 `;
 
-const SubLink = ({ sub }) => {
+const SubLink = ({ sub, currentSort }) => {
+    const dispatch = useDispatch();
     const [expanded, setExpanded] = useState(false);
+    const subs = useSelector(state => state.subs);
+    const setSubs = (val) => dispatch({type: 'SET_SUBS', payload: val});
 
     const onToggleExpand = () => {
         setExpanded(!expanded);
@@ -92,15 +64,27 @@ const SubLink = ({ sub }) => {
     let openBtn = true;
     if (description.length === 0) openBtn = false;    
 
+    const addSub = () => {
+        let newSubArr = [...subs, sub.subName];  
+        setSubs(newSubArr);
+        localStorage.setItem('subs', JSON.stringify(newSubArr));
+    }
+
+    const alreadySubbed = subs.reduce((a,c) => {
+        if (c.toLowerCase() === sub.subName.toLowerCase()) a++;
+        return a;
+    }, 0);
+
     return (
-        <StyledPostLink>
+        <StyledPostLink stickied={alreadySubbed}>
+            { !alreadySubbed ? <AddSubBtn onClick={addSub} stickied={alreadySubbed}><FaPlus/></AddSubBtn> : null }
             <div style={{width: '100%', maxWidth: '100%'}}>
-                { openBtn ? <PostExpand onClick={onToggleExpand}>{ expanded ? <FaMinus/> : <FaPlus/> }</PostExpand> : null }
+                { openBtn ? <PostExpand onClick={onToggleExpand} stickied={alreadySubbed}>{ expanded ? <FaChevronUp/> : <FaChevronDown/> }</PostExpand> : null }
                 <PostTextGroup>
                     <div>
-                        <PostTitle><NavLink to={`/${sub.subName}`}>{sub.title}</NavLink></PostTitle>
+                        <PostTitle><NavLink to={`/${sub.subName}/${currentSort}`}>{sub.title}</NavLink></PostTitle>
                         <PostDetails>
-                            <span>{sub.subscribers} members</span> - <span>{dateString}</span>
+                            <span>{sub.subscribers > 0 ? sub.subscribers : 0} {sub.subscribers !== 1 ? 'members' : 'member'}</span> - <span>{dateString}</span>
                         </PostDetails>
                         { expanded ? <span dangerouslySetInnerHTML={{__html: description}}></span> : null }
                     </div>

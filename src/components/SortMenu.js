@@ -2,8 +2,8 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import ButtonGroup from './ButtonGroup';
-import ButtonList from './ButtonList';
+import ButtonGroup from './Styled/ButtonGroup';
+import ButtonList from './Styled/ButtonList';
 
 const SortMenu = () => {
     const currentSub = useSelector(state => state.currentSub);

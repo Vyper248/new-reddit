@@ -13,6 +13,8 @@ const initialState = {
     noComments: false,
     commentSort: 'new',
 
+    subs: [],
+
     sortMenuOpen: false,
     searchMenuOpen: false,
     subMenuOpen: false,
@@ -43,6 +45,8 @@ export const reducer = (state = initialState, action={}) => {
         case 'CLOSE_SORT': return {...state, sortMenuOpen: false};
 
         case 'CLOSE_MENUS': return {...state, sortMenuOpen: false, searchMenuOpen: false, subMenuOpen: false};
+
+        case 'SET_SUBS': return {...state, subs: data};
 
         case 'SET_CURRENT_SEARCH': return {...state, currentSearch: data};
         case 'SET_CURRENT_SEARCH_SORT': return {...state, currentSearchSort: data};

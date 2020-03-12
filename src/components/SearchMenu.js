@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import ButtonGroup from './ButtonGroup';
-import ButtonList from './ButtonList';
-import Input from './Input';
-import Button from './Button';
-import SideButton from './SideButton';
+import ButtonGroup from './Styled/ButtonGroup';
+import ButtonList from './Styled/ButtonList';
+import Input from './Styled/Input';
+import Button from './Styled/Button';
+import SideButton from './Styled/SideButton';
 import Checkbox from './Checkbox';
 
 const SearchMenu = () => {    

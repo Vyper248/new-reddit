@@ -6,7 +6,7 @@ import { useMediaQuery } from 'react-responsive';
 import { FaChevronDown } from 'react-icons/fa'
 
 import CommentList from './CommentList';
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from './Styled/LoadingSpinner';
 
 import { parseBodyText, updatePostDetails, getComments } from '../functions/useful';
 

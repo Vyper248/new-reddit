@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import Comments from './CommentList';
+import CommentList from './CommentList';
 
 const StyledComment = styled.div`
     padding: 5px;
@@ -43,7 +43,7 @@ const Comment = ({comment, author}) => {
     //if there are any replies to this comment, create a new Comments object (will work recursively)
     let replies = "";
     if (comment.replies.length > 0){
-        replies = <Comments comments={comment.replies} author={author}/>;
+        replies = <CommentList comments={comment.replies} author={author}/>;
     }
 
     let body_html = parseBody(comment.body_html);

@@ -6,7 +6,7 @@ import { getPostList } from '../functions/useful';
 
 import PostLink from './PostLink';
 import SubLink from './SubLink';
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from './Styled/LoadingSpinner';
 
 const PostList = ({onClickLink}) => {
     const posts = useSelector(state => state.posts);
@@ -38,7 +38,7 @@ const PostList = ({onClickLink}) => {
             >
             {
                 posts.map(post => {
-                    if (post.type === 'sub') return <SubLink key={post.id} sub={post}/>
+                    if (post.type === 'sub') return <SubLink key={post.id} sub={post} currentSort={currentSort}/>
                     return <PostLink key={post.id} post={post} currentSub={currentSub} currentSort={currentSort} onClickLink={onClickLink}/>
                 })
             }
