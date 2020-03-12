@@ -30,13 +30,14 @@ const parseBodyText = (text) => {
 const parseURL = (url) => {
     let parts = url.split('/');
     let sub = '';
-    let newSort = 'hot';
+    let newSort = '';
     let postId = '';
 
     if (parts.length > 0) {
         parts[1] !== undefined ? sub = parts[1] : sub = '';
         parts[2] === 'comments' && parts[3] !== undefined ? postId = parts[3] : postId = '';
-        parts[2] !== 'comments' && parts[2] !== undefined ? newSort = parts[2] : newSort = 'hot';
+        parts[2] !== 'comments' && parts[2] !== undefined ? newSort = parts[2] : newSort = '';
+        if (parts[2] !== 'comments' && parts[2] === undefined) newSort = 'hot';
     }    
 
     return {sub, newSort, postId};

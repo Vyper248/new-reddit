@@ -58,6 +58,7 @@ const Page = ({location, history}) => {
     useEffect(() => {   
         if (isMobile) closeMenus(); 
         if (currentSub.length === 0) return;
+        if (currentPostId.length > 0) return;
         getPostList();
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
