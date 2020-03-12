@@ -20,6 +20,7 @@ const initialState = {
     currentSearch: '',
     currentSearchSort: 'relevance',
     currentSearchSub: true,
+    searchForSubs: false,
 };
 
 export const reducer = (state = initialState, action={}) => {
@@ -46,6 +47,7 @@ export const reducer = (state = initialState, action={}) => {
         case 'SET_CURRENT_SEARCH': return {...state, currentSearch: data};
         case 'SET_CURRENT_SEARCH_SORT': return {...state, currentSearchSort: data};
         case 'SET_CURRENT_SEARCH_SUB': return {...state, currentSearchSub: data};
+        case 'SET_SEARCH_FOR_SUBS': return {...state, searchForSubs: data};
 
         case 'SET_NO_POSTS': return {...state, noPosts: data};
         case 'SET_LATEST_POST': return {...state, latestPost: data};

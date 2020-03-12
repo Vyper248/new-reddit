@@ -47,15 +47,19 @@ const parseBool = (str) => {
 }
 
 const parseSearch = (searchStr) => {
-    let search = searchStr.match(/search=([a-zA-Z0-9 ]+)/);
+    let search = searchStr.match(/search=([a-zA-Z0-9% ]+)/);
     let searchSort = searchStr.match(/searchSort=(relevance|new)/);
     let searchSub = searchStr.match(/searchSub=(true|false)/);
+    let searchForSubs = searchStr.match(/searchForSubs=(true|false)/);
     
     search = search === null ? '' : search[1];
     searchSort = searchSort === null ? 'relevance' : searchSort[1];
     searchSub = searchSub === null ? true : parseBool(searchSub[1]);
+    searchForSubs = searchForSubs === null ? false : parseBool(searchForSubs[1]);
+
+    search = search.replace(/%20/g, ' ');
     
-    return {search, searchSort, searchSub};
+    return {search, searchSort, searchSub, searchForSubs};
 }
 
 const getMySubs = (prepend) => {
@@ -69,7 +73,7 @@ const getMySubs = (prepend) => {
 
 const getPostList = async (loadMore=false) => {
     const state = store.getState();
-    let { posts, currentSub, currentSort, currentSearch, currentSearchSort, currentSearchSub, latestPost } = state;
+    let { posts, currentSub, currentSort, currentSearch, currentSearchSort, currentSearchSub, latestPost, searchForSubs } = state;
     const setLatestPost = (val) => store.dispatch({type: 'SET_LATEST_POST', payload: val});
     const setPosts = (val) => store.dispatch({type: 'SET_POSTS', payload: val});
     const setNoPosts = (val) => store.dispatch({type: 'SET_NO_POSTS', payload: val});
@@ -94,8 +98,13 @@ const getPostList = async (loadMore=false) => {
 
         if (currentSearch.length > 0) {
             let parsedStr = currentSearch.split(' ').join('+');
-            url = `https://www.reddit.com/${currentSub}/search.json?q=${parsedStr}${currentSearchSub ? '&restrict_sr=on' : ''}&include_over_18=on&sort=${currentSearchSort}`;
-            if (loadMore) url += `&after=t3_${latestPost}`;
+            if (searchForSubs) url = `https://www.reddit.com/${currentSub}/search.json?q=${parsedStr}&include_over_18=on&sort=relevance&type=sr`;
+            else url = `https://www.reddit.com/${currentSub}/search.json?q=${parsedStr}${currentSearchSub ? '&restrict_sr=on' : ''}&include_over_18=on&sort=${currentSearchSort}`;
+
+            if (loadMore) {
+                if (searchForSubs) url += `&after=t5_${latestPost}`;
+                else url += `&after=t3_${latestPost}`;
+            }
         }
 
         if (currentSub.length === 0) url = 'https://www.reddit.com/.json';        
@@ -113,7 +122,7 @@ const getPostList = async (loadMore=false) => {
             }
         } else {
             if (data && data.data && data.data.children){
-                let newPosts = data.data.children.map(post => {
+                let newPosts = data.data.children.map(post => {                    
                     const data = post.data;
 
                     let media = data.media;
@@ -122,8 +131,19 @@ const getPostList = async (loadMore=false) => {
                     } else {
                         media = '';
                     }
+
+                    if (post.kind === 't5') return {
+                        id: data.id,
+                        type: 'sub',
+                        title: parseBodyText(data.title),
+                        subName: data.display_name,
+                        description: parseBodyText(data.description_html),
+                        created: data.created_utc,
+                        subscribers: data.subscribers,
+                    }
                     
                     return {
+                        type: 'post',
                         created: data.created_utc,
                         author: data.author,
                         domain: data.domain,

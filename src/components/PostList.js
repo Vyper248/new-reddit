@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { getPostList } from '../functions/useful';
 
 import PostLink from './PostLink';
+import SubLink from './SubLink';
 import LoadingSpinner from './LoadingSpinner';
 
 const PostList = ({onClickLink}) => {
@@ -37,6 +38,7 @@ const PostList = ({onClickLink}) => {
             >
             {
                 posts.map(post => {
+                    if (post.type === 'sub') return <SubLink key={post.id} sub={post}/>
                     return <PostLink key={post.id} post={post} currentSub={currentSub} currentSort={currentSort} onClickLink={onClickLink}/>
                 })
             }

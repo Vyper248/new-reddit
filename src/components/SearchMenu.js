@@ -33,7 +33,12 @@ const SearchMenu = () => {
 
     const onSearch = () => {
         closeMenus();
-        history.push(`/${currentSub}/${currentSort}?search=${search}&searchSort=${searchSort}&searchSub=${searchSub}`);
+        history.push(`/${currentSub}/${currentSort}?search=${search}&searchSort=${searchSort}&searchSub=${searchSub}&searchForSubs=${false}`);
+    }
+
+    const onSearchSubs = () => {
+        closeMenus();
+        history.push(`/${currentSub}/${currentSort}?search=${search}&searchSort=${searchSort}&searchSub=${searchSub}&searchForSubs=${true}`);
     }
 
     const onEnter = (e) => {
@@ -65,7 +70,10 @@ const SearchMenu = () => {
                 <Button selected={searchSort === 'new'} onClick={onClickNew}>New</Button>
                 <Button selected={searchSort === 'relevance'} onClick={onClickRelevant}>Relevant</Button>
             </ButtonGroup>
-            <Button onClick={onClearSearch}>Clear Search</Button>
+            <ButtonGroup>
+                <Button onClick={onSearchSubs}>Search Subs</Button>
+                <Button onClick={onClearSearch}>Clear Search</Button>
+            </ButtonGroup>
         </ButtonList>
     );
 }

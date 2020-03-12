@@ -34,10 +34,13 @@ const Page = ({location, history}) => {
     const currentSearchSub = useSelector(state => state.currentSearchSub);
     const setCurrentSearchSub = (val) => dispatch({type: 'SET_CURRENT_SEARCH_SUB', payload: val});
 
+    const currentSearchForSubs = useSelector(state => state.searchForSubs);
+    const setSearchForSubs = (val) => dispatch({type: 'SET_SEARCH_FOR_SUBS', payload: val});
+
     const isMobile = useMediaQuery({ maxWidth: 700 });
 
     let {sub, newSort, postId} = parseURL(location.pathname); 
-    let {search, searchSort, searchSub} = parseSearch(location.search);    
+    let {search, searchSort, searchSub, searchForSubs} = parseSearch(location.search);    
 
     batch(() => {
         if (sub !== currentSub) setCurrentSub(sub);
@@ -48,6 +51,7 @@ const Page = ({location, history}) => {
         if (search !== currentSearch) setCurrentSearch(search);
         if (searchSort !== currentSearchSort) setCurrentSearchSort(searchSort);
         if (searchSub !== currentSearchSub) setCurrentSearchSub(searchSub);
+        if (searchForSubs !== currentSearchForSubs) setSearchForSubs(searchForSubs);
     });
 
     //when changing sub or sort method, get post list and clear search
@@ -57,7 +61,7 @@ const Page = ({location, history}) => {
         getPostList();
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentSort, currentSub, currentSearch, currentSearchSort, currentSearchSub]);
+    }, [currentSort, currentSub, currentSearch, currentSearchSort, currentSearchSub, currentSearchForSubs]);
 
     //return to scroll positiong before going to a post
     useEffect(() => {
