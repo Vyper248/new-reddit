@@ -15,7 +15,7 @@ const CommentList = ({comments, author}) => {
     if (comments.length === 0) return null;
 
     return (
-        <StyledCommentList>
+        <StyledCommentList id="commentList">
             {
                 comments.map(comment => {
                     return <Comment key={comment.id} comment={comment} author={author}/>

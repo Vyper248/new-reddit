@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { formatDistanceStrict } from 'date-fns';
 import { useSelector } from 'react-redux';
+import { useMediaQuery } from 'react-responsive';
+import { FaChevronDown } from 'react-icons/fa'
 
 import CommentList from './CommentList';
 import LoadingSpinner from './LoadingSpinner';
@@ -68,12 +70,36 @@ const PostBody = styled.div`
     }
 `;
 
+const ScrollButton = styled.div`
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    border: 1px solid red;
+    background-color: black;
+    border-radius: 50%;
+    text-align: center;
+
+    & > svg {
+        position: relative;
+        top: 10px;
+        font-size: 2em;
+    }
+
+    :hover {
+        cursor: pointer;
+        background-color: gray;
+    }
+`;
+
 const Post = () => {
     const comments = useSelector(state => state.comments);
     const noComments = useSelector(state => state.noComments);
     let post = useSelector(state => state.postDetails);
     const currentPostId = useSelector(state => state.currentPostId);
     const commentSort = useSelector(state => state.commentSort);
+    const isMobile = useMediaQuery({ maxWidth: 700 });
 
     useEffect(() => {
         //get quick details from posts array
@@ -104,6 +130,25 @@ const Post = () => {
     let shortUrl = url || '';
     if (shortUrl.length > 40) shortUrl = shortUrl.substr(0,40) + '...';
 
+    //find the next comment that's not at the top and scroll to it
+    const scrollToNext = () => {
+        const commentDiv = document.querySelector('#commentList');
+        for (let i = 0; i < commentDiv.children.length; i++) {
+            let child = commentDiv.children[i];
+            let rect = child.getBoundingClientRect();            
+            if (rect.top < 1 || (isMobile && rect.top < 41)) continue;
+            else {
+                child.scrollIntoView();
+                //adjust for the top menu on mobile devices
+                if (isMobile) {
+                    const el = document.scrollingElement || document.documentElement;
+                    el.scrollTop -= 40;
+                }
+                break;
+            }
+        }
+    }
+
     return (
         <StyledPost>
             <div>
@@ -115,6 +160,7 @@ const Post = () => {
             { comments.length === 0 && noComments === false ? <LoadingSpinner/> : null }
             { noComments ? <div>No Comments</div> : null }
             <CommentList comments={comments} author={author}/>
+            <ScrollButton onClick={scrollToNext}><FaChevronDown/></ScrollButton>
         </StyledPost>
     );
 }
