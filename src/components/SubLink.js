@@ -83,11 +83,14 @@ const SubLink = ({ sub }) => {
     let dateString = formatDistanceStrict(new Date(), sub.created*1000);
 
     //make sure any links within the body open in a new tab
-    sub.description = sub.description.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
+    let description = sub.description.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
+
+    //but links to other reddit subs can be kept on this website
+    description = description.replace(/target="_blank" rel="noopener noreferrer" href="\/r/g, 'href="#'); 
 
     //decide whether to show an open button for post body
     let openBtn = true;
-    if (sub.description.length === 0) openBtn = false;    
+    if (description.length === 0) openBtn = false;    
 
     return (
         <StyledPostLink>
@@ -99,7 +102,7 @@ const SubLink = ({ sub }) => {
                         <PostDetails>
                             <span>{sub.subscribers} members</span> - <span>{dateString}</span>
                         </PostDetails>
-                        { expanded ? <span dangerouslySetInnerHTML={{__html: sub.description}}></span> : null }
+                        { expanded ? <span dangerouslySetInnerHTML={{__html: description}}></span> : null }
                     </div>
                 </PostTextGroup>
             </div>
@@ -107,4 +110,9 @@ const SubLink = ({ sub }) => {
     );
 }
 
-export default SubLink;
+const areEqual = (prevProps, nextProps) => {    
+    if (prevProps.sub.id === nextProps.sub.id) return true;
+    return false;
+}
+
+export default React.memo(SubLink, areEqual);

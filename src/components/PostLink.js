@@ -159,8 +159,6 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
     //check if sticked and add another class
     let stickied = post.stickied ? true : false;
 
-    // console.log('Rendering Post Link with ID: ', post.id)
-
     return (
         <StyledPostLink stickied={stickied}>
             { showThumbnail ? <PostThumbnail><img src={post.thumbnail} alt="Thumbnail"/></PostThumbnail> : null }
