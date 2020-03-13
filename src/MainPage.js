@@ -103,7 +103,7 @@ const Page = ({location, history}) => {
     const getMainPage = () => {
         return (
             <React.Fragment>
-                <Header heading={currentSub} onReload={onReload}/>
+                <Header heading={currentSearchForSubs ? `Searching: ${currentSearch}` : currentSub} onReload={onReload}/>
                 { currentPostId.length > 0 ? <Post/> : null }
                 <PostList onClickLink={onClickLink}/>
             </React.Fragment>

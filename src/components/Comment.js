@@ -74,6 +74,14 @@ const parseBody = (body) => {
     //but links to other reddit subs can be kept on this website
     newBody = newBody.replace(/target="_blank" rel="noopener noreferrer" href="\/r/g, 'href="#');
 
+    //replace full links to reddit with local links to stay on this website
+    let redditMatches = newBody.match(/href="https:\/\/www.reddit.com\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+/g);
+    if (redditMatches !== null) redditMatches.forEach(match => {
+        let sub = match.match(/r\/([a-zA-Z0-9]+)/)[1];
+        let id = match.match(/comments\/([a-zA-Z0-9]+)/)[1];
+        newBody = newBody.replace(`target="_blank" rel="noopener noreferrer" ${match}`, `href="#/${sub}/comments/${id}`);
+    });
+    
     return newBody; 
 }
 

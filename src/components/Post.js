@@ -16,6 +16,7 @@ const StyledPost = styled.div`
     width: 100%;
     max-width: 1200px;
     margin: auto;
+    margin-bottom: 30px;
 
     & h1 {
         text-align: left;
@@ -104,15 +105,13 @@ const Post = () => {
     useEffect(() => {
         //get quick details from posts array
         updatePostDetails();
-        //query server for more details and comments
-        getComments();
         window.scrollTo(0,0); 
     }, []);
 
     useEffect(() => {
-        //if comment sort method is changed, then get comments again using new sorting
+        //if comment sort method or post Id is changed, then get comments again using new values
         getComments();
-    }, [commentSort]);
+    }, [commentSort, currentPostId]);
 
     if (post.body === undefined || post.id !== currentPostId) {
         return <div style={{textAlign: 'center'}}><LoadingSpinner/></div>;

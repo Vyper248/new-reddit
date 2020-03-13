@@ -84,7 +84,7 @@ const SubLink = ({ sub, currentSort }) => {
                     <div>
                         <PostTitle><NavLink to={`/${sub.subName}/${currentSort}`}>{sub.title}</NavLink></PostTitle>
                         <PostDetails>
-                            <span>{sub.subscribers > 0 ? sub.subscribers : 0} {sub.subscribers !== 1 ? 'members' : 'member'}</span> - <span>{dateString}</span>
+                            <span>{sub.subName}</span> - <span>{sub.subscribers > 0 ? sub.subscribers : 0} {sub.subscribers !== 1 ? 'members' : 'member'}</span> - <span>{dateString}</span>
                         </PostDetails>
                         { expanded ? <span dangerouslySetInnerHTML={{__html: description}}></span> : null }
                     </div>
