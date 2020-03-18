@@ -6,6 +6,7 @@ import SubList from './SubList';
 import SortMenu from './SortMenu';
 import CommentSortMenu from './CommentSortMenu';
 import SearchMenu from './SearchMenu';
+import SaveList from './SaveList';
 
 const StyledTopMenu = styled.div`
     border-bottom: 1px solid red;
@@ -32,7 +33,7 @@ const MenuButton = styled.div`
 
 const Dropdown = styled.div`
     position: fixed;
-    width: 250px;
+    width: ${props => props.width ? props.width : '250px'};
     background-color: black;
     z-index: 5;
     top: 35px;
@@ -57,16 +58,22 @@ const TopMenu = ({onBackClick}) => {
     const sortMenuOpen = useSelector(state => state.sortMenuOpen);
     const onClickSort = () => sortMenuOpen ? dispatch({type: 'CLOSE_SORT'}) : dispatch({type: 'OPEN_SORT'});
 
+    const saveMenuOpen = useSelector(state => state.saveMenuOpen);
+    const saved = useSelector(state => state.saved);
+    const onClickSave = () => saveMenuOpen ? dispatch({type: 'CLOSE_SAVED'}) : dispatch({type: 'OPEN_SAVED'});
+
     const currentPostId = useSelector(state => state.currentPostId);
 
     return (
         <React.Fragment>
             <StyledTopMenu>
                 <MenuButton onClick={onClickSubs} selected={subMenuOpen}>Subs</MenuButton>
+                { saved.length > 0 ? <MenuButton onClick={onClickSave} selected={saveMenuOpen}>Saved</MenuButton> : null }
                 { currentPostId.length > 0 ? <MenuButton onClick={onBackClick}>Back</MenuButton> : null }
                 <MenuButton onClick={onClickSort} selected={sortMenuOpen}>Sort</MenuButton>
                 <MenuButton onClick={onClickSearch} selected={searchMenuOpen}>Search</MenuButton>
             </StyledTopMenu>
+            { saveMenuOpen ? <Dropdown width="300px"><SaveList/></Dropdown> : null }
             { subMenuOpen ? <Dropdown><SubList/></Dropdown> : null }
             { sortMenuOpen && currentPostId.length === 0 ? <Dropdown right={true}><SortMenu/></Dropdown> : null }
             { sortMenuOpen && currentPostId.length > 0 ? <Dropdown right={true}><CommentSortMenu/></Dropdown> : null }

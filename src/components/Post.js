@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { formatDistanceStrict } from 'date-fns';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import { FaChevronDown } from 'react-icons/fa'
 
@@ -94,13 +94,25 @@ const ScrollButton = styled.div`
     }
 `;
 
+const SimpleButton = styled.span`
+    :hover {
+        cursor: pointer;
+    }
+`
+
 const Post = () => {
+    const dispatch = useDispatch();
+
     const comments = useSelector(state => state.comments);
     const noComments = useSelector(state => state.noComments);
     let post = useSelector(state => state.postDetails);
     const currentPostId = useSelector(state => state.currentPostId);
     const commentSort = useSelector(state => state.commentSort);
+    const currentSub = useSelector(state => state.currentSub);
     const isMobile = useMediaQuery({ maxWidth: 700 });
+
+    const saved = useSelector(state => state.saved);
+    const setSaved = (val) => dispatch({type: 'SET_SAVED', payload: val});
 
     useEffect(() => {
         //get quick details from posts array
@@ -129,6 +141,9 @@ const Post = () => {
     let shortUrl = url || '';
     if (shortUrl.length > 40) shortUrl = shortUrl.substr(0,40) + '...';
 
+    //check if post is saved
+    let isSaved = saved.find(obj => obj.id === currentPostId) !== undefined;
+
     //find the next comment that's not at the top and scroll to it
     const scrollToNext = () => {
         const commentDiv = document.querySelector('#commentList');
@@ -148,12 +163,25 @@ const Post = () => {
         }
     }
 
+    const onSavePost = () => {
+        let newSaved;
+        if (isSaved) {
+            newSaved = saved.filter(obj => obj.id !== post.id);
+        } else {
+            let link = `/${currentSub}/comments/${post.id}`;
+            newSaved = [...saved, {id: currentPostId, title: title, url: link, sub: currentSub}];
+        }
+
+        setSaved(newSaved);
+        localStorage.setItem('saved', JSON.stringify(newSaved));
+    }
+
     return (
         <StyledPost>
             <div>
                 <h2 dangerouslySetInnerHTML={{ __html: title}}></h2>
                 <PostDetails>{author} | {dateString} | <a href={url} target="_blank" rel="noopener noreferrer">Go to URL ({shortUrl})</a></PostDetails>
-                <PostDetails><a href={`https://www.reddit.com/${permalink}`} target="_blank" rel="noopener noreferrer">Open on Reddit</a></PostDetails>
+                <PostDetails><a href={`https://www.reddit.com/${permalink}`} target="_blank" rel="noopener noreferrer">Open on Reddit</a> - <SimpleButton onClick={onSavePost}>{ isSaved ? 'Unsave' : 'Save' }</SimpleButton></PostDetails>
                 { bodyTag }
             </div>
             { comments.length === 0 && noComments === false ? <LoadingSpinner/> : null }

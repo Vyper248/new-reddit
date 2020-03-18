@@ -69,6 +69,7 @@ const Page = ({location, history}) => {
         if (currentPostId.length === 0) {
             window.scrollTo(0,scrollPos);
         }
+        closeMenus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPostId]);
 

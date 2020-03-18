@@ -14,10 +14,12 @@ const initialState = {
     commentSort: 'new',
 
     subs: [],
+    saved: [],
 
     sortMenuOpen: false,
     searchMenuOpen: false,
     subMenuOpen: false,
+    saveMenuOpen: false,
 
     currentSearch: '',
     currentSearchSort: 'relevance',
@@ -35,18 +37,22 @@ export const reducer = (state = initialState, action={}) => {
         case 'SET_POST_DETAILS': return {...state, postDetails: data};
 
         case 'CLEAR_SEARCH': return {...state, currentSearch: '', currentSearchSort: 'relevance', currentSearchSub: true, searchMenuOpen: false};
-        case 'OPEN_SEARCH': return {...state, searchMenuOpen: true, sortMenuOpen: false, subMenuOpen: false};
+        case 'OPEN_SEARCH': return {...state, searchMenuOpen: true, sortMenuOpen: false, subMenuOpen: false, saveMenuOpen: false};
         case 'CLOSE_SEARCH': return {...state, searchMenuOpen: false};
 
-        case 'OPEN_SUBS': return {...state, subMenuOpen: true, sortMenuOpen: false, searchMenuOpen: false};
+        case 'OPEN_SUBS': return {...state, subMenuOpen: true, sortMenuOpen: false, searchMenuOpen: false, saveMenuOpen: false};
         case 'CLOSE_SUBS': return {...state, subMenuOpen: false};
 
-        case 'OPEN_SORT': return {...state, sortMenuOpen: true, subMenuOpen: false, searchMenuOpen: false};
+        case 'OPEN_SORT': return {...state, sortMenuOpen: true, subMenuOpen: false, searchMenuOpen: false, saveMenuOpen: false};
         case 'CLOSE_SORT': return {...state, sortMenuOpen: false};
 
-        case 'CLOSE_MENUS': return {...state, sortMenuOpen: false, searchMenuOpen: false, subMenuOpen: false};
+        case 'OPEN_SAVED': return {...state, saveMenuOpen: true, sortMenuOpen: false, subMenuOpen: false, searchMenuOpen: false};
+        case 'CLOSE_SAVED': return {...state, saveMenuOpen: false};
+
+        case 'CLOSE_MENUS': return {...state, sortMenuOpen: false, searchMenuOpen: false, subMenuOpen: false, saveMenuOpen: false};
 
         case 'SET_SUBS': return {...state, subs: data};
+        case 'SET_SAVED': return {...state, saved: data};
 
         case 'SET_CURRENT_SEARCH': return {...state, currentSearch: data};
         case 'SET_CURRENT_SEARCH_SORT': return {...state, currentSearchSort: data};
