@@ -15,6 +15,27 @@ const parseComment = (comment) => {
     return {body_html, id, author, permalink, replies, score};
 }
 
+const parseLinks = (text) => {
+    //make sure any links within the body open in a new tab
+    text = text.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
+    
+    //make sure links to reddit users are adjusted
+    text = text.replace(/href="\/u/g, 'href="https://www.reddit.com/$1');
+    
+    //but links to other reddit subs can be kept on this website
+    text = text.replace(/target="_blank" rel="noopener noreferrer" href="\/r/g, 'href="#');  
+
+    //replace full links to reddit with local links to stay on this website
+    let redditMatches = text.match(/href="https:\/\/www.reddit.com\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+/g);
+    if (redditMatches !== null) redditMatches.forEach(match => {
+        let sub = match.match(/r\/([a-zA-Z0-9]+)/)[1];
+        let id = match.match(/comments\/([a-zA-Z0-9]+)/)[1];
+        text = text.replace(`target="_blank" rel="noopener noreferrer" ${match}`, `href="#/${sub}/comments/${id}`);
+    });
+
+    return text;
+}
+
 const parseBodyText = (text) => {
     text ? text = text
                     .replace(/&lt;/g,'<')
@@ -238,6 +259,7 @@ const updatePostDetails = () => {
 export {
     parseComment, 
     parseBodyText,
+    parseLinks,
     parseURL,
     parseSearch,
     getPostList,

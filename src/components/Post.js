@@ -8,7 +8,7 @@ import { FaChevronDown } from 'react-icons/fa'
 import CommentList from './CommentList';
 import LoadingSpinner from './Styled/LoadingSpinner';
 
-import { parseBodyText, updatePostDetails, getComments } from '../functions/useful';
+import { parseBodyText, parseLinks, updatePostDetails, getComments } from '../functions/useful';
 
 const StyledPost = styled.div`
     background-color: black;
@@ -165,14 +165,7 @@ const Post = () => {
 }
 
 const parsePostBody = (body, url, media) => {
-    //make sure any links within the body open in a new tab
-    body = body.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
-    
-    //make sure links to reddit users are adjusted
-    body = body.replace(/href="\/u/g, 'href="https://www.reddit.com/$1');
-    
-    //but links to other reddit subs can be kept on this website
-    body = body.replace(/target="_blank" rel="noopener noreferrer" href="\/r/g, 'href="#');    
+    body = parseLinks(body);
     
     //check for image link to url and replace body with image if so
     let bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: body }} className="postDivBody"></PostBody>;
@@ -183,6 +176,7 @@ const parsePostBody = (body, url, media) => {
     //check for media embed and replace body with this
     if (media && media.oembed){
         media = parseBodyText(media.oembed.html);
+        media = parseLinks(media);
         if (body.length > 0) media += '<br/>'+body;
         bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: media }} className="postDivBody"></PostBody>;
     } else {

@@ -4,6 +4,8 @@ import { NavLink } from 'react-router-dom';
 import { FaRegComment, FaChevronUp, FaChevronDown } from 'react-icons/fa';
 import { formatDistanceStrict } from 'date-fns';
 
+import { parseLinks } from '../functions/useful';
+
 import PostTitle from './Styled/PostTitle';
 import PostTextGroup from './Styled/PostTextGroup';
 import PostDetails from './Styled/PostDetails';
@@ -84,7 +86,7 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
     if (/(.jpg|.png|.bmp|.jpeg)/.test(post.thumbnail) === true) showThumbnail = true;
 
     //make sure any links within the body open in a new tab
-    post.body = post.body.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
+    post.body = parseLinks(post.body);
 
     //decide whether to show image preview in body
     let bodyContent = <PostBody dangerouslySetInnerHTML={{__html: post.body}}></PostBody>;
@@ -97,7 +99,8 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
     //decide whether to show embeded media
     if (post.media.length > 0){
         if (post.body.length > 0) post.media += "<br/>"+post.body;
-        bodyContent = <PostBody dangerouslySetInnerHTML={{__html: post.media}}></PostBody>;
+        let media = parseLinks(post.media);
+        bodyContent = <PostBody dangerouslySetInnerHTML={{__html: media}}></PostBody>;
         bodyHasImage = true;
     }
 

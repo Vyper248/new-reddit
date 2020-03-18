@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { parseLinks } from '../functions/useful';
+
 import CommentList from './CommentList';
 
 const StyledComment = styled.div`
@@ -46,7 +48,7 @@ const Comment = ({comment, author}) => {
         replies = <CommentList comments={comment.replies} author={author}/>;
     }
 
-    let body_html = parseBody(comment.body_html);
+    let body_html = parseLinks(comment.body_html);
 
     const toggleClosed = () => {
         setClosed(!closed);
@@ -62,27 +64,6 @@ const Comment = ({comment, author}) => {
             { closed ? null : replies }
         </StyledComment>
     );
-}
-
-const parseBody = (body) => {    
-    //make sure any links within the body open in a new tab
-    let newBody = body.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
-    
-    //make sure links to reddit are adjusted
-    newBody = newBody.replace(/href="\/u/g, 'href="https://www.reddit.com/$1');
-
-    //but links to other reddit subs can be kept on this website
-    newBody = newBody.replace(/target="_blank" rel="noopener noreferrer" href="\/r/g, 'href="#');
-
-    //replace full links to reddit with local links to stay on this website
-    let redditMatches = newBody.match(/href="https:\/\/www.reddit.com\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+/g);
-    if (redditMatches !== null) redditMatches.forEach(match => {
-        let sub = match.match(/r\/([a-zA-Z0-9]+)/)[1];
-        let id = match.match(/comments\/([a-zA-Z0-9]+)/)[1];
-        newBody = newBody.replace(`target="_blank" rel="noopener noreferrer" ${match}`, `href="#/${sub}/comments/${id}`);
-    });
-    
-    return newBody; 
 }
 
 export default Comment;

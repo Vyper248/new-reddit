@@ -5,6 +5,8 @@ import { FaPlus, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { formatDistanceStrict } from 'date-fns';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { parseLinks } from '../functions/useful';
+
 import PostTitle from './Styled/PostTitle';
 import PostTextGroup from './Styled/PostTextGroup';
 import PostDetails from './Styled/PostDetails';
@@ -54,11 +56,7 @@ const SubLink = ({ sub, currentSort }) => {
     //get relative time string
     let dateString = formatDistanceStrict(new Date(), sub.created*1000);
 
-    //make sure any links within the body open in a new tab
-    let description = sub.description.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
-
-    //but links to other reddit subs can be kept on this website
-    description = description.replace(/target="_blank" rel="noopener noreferrer" href="\/r/g, 'href="#'); 
+    let description = parseLinks(sub.description);
 
     //decide whether to show an open button for post body
     let openBtn = true;
