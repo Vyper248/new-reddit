@@ -67,6 +67,10 @@ const PostBody = styled.div`
         margin: auto;
         display: block;
     }
+
+    & a {
+     color: rgb(0, 225, 255);
+    }
 `;
 
 const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
