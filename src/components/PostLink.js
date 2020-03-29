@@ -124,7 +124,7 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
                     <div>
                         <PostTitle><span onClick={onClickLink(`/${currentSub}/comments/${post.id}`)}>{post.title}</span></PostTitle>
                         <PostDetails>
-                            <NavLink to={`/${post.subreddit}/${currentSort}`}>{post.subreddit}</NavLink> - <span><a href={post.url} target="_blank" rel='noreferrer noopener'>{post.domain}</a></span> - <span>{dateString}</span>
+                            <NavLink to={`/${post.subreddit}/${currentSort}`}>{post.subreddit}</NavLink>{ post.url.includes('v.redd.it') ? null : <span> - <a href={post.url} target="_blank" rel='noreferrer noopener'>{post.domain}</a></span> } - <span>{dateString}</span>
                         </PostDetails>
                         { expanded ? bodyContent : null }
                         <div>
