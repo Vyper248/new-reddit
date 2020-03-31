@@ -124,12 +124,12 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
                     <div>
                         <PostTitle><span onClick={onClickLink(`/${currentSub}/comments/${post.id}`)}>{post.title}</span></PostTitle>
                         <PostDetails>
-                            <NavLink to={`/${post.subreddit}/${currentSort}`}>{post.subreddit}</NavLink>{ post.url.includes('v.redd.it') ? null : <span> - <a href={post.url} target="_blank" rel='noreferrer noopener'>{post.domain}</a></span> } - <span>{dateString}</span>
+                            <NavLink to={`/${post.subreddit}/${currentSort}`}>{post.subreddit}</NavLink>{ post.url.includes('v.redd.it') ? <span> - video</span> : <span> - <a href={post.url} target="_blank" rel='noreferrer noopener'>{post.domain}</a></span> } - <span>{dateString}</span>
                         </PostDetails>
                         { expanded ? bodyContent : null }
                         <div>
                             <PostComments><span onClick={onClickLink(`/${currentSub}/comments/${post.id}`)}>{post.num_comments} <FaRegComment/></span></PostComments>
-                            <span style={{marginLeft: '15px'}}><a href={`https://www.reddit.com/${post.permalink}`} target="_blank" rel="noreferrer noopener">Open on Reddit</a></span>
+                            <span style={{marginLeft: '15px'}}><a href={`https://www.reddit.com${post.permalink}`} target="_blank" rel="noreferrer noopener">Open on Reddit</a></span>
                         </div>
                     </div>
                 </PostTextGroup>

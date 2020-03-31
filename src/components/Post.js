@@ -180,8 +180,8 @@ const Post = () => {
         <StyledPost>
             <div>
                 <h2 dangerouslySetInnerHTML={{ __html: title}}></h2>
-                <PostDetails>{author} | {dateString} { url.includes('v.redd.it') ? null : <a href={url} target="_blank" rel="noopener noreferrer"> | Go to URL ({shortUrl})</a> }</PostDetails>
-                <PostDetails><a href={`https://www.reddit.com/${permalink}`} target="_blank" rel="noopener noreferrer">Open on Reddit</a> - <SimpleButton onClick={onSavePost}>{ isSaved ? 'Unsave' : 'Save' }</SimpleButton></PostDetails>
+                <PostDetails>{author} | {dateString} { url.includes('v.redd.it') ? <span> | video</span> : <a href={url} target="_blank" rel="noopener noreferrer"> | Go to URL ({shortUrl})</a> }</PostDetails>
+                <PostDetails><a href={`https://www.reddit.com${permalink}`} target="_blank" rel="noopener noreferrer">Open on Reddit</a> - <SimpleButton onClick={onSavePost}>{ isSaved ? 'Unsave' : 'Save' }</SimpleButton></PostDetails>
                 { bodyTag }
             </div>
             { comments.length === 0 && noComments === false ? <LoadingSpinner/> : null }
