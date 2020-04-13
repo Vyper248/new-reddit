@@ -15,6 +15,10 @@ const StyledComment = styled.div`
     & a {
         color: rgb(0, 225, 255);
     }
+
+    & pre {
+        overflow: scroll;
+    }
 `;
 
 const CommentClose = styled.span`
