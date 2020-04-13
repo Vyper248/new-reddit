@@ -50,6 +50,10 @@ h1 {
     margin-bottom: 15px;
 }
 
+p {
+    word-wrap: break-word;
+}
+
 @media screen and (max-device-width: 600px){
     .pageContent {
         transform: translateX(100%);
