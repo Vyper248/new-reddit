@@ -1,24 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import ButtonGroup from './Styled/ButtonGroup';
 import ButtonList from './Styled/ButtonList';
 
 const SubList = () => {
-    const dispatch = useDispatch();
-
     const saved = useSelector(state => state.saved);
-    const setSaved = (val) => dispatch({type: 'SET_SAVED', payload: val});
-
     const currentPostId = useSelector(state => state.currentPostId);
-
-    useEffect(() => {
-        let storedSaves = localStorage.getItem('saved');
-        storedSaves = storedSaves ? JSON.parse(storedSaves) : [];
-        setSaved(storedSaves);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     return (
         <ButtonList>

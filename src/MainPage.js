@@ -42,6 +42,15 @@ const Page = ({location, history}) => {
     let {sub, newSort, postId} = parseURL(location.pathname); 
     let {search, searchSort, searchSub, searchForSubs} = parseSearch(location.search);    
 
+    //load saved posts from local storage
+    const setSaved = (val) => dispatch({type: 'SET_SAVED', payload: val});
+    useEffect(() => {
+        let storedSaves = localStorage.getItem('saved');
+        storedSaves = storedSaves ? JSON.parse(storedSaves) : [];
+        setSaved(storedSaves);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     batch(() => {
         if (sub !== currentSub) setCurrentSub(sub);
         if (postId !== currentPostId) setCurrentPostId(postId);
