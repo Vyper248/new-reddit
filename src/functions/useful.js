@@ -179,7 +179,8 @@ const getPostList = async (loadMore=false) => {
                         url: data.url,
                         thumbnail: data.thumbnail, //if no thumbnail - "self"
                         permalink: data.permalink,
-                        media: media
+                        media: media,
+                        media_embed: data.media_embed
                     };
                 });
 
@@ -228,14 +229,14 @@ const getComments = async () => {
         if (data.error){
             console.log('Getting Comments - Error: ', data.error);
         } else {
-            let {title, selftext_html, id, url, media, author, created_utc, permalink} = data[0].data.children[0].data;
+            let {title, selftext_html, id, url, media, media_embed, author, created_utc, permalink} = data[0].data.children[0].data;
 
             let comments = data[1].data.children.map(obj => {
                 return parseComment(obj.data);
             });
 
             batch(() => {
-                setPostDetails({id, url, title, author, created:created_utc, body: parseBodyText(selftext_html), media, permalink});
+                setPostDetails({id, url, title, author, created:created_utc, body: parseBodyText(selftext_html), media, media_embed, permalink});
                 setComments(comments);
                 if (comments.length === 0) setNoComments(true);
             });

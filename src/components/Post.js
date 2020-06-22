@@ -129,7 +129,7 @@ const Post = () => {
         return <div style={{textAlign: 'center'}}><LoadingSpinner/></div>;
     }
 
-    let {url, title, author, created, body, media, permalink} = post;  
+    let {url, title, author, created, body, media, permalink, media_embed} = post;
 
     //check if post is a link to another post and make sure it goes there locally and not on a new page
     let urlMatches = url.match(/\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+/g);
@@ -144,7 +144,7 @@ const Post = () => {
     
 
     //get parsed body tag
-    let bodyTag = parsePostBody(body, url, media);  
+    let bodyTag = parsePostBody(body, url, media, media_embed);  
 
     //get relative time string
     let dateString = formatDistanceStrict(new Date(), created*1000);
@@ -208,13 +208,21 @@ const Post = () => {
     );
 }
 
-const parsePostBody = (body, url, media) => {
+const parsePostBody = (body, url, media, media_embed) => {
     body = parseLinks(body);
     
     //check for image link to url and replace body with image if so
     let bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: body }} className="postDivBody"></PostBody>;
     if (/.(png|jpg|jpeg|bmp)$/.test(url)){
         bodyTag = <PostBody><img src={url} alt="Preview of content"/></PostBody>;
+    }
+
+    //check for a live update thread
+    if (media.type === 'liveupdate') {        
+        let content = parseBodyText(media_embed.content);
+        content = content.replace('iframe src', 'iframe width="100%" src');
+        bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: content }} className="postDivBody"></PostBody>;
+        return bodyTag;
     }
 
     //check for media embed and replace body with this
@@ -226,7 +234,7 @@ const parsePostBody = (body, url, media) => {
     } else {
         media = '';
     }
-
+    
     return bodyTag;
 }
 
