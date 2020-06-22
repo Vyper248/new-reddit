@@ -218,7 +218,7 @@ const parsePostBody = (body, url, media, media_embed) => {
     }
 
     //check for a live update thread
-    if (media.type === 'liveupdate') {        
+    if (media && media.type === 'liveupdate') {        
         let content = parseBodyText(media_embed.content);
         content = content.replace('iframe src', 'iframe width="100%" src');
         bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: content }} className="postDivBody"></PostBody>;
