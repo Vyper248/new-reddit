@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { formatDistanceStrict } from 'date-fns';
 
 import { parseLinks } from '../functions/useful';
 
@@ -54,6 +55,11 @@ const Comment = ({comment, author}) => {
 
     let body_html = parseLinks(comment.body_html);
 
+    //get relative time string
+    let dateString = comment.created_utc !== undefined ? formatDistanceStrict(new Date(), comment.created_utc*1000) : '';
+
+    let pointString = comment.score === 1 || comment.score === -1 ? 'point' : 'points';
+
     const toggleClosed = () => {
         setClosed(!closed);
     }
@@ -62,7 +68,7 @@ const Comment = ({comment, author}) => {
         <StyledComment>
             <CommentClose onClick={toggleClosed}>{ closed ? '[ + ] ' : '[ - ] ' }</CommentClose>
             <CommentAuthor original={comment.author === author}>{comment.author}</CommentAuthor>
-            <span style={{color: 'gray'}}> | {comment.score}</span>
+            <span style={{color: 'gray'}}> | {comment.score} {pointString}{dateString.length > 0 ? ` | ${dateString}` : ''}</span>
             { closed ? null : <div dangerouslySetInnerHTML={{ __html: body_html }}></div> }
             { closed ? null : <CommentFooter><a href={`https://www.reddit.com/${comment.permalink}`} target="_blank" rel="noreferrer noopener">Permalink</a></CommentFooter> }
             { closed ? null : replies }

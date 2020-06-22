@@ -2,7 +2,7 @@ import store from '../redux/store';
 import { batch } from 'react-redux';
 
 const parseComment = (comment) => {
-    let {body_html, id, author, permalink, replies, score} = comment;
+    let {body_html, id, author, permalink, replies, score, created_utc} = comment;
     body_html = parseBodyText(body_html);
     
     replies = typeof replies === 'object' ? replies.data.children : [];
@@ -12,7 +12,7 @@ const parseComment = (comment) => {
         return parseComment(comment.data);
     });
     
-    return {body_html, id, author, permalink, replies, score};
+    return {body_html, id, author, permalink, replies, score, created_utc};
 }
 
 const parseLinks = (text) => {

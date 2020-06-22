@@ -131,6 +131,18 @@ const Post = () => {
 
     let {url, title, author, created, body, media, permalink} = post;  
 
+    //check if post is a link to another post and make sure it goes there locally and not on a new page
+    let urlMatches = url.match(/\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+/g);
+    let localUrl = undefined;
+    if (urlMatches && urlMatches.length > 0) {
+        let match = urlMatches[0];
+        let sub = match.match(/r\/([a-zA-Z0-9]+)/)[1];
+        let id = match.match(/comments\/([a-zA-Z0-9]+)/)[1];
+        let alreadyHere = sub === currentSub && id === currentPostId;
+        if (sub !== undefined && id !== undefined && !alreadyHere) localUrl = `/#/${sub}/comments/${id}`;
+    }
+    
+
     //get parsed body tag
     let bodyTag = parsePostBody(body, url, media);  
 
@@ -176,11 +188,15 @@ const Post = () => {
         localStorage.setItem('saved', JSON.stringify(newSaved));
     }
 
+    let urlTag = <a href={url} target="_blank" rel="noopener noreferrer"> | Go to URL ({shortUrl})</a>;
+    if (localUrl !== undefined) urlTag = <a href={localUrl}> | Go to Post ({shortUrl})</a>;
+    if (url.includes('v.redd.it')) urlTag = <a href={`https://www.reddit.com${permalink}`} target="_blank" rel="noopener noreferrer"> | Video</a>;
+
     return (
         <StyledPost>
             <div>
                 <h2 dangerouslySetInnerHTML={{ __html: title}}></h2>
-                <PostDetails>{author} | {dateString} { url.includes('v.redd.it') ? <span> | video</span> : <a href={url} target="_blank" rel="noopener noreferrer"> | Go to URL ({shortUrl})</a> }</PostDetails>
+                <PostDetails>{author} | {dateString} { urlTag }</PostDetails>
                 <PostDetails><a href={`https://www.reddit.com${permalink}`} target="_blank" rel="noopener noreferrer">Open on Reddit</a> - <SimpleButton onClick={onSavePost}>{ isSaved ? 'Unsave' : 'Save' }</SimpleButton></PostDetails>
                 { bodyTag }
             </div>
