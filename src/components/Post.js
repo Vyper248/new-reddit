@@ -139,7 +139,7 @@ const Post = () => {
         let sub = match.match(/r\/([a-zA-Z0-9]+)/)[1];
         let id = match.match(/comments\/([a-zA-Z0-9]+)/)[1];
         let alreadyHere = sub === currentSub && id === currentPostId;
-        if (sub !== undefined && id !== undefined && !alreadyHere) localUrl = `/#/${sub}/comments/${id}`;
+        if (sub !== undefined && id !== undefined && !alreadyHere) localUrl = `#/${sub}/comments/${id}`;
     }
     
 
