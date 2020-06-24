@@ -95,7 +95,7 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
     //decide whether to show image preview in body
     let bodyContent = <PostBody dangerouslySetInnerHTML={{__html: post.body}}></PostBody>;
     let bodyHasImage = false;
-    if (post.url.match(/.(jpg|png)$/)){
+    if (post.url.match(/.(jpg|png|bmp|gif|jpeg)$/)){
         bodyContent = (<PostBody><img src={post.url} alt="Preview user linked to" /></PostBody>);
         bodyHasImage = true;
     }

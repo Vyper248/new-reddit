@@ -213,7 +213,7 @@ const parsePostBody = (body, url, media, media_embed) => {
     
     //check for image link to url and replace body with image if so
     let bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: body }} className="postDivBody"></PostBody>;
-    if (/.(png|jpg|jpeg|bmp)$/.test(url)){
+    if (/.(png|jpg|jpeg|bmp|gif)$/.test(url)){
         bodyTag = <PostBody><img src={url} alt="Preview of content"/></PostBody>;
     }
 
