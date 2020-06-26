@@ -51,6 +51,11 @@ const CommentAuthor = styled.a`
 const CommentFooter = styled.div`
     font-size: 0.8em;
     margin-bottom: 5px;
+    color: gray;
+
+    & > span:hover {
+        cursor: pointer;
+    }
     
     & > a {
         color: gray;
@@ -83,7 +88,7 @@ const Comment = ({comment, author, single=false, onClickLink}) => {
 
     const toggleClosed = () => {
         setClosed(!closed);
-    }    
+    }        
 
     return (
         <StyledComment single={single}>
@@ -92,7 +97,7 @@ const Comment = ({comment, author, single=false, onClickLink}) => {
             { single ? null : <CommentAuthor original={comment.author === author} href={`#/user/${comment.author}`}>{comment.author}</CommentAuthor> }
             <span style={{color: 'gray'}}> {single ? '' : '|'} {comment.score} {pointString}{dateString.length > 0 ? ` | ${dateString}` : ''}</span>
             { closed ? null : <div dangerouslySetInnerHTML={{ __html: body_html }}></div> }
-            { closed ? null : <CommentFooter><a href={`https://www.reddit.com/${comment.permalink}`} target="_blank" rel="noreferrer noopener">Permalink</a></CommentFooter> }
+            { closed ? null : <CommentFooter><a href={`https://www.reddit.com/${comment.permalink}`} target="_blank" rel="noreferrer noopener">Permalink</a>{ single ? <span onClick={onClickLink(comment.permalink.replace('r/',''))}> | Go to comment</span> : null }</CommentFooter> }
             { closed ? null : replies }
         </StyledComment>
     );

@@ -28,6 +28,7 @@ const initialState = {
     searchForSubs: false,
 
     previousUrl: '',
+    permalinkUrl: '',
 };
 
 export const reducer = (state = initialState, action={}) => {
@@ -73,6 +74,7 @@ export const reducer = (state = initialState, action={}) => {
         case 'SET_COMMENT_SORT': return {...state, commentSort: data};
 
         case 'SET_PREVIOUS_URL': return {...state, previousUrl: data};
+        case 'SET_PERMALINK_URL': return {...state, permalinkUrl: data};
         default: return state;
     }
 };

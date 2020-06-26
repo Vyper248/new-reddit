@@ -109,6 +109,7 @@ const Post = () => {
     const currentPostId = useSelector(state => state.currentPostId);
     const commentSort = useSelector(state => state.commentSort);
     const currentSub = useSelector(state => state.currentSub);
+    const permalinkUrl = useSelector(state => state.permalinkUrl);
     const isMobile = useMediaQuery({ maxWidth: 700 });
 
     const saved = useSelector(state => state.saved);
@@ -121,9 +122,9 @@ const Post = () => {
     }, []);
 
     useEffect(() => {
-        //if comment sort method or post Id is changed, then get comments again using new values
+        //if comment sort method or post Id is changed, then get comments again using new values        
         getComments();
-    }, [commentSort, currentPostId]);
+    }, [commentSort, currentPostId, permalinkUrl]);
 
     if (post.body === undefined || post.id !== currentPostId) {
         return <div style={{textAlign: 'center'}}><LoadingSpinner/></div>;
@@ -202,6 +203,7 @@ const Post = () => {
             </div>
             { comments.length === 0 && noComments === false ? <LoadingSpinner/> : null }
             { noComments ? <div>No Comments</div> : null }
+            { permalinkUrl.length > 0 ? <a href={`#/${currentSub}/comments/${currentPostId}`}>Show All Comments</a> : null }
             <CommentList comments={comments} author={author}/>
             <ScrollButton onClick={scrollToNext}><FaChevronDown/></ScrollButton>
         </StyledPost>

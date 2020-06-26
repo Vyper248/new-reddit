@@ -41,9 +41,12 @@ const Page = ({location, history}) => {
     const currentSearchForSubs = useSelector(state => state.searchForSubs);
     const setSearchForSubs = (val) => dispatch({type: 'SET_SEARCH_FOR_SUBS', payload: val});
 
+    const currentPermalinkUrl = useSelector(state => state.permalinkUrl);
+    const setPermalinkUrl = (val) => dispatch({type: 'SET_PERMALINK_URL', payload: val});
+
     const isMobile = useMediaQuery({ maxWidth: 700 });
 
-    let {sub, newSort, postId, userSort} = parseURL(location.pathname);     
+    let {sub, newSort, postId, userSort, permalinkUrl} = parseURL(location.pathname);     
     let {search, searchSort, searchSub, searchForSubs} = parseSearch(location.search);    
 
     //load saved posts from local storage
@@ -60,6 +63,7 @@ const Page = ({location, history}) => {
         if (postId !== currentPostId) setCurrentPostId(postId);
         if (userSort !== currentUserSort) setCurrentUserSort(userSort);
         if (newSort.length > 0 && newSort !== currentSort) setCurrentSort(newSort);
+        if (permalinkUrl !== currentPermalinkUrl) setPermalinkUrl(permalinkUrl);
 
         if (postId.length > 0 || currentPostId.length > 0) return;
         if (search !== currentSearch) setCurrentSearch(search);

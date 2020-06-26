@@ -54,6 +54,7 @@ const parseURL = (url) => {
     let newSort = '';
     let postId = '';
     let userSort = '';
+    let permalinkUrl = '';
 
     if (parts.length > 0) {
         parts[1] !== undefined ? sub = parts[1] : sub = '';
@@ -62,9 +63,10 @@ const parseURL = (url) => {
         if (parts[2] !== 'comments' && parts[2] === undefined) newSort = 'hot';
         if (parts[1] === 'user' && parts[3] !== undefined) userSort = parts[3];
         if (parts[1] === 'user' && parts[3] === undefined) userSort = 'overview';
+        if ([parts[2] === 'comments'] && parts[4] !== undefined && parts[5] !== undefined) permalinkUrl = parts[4] + '/' + parts[5];
     }    
 
-    return {sub, newSort, postId, userSort};
+    return {sub, newSort, postId, userSort, permalinkUrl};
 }
 
 const parseBool = (str) => {
@@ -233,7 +235,7 @@ const getPostList = async (loadMore=false, force=false) => {
 
 const getComments = async () => {
     const state = store.getState();
-    let { currentSub, currentPostId, commentSort } = state;
+    let { currentSub, currentPostId, commentSort, permalinkUrl } = state;
     const setComments = (val) => store.dispatch({type: 'SET_COMMENTS', payload: val});
     const setNoComments = (val) => store.dispatch({type: 'SET_NO_COMMENTS', payload: val});
     const setPostDetails = (val) => store.dispatch({type: 'SET_POST_DETAILS', payload: val});
@@ -245,7 +247,7 @@ const getComments = async () => {
     
     if (currentSub === 'My Subreddits') currentSub = getMySubs();
 
-    let url = `${currentSub}/comments/${currentPostId}/`;
+    let url = `${currentSub}/comments/${currentPostId}/${permalinkUrl}`;    
     
     try {        
         let response = await fetch(`https://www.reddit.com/r/${url}.json?sort=${commentSort}`);

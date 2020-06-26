@@ -107,6 +107,7 @@ const SubList = () => {
 }
 
 const checkIfSubbed = (subs, currentSub) => {
+    if (currentSub === 'user') return true;
     if (currentSub.length === 0) return true;
     if (currentSub === 'Popular') return true;
     if (currentSub === 'All') return true;
