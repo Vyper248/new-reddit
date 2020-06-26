@@ -6,6 +6,7 @@ import { getPostList } from '../functions/useful';
 
 import PostLink from './PostLink';
 import SubLink from './SubLink';
+import Comment from './Comment';
 import LoadingSpinner from './Styled/LoadingSpinner';
 
 const PostList = ({onClickLink}) => {
@@ -38,8 +39,10 @@ const PostList = ({onClickLink}) => {
             >
             {
                 posts.map(post => {
-                    if (post.type === 'sub') return <SubLink key={post.id} sub={post} currentSort={currentSort}/>
-                    return <PostLink key={post.id} post={post} currentSub={currentSub} currentSort={currentSort} onClickLink={onClickLink}/>
+                    if (post.type === 'comment') return <Comment key={post.id} comment={post} author='' single={true} onClickLink={onClickLink}/>;
+                    if (post.type === 'sub') return <SubLink key={post.id} sub={post} currentSort={currentSort}/>;
+                    if (currentSub === 'user') return <PostLink key={post.id} post={post} currentSub={post.subreddit} currentSort={'hot'} onClickLink={onClickLink}/>;
+                    return <PostLink key={post.id} post={post} currentSub={currentSub} currentSort={currentSort} onClickLink={onClickLink}/>;
                 })
             }
             {

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import SortMenu from './SortMenu';
 import CommentSortMenu from './CommentSortMenu';
+import UserSortMenu from './UserSortMenu';
 import SubList from './SubList';
 import SearchMenu from './SearchMenu';
 import SaveList from './SaveList';
@@ -25,6 +26,7 @@ const SavedButton = styled(Button)`
 const SideMenu = () => {
     const [showSaved, setShowSaved] = useState(false);
     const currentPostId = useSelector(state => state.currentPostId);
+    const currentSub = useSelector(state => state.currentSub);
 
     const onClickHideSaved = () => {
         setShowSaved(false);
@@ -46,7 +48,7 @@ const SideMenu = () => {
             <StyledSideMenu>
                 <SavedButton onClick={onClickShowSaved}>Saved Posts</SavedButton>
                 <SearchMenu/>
-                { currentPostId.length > 0 ? <CommentSortMenu/> : <SortMenu/> }
+                { currentSub === 'user' ? <UserSortMenu/> : currentPostId.length > 0 ? <CommentSortMenu/> : <SortMenu/> }
                 <SubList/>
             </StyledSideMenu>
         );

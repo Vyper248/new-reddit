@@ -2,6 +2,7 @@ const initialState = {
     currentSub: '',
     currentSort: 'hot',
     currentPostId: '',
+    currentUserSort: 'overview',
 
     postDetails: {},
     posts: [],
@@ -25,6 +26,8 @@ const initialState = {
     currentSearchSort: 'relevance',
     currentSearchSub: true,
     searchForSubs: false,
+
+    previousUrl: '',
 };
 
 export const reducer = (state = initialState, action={}) => {
@@ -33,6 +36,8 @@ export const reducer = (state = initialState, action={}) => {
         case 'SET_SUB': return {...state, currentSub: data};
         case 'SET_SORT': return {...state, currentSort: data};
         case 'SET_POSTID': return {...state, currentPostId: data};
+        case 'SET_USER_SORT': return {...state, currentUserSort: data};
+
         case 'SET_POSTS': return {...state, posts: data};
         case 'SET_POST_DETAILS': return {...state, postDetails: data};
 
@@ -66,6 +71,8 @@ export const reducer = (state = initialState, action={}) => {
         case 'SET_COMMENTS': return {...state, comments: data};
         case 'SET_NO_COMMENTS': return {...state, noComments: data};
         case 'SET_COMMENT_SORT': return {...state, commentSort: data};
+
+        case 'SET_PREVIOUS_URL': return {...state, previousUrl: data};
         default: return state;
     }
 };

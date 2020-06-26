@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import SubList from './SubList';
 import SortMenu from './SortMenu';
+import UserSortMenu from './UserSortMenu';
 import CommentSortMenu from './CommentSortMenu';
 import SearchMenu from './SearchMenu';
 import SaveList from './SaveList';
@@ -63,6 +64,7 @@ const TopMenu = ({onBackClick}) => {
     const onClickSave = () => saveMenuOpen ? dispatch({type: 'CLOSE_SAVED'}) : dispatch({type: 'OPEN_SAVED'});
 
     const currentPostId = useSelector(state => state.currentPostId);
+    const currentSub = useSelector(state => state.currentSub);
 
     return (
         <React.Fragment>
@@ -75,8 +77,9 @@ const TopMenu = ({onBackClick}) => {
             </StyledTopMenu>
             { saveMenuOpen ? <Dropdown width="300px"><SaveList/></Dropdown> : null }
             { subMenuOpen ? <Dropdown><SubList/></Dropdown> : null }
-            { sortMenuOpen && currentPostId.length === 0 ? <Dropdown right={true}><SortMenu/></Dropdown> : null }
-            { sortMenuOpen && currentPostId.length > 0 ? <Dropdown right={true}><CommentSortMenu/></Dropdown> : null }
+            { sortMenuOpen && currentSub === 'user' ? <Dropdown right={true}><UserSortMenu/></Dropdown> : null }
+            { sortMenuOpen && currentSub !== 'user' && currentPostId.length === 0 ? <Dropdown right={true}><SortMenu/></Dropdown> : null }
+            { sortMenuOpen && currentSub !== 'user' && currentPostId.length > 0 ? <Dropdown right={true}><CommentSortMenu/></Dropdown> : null }
             { searchMenuOpen ? <Dropdown right={true}><SearchMenu/></Dropdown> : null }
         </React.Fragment>
     );

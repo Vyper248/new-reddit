@@ -13,6 +13,7 @@ import { getPostList, getComments, parseURL, parseSearch } from './functions/use
 const Page = ({location, history}) => {
     const dispatch = useDispatch();
     const [scrollPos, setScrollPos] = useState(0);
+    const posts = useSelector(state => state.posts);
 
     const currentSort = useSelector(state => state.currentSort);
     const setCurrentSort = (sort) => dispatch({type: 'SET_SORT', payload: sort});
@@ -24,6 +25,9 @@ const Page = ({location, history}) => {
 
     const currentPostId = useSelector(state => state.currentPostId);
     const setCurrentPostId = (val) => dispatch({type: 'SET_POSTID', payload: val});
+
+    const currentUserSort = useSelector(state => state.currentUserSort);
+    const setCurrentUserSort = (val) => dispatch({type: 'SET_USER_SORT', payload: val});
 
     const currentSearch = useSelector(state => state.currentSearch);    
     const setCurrentSearch = (val) => dispatch({type: 'SET_CURRENT_SEARCH', payload: val});
@@ -39,7 +43,7 @@ const Page = ({location, history}) => {
 
     const isMobile = useMediaQuery({ maxWidth: 700 });
 
-    let {sub, newSort, postId} = parseURL(location.pathname); 
+    let {sub, newSort, postId, userSort} = parseURL(location.pathname);     
     let {search, searchSort, searchSub, searchForSubs} = parseSearch(location.search);    
 
     //load saved posts from local storage
@@ -49,11 +53,12 @@ const Page = ({location, history}) => {
         storedSaves = storedSaves ? JSON.parse(storedSaves) : [];
         setSaved(storedSaves);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, []);    
 
     batch(() => {
         if (sub !== currentSub) setCurrentSub(sub);
         if (postId !== currentPostId) setCurrentPostId(postId);
+        if (userSort !== currentUserSort) setCurrentUserSort(userSort);
         if (newSort.length > 0 && newSort !== currentSort) setCurrentSort(newSort);
 
         if (postId.length > 0 || currentPostId.length > 0) return;
@@ -66,12 +71,13 @@ const Page = ({location, history}) => {
     //when changing sub or sort method, get post list and clear search
     useEffect(() => {   
         if (isMobile) closeMenus(); 
-        if (currentSub.length === 0) return;
-        // if (currentPostId.length > 0) return;
+        if (currentSub.length === 0) return;        
+        if (currentPostId.length > 0 && posts.length > 0) return;  
+        // if (currentSub === 'user' && posts.length > 0) return;        
         getPostList();
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentSort, currentSub, currentSearch, currentSearchSort, currentSearchSub, currentSearchForSubs]);
+    }, [currentSort, currentSub, currentUserSort, currentSearch, currentSearchSort, currentSearchSub, currentSearchForSubs]);
 
     //return to scroll positiong before going to a post
     useEffect(() => {
@@ -89,7 +95,7 @@ const Page = ({location, history}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    if (sub !== currentSub || postId !== currentPostId || (newSort.length > 0 && newSort !== currentSort)) return <div></div>;
+    if (sub !== currentSub || postId !== currentPostId || userSort !== currentUserSort || (newSort.length > 0 && newSort !== currentSort)) return <div></div>;
 
     if (currentSub.length === 0) {
         let redirectSub = '';
@@ -103,7 +109,7 @@ const Page = ({location, history}) => {
 
     const onReload = () => {
         if (currentPostId.length > 0) getComments();
-        else getPostList();
+        else getPostList(false, true);
     }
 
     const onBackClick = () => {
@@ -111,9 +117,13 @@ const Page = ({location, history}) => {
     }
 
     const getMainPage = () => {
+        let heading = currentSub;
+        if (currentSearchForSubs) heading = `Searching: ${currentSearch}`;
+        if (currentSub === 'user') heading = `${currentSort}`;
+        
         return (
             <React.Fragment>
-                <Header heading={currentSearchForSubs ? `Searching: ${currentSearch}` : currentSub} onReload={onReload}/>
+                <Header heading={heading} onReload={onReload}/>
                 { currentPostId.length > 0 ? <Post/> : null }
                 <PostList onClickLink={onClickLink}/>
             </React.Fragment>

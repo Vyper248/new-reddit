@@ -196,7 +196,7 @@ const Post = () => {
         <StyledPost>
             <div>
                 <h2 dangerouslySetInnerHTML={{ __html: title}}></h2>
-                <PostDetails>{author} | {dateString} { urlTag }</PostDetails>
+                <PostDetails><a href={`#/user/${author}`}>{author}</a> | {dateString} { urlTag }</PostDetails>
                 <PostDetails><a href={`https://www.reddit.com${permalink}`} target="_blank" rel="noopener noreferrer">Open on Reddit</a> - <SimpleButton onClick={onSavePost}>{ isSaved ? 'Unsave' : 'Save' }</SimpleButton></PostDetails>
                 { bodyTag }
             </div>

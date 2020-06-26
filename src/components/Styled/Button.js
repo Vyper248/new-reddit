@@ -12,10 +12,12 @@ const Button = styled.button`
     color: white;
 
     ${props => props.selected ? 'background-color: gray;' : ''};
+    ${props => props.disabled ? 'color: gray' : ''};
 
     &:hover {
         cursor: pointer;
         background-color: gray;
+        ${props => props.disabled ? 'background-color: black; cursor: default' : ''};
     }
 
     :focus {

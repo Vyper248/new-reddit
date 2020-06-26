@@ -2,7 +2,7 @@ import store from '../redux/store';
 import { batch } from 'react-redux';
 
 const parseComment = (comment) => {
-    let {body_html, id, author, permalink, replies, score, created_utc} = comment;
+    let {body_html, id, name, author, permalink, replies, score, created_utc} = comment;
     body_html = parseBodyText(body_html);
     
     replies = typeof replies === 'object' ? replies.data.children : [];
@@ -12,7 +12,7 @@ const parseComment = (comment) => {
         return parseComment(comment.data);
     });
     
-    return {body_html, id, author, permalink, replies, score, created_utc};
+    return {body_html, id, name, author, permalink, replies, score, created_utc};
 }
 
 const parseLinks = (text) => {
@@ -53,15 +53,18 @@ const parseURL = (url) => {
     let sub = '';
     let newSort = '';
     let postId = '';
+    let userSort = '';
 
     if (parts.length > 0) {
         parts[1] !== undefined ? sub = parts[1] : sub = '';
         parts[2] === 'comments' && parts[3] !== undefined ? postId = parts[3] : postId = '';
         parts[2] !== 'comments' && parts[2] !== undefined ? newSort = parts[2] : newSort = '';
         if (parts[2] !== 'comments' && parts[2] === undefined) newSort = 'hot';
+        if (parts[1] === 'user' && parts[3] !== undefined) userSort = parts[3];
+        if (parts[1] === 'user' && parts[3] === undefined) userSort = 'overview';
     }    
 
-    return {sub, newSort, postId};
+    return {sub, newSort, postId, userSort};
 }
 
 const parseBool = (str) => {
@@ -93,30 +96,25 @@ const getMySubs = (prepend) => {
     return currentSub;
 }
 
-const getPostList = async (loadMore=false) => {
+const getPostList = async (loadMore=false, force=false) => {
     const state = store.getState();
-    let { posts, currentSub, currentSort, currentSearch, currentSearchSort, currentSearchSub, latestPost, searchForSubs } = state;
+    let { posts, currentSub, currentSort, currentUserSort, currentSearch, currentSearchSort, currentSearchSub, latestPost, searchForSubs, previousUrl } = state;
     const setLatestPost = (val) => store.dispatch({type: 'SET_LATEST_POST', payload: val});
     const setPosts = (val) => store.dispatch({type: 'SET_POSTS', payload: val});
     const setNoPosts = (val) => store.dispatch({type: 'SET_NO_POSTS', payload: val});
     const setNoMorePosts = (val) => store.dispatch({type: 'SET_NO_MORE_POSTS', payload: val});
+    const setPreviousUrl = (val) => store.dispatch({type: 'SET_PREVIOUS_URL', payload: val});
 
     //if no sub, then don't get anything
     if (currentSub.length === 0) return;
 
     if (currentSub.length > 0) currentSub = 'r/'+currentSub;    
 
-    if (!loadMore) {
-        setPosts([]);
-        setNoPosts(false);
-        setNoMorePosts(false);
-    }
-
     if (currentSub === 'r/My Subreddits') currentSub = getMySubs('r/');
     
     try {
         let url = `https://www.reddit.com/${currentSub}/${currentSort}/.json`;
-        if (loadMore) url += `?after=t3_${latestPost}`;
+        if (loadMore) url += `?after=${latestPost}`;
 
         if (currentSearch.length > 0) {
             let parsedStr = currentSearch.split(' ').join('+');
@@ -124,12 +122,28 @@ const getPostList = async (loadMore=false) => {
             else url = `https://www.reddit.com/${currentSub}/search.json?q=${parsedStr}${currentSearchSub ? '&restrict_sr=on' : ''}&include_over_18=on&sort=${currentSearchSort}`;
 
             if (loadMore) {
-                if (searchForSubs) url += `&after=t5_${latestPost}`;
-                else url += `&after=t3_${latestPost}`;
+                url += `&after=${latestPost}`;
             }
         }
 
         if (currentSub.length === 0) url = 'https://www.reddit.com/.json';        
+
+        if (currentSub === 'r/user') {
+            url = `https://www.reddit.com/user/${currentSort}/${currentUserSort}.json`;  
+            if (loadMore) url += `?after=${latestPost}`;
+        }
+
+        if (url === previousUrl && force === false) return;
+        else {
+            let baseUrl = url.replace(/\?after=[a-zA-Z0-9_]+/, '');
+            setPreviousUrl(baseUrl);
+        }
+
+        if (!loadMore) {
+            setPosts([]);
+            setNoPosts(false);
+            setNoMorePosts(false);
+        }        
 
         let response = await fetch(url);
         let data = await response.json();
@@ -152,16 +166,26 @@ const getPostList = async (loadMore=false) => {
                         media = parseBodyText(media.oembed.html);
                     } else {
                         media = '';
-                    }
+                    }                    
 
                     if (post.kind === 't5') return {
                         id: data.id,
+                        name: data.name,
                         type: 'sub',
                         title: parseBodyText(data.title),
                         subName: data.display_name,
                         description: parseBodyText(data.description_html),
                         created: data.created_utc,
                         subscribers: data.subscribers,
+                    }
+
+                    if (post.kind === 't1') {
+                        let comment = parseComment(data);                        
+                        comment.type = 'comment';
+                        comment.link_title = data.link_title;
+                        comment.link_id = data.link_id;
+                        comment.subreddit = data.subreddit;
+                        return comment;
                     }
                     
                     return {
@@ -171,6 +195,7 @@ const getPostList = async (loadMore=false) => {
                         domain: data.domain,
                         title: parseBodyText(data.title),
                         id: data.id,
+                        name: data.name,
                         body: parseBodyText(data.selftext_html),
                         num_comments: data.num_comments,
                         score: data.score,
@@ -188,7 +213,7 @@ const getPostList = async (loadMore=false) => {
                 if (loadMore) newPosts = [...posts, ...newPosts];
 
                 batch(() => {
-                    if (!noMore) setLatestPost(newPosts[newPosts.length-1].id);                                
+                    if (!noMore) setLatestPost(newPosts[newPosts.length-1].name);                                
                     setPosts(newPosts);
                     if (noMore) setNoMorePosts(true);
                     if (noMore && !loadMore) setNoPosts(true);

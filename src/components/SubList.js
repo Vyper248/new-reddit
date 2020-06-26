@@ -25,7 +25,7 @@ const Icon = styled.div`
 const SubList = () => {
     const dispatch = useDispatch();
     const currentSub = useSelector(state => state.currentSub);
-    const currentSort = useSelector(state => state.currentSort);
+    let currentSort = useSelector(state => state.currentSort);
 
     const subs = useSelector(state => state.subs);
     const setSubs = (val) => dispatch({type: 'SET_SUBS', payload: val});
@@ -70,6 +70,8 @@ const SubList = () => {
         setNewSub('');
         localStorage.setItem('subs', JSON.stringify(newSubArr));
     }
+
+    if (currentSub === 'user') currentSort = 'hot';
 
     return (
         <ButtonList>

@@ -60,7 +60,7 @@ const SearchMenu = () => {
             <h3>Search</h3>
             <ButtonGroup>
                 <Input type="text" placeholder="Search" onChange={onChangeSearch} value={search} onKeyPress={onEnter}/>
-                <SideButton onClick={onSearch}>Search</SideButton>
+                <SideButton onClick={onSearch} disabled={currentSub === 'user' ? true : false}>Search</SideButton>
             </ButtonGroup>
             <ButtonGroup>
                 <Checkbox checked={searchSub} onClick={toggleThisSub}/>
@@ -71,7 +71,7 @@ const SearchMenu = () => {
                 <Button selected={searchSort === 'relevance'} onClick={onClickRelevant}>Relevant</Button>
             </ButtonGroup>
             <ButtonGroup>
-                <Button onClick={onSearchSubs}>Search Subs</Button>
+                <Button onClick={onSearchSubs} disabled={currentSub === 'user' ? true : false}>Search Subs</Button>
                 <Button onClick={onClearSearch}>Clear Search</Button>
             </ButtonGroup>
         </ButtonList>
