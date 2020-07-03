@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { formatDistanceStrict } from 'date-fns';
 
-import { parseLinks } from '../functions/useful';
+import { parseLinks, getMoreComments } from '../functions/useful';
 
 import CommentList from './CommentList';
 
@@ -12,6 +13,7 @@ const StyledComment = styled.div`
     border-left: 1px solid red;
     border-top: 1px solid red;
     margin-bottom: 0px;
+    transition: border-left 0.5s;
 
     ${props => {
         if (props.single) {
@@ -30,6 +32,10 @@ const StyledComment = styled.div`
 
     & pre {
         overflow: scroll;
+    }
+
+    :hover {
+        border-left: 1px solid #fcc203;
     }
 `;
 
@@ -53,8 +59,14 @@ const CommentFooter = styled.div`
     margin-bottom: 5px;
     color: gray;
 
-    & > span:hover {
+    & > span:hover, & > div:hover {
         cursor: pointer;
+    }
+
+    & > div {
+        margin-top: 10px;
+        font-size: 1.2em;
+        display: inline-block;
     }
     
     & > a {
@@ -72,10 +84,21 @@ const CommentLinkTitle = styled.div`
 
 const Comment = ({comment, author, single=false, onClickLink}) => {  
     const [closed, setClosed] = useState(false);
+    const extraComments = useSelector(state => state.extraComments);
+
+    //test if extra comments have been loaded for this one
+    let extras = extraComments.find(obj => obj.id === comment.id && comment.kind !== 'more');
+    if (extras !== undefined) {                
+        extras = extras.replies;
+    } else {
+        extras = [];
+    }
 
     //if there are any replies to this comment, create a new Comments object (will work recursively)
     let replies = "";
-    if (comment.replies.length > 0){
+    if (extras.length > 0) {
+        replies = <CommentList comments={extras} author={author}/>;
+    } else if (comment.replies.length > 0) {
         replies = <CommentList comments={comment.replies} author={author}/>;
     }
 
@@ -90,14 +113,26 @@ const Comment = ({comment, author, single=false, onClickLink}) => {
         setClosed(!closed);
     }        
 
+    const getMore = () => {
+        getMoreComments(comment.id, comment.permalink);
+    }
+
+    //dont' currently support getting more top level comments, so don't show anything
+    if (comment.kind === 'more' && comment.permalink.length === 0) return null;
+
     return (
         <StyledComment single={single}>
             { single ? <CommentLinkTitle onClick={onClickLink(`/${comment.subreddit}/comments/${comment.link_id.replace('t3_','')}`)}>{comment.link_title}<span style={{color: 'gray'}}> | {comment.subreddit}</span> </CommentLinkTitle> : null }
             { single ? null : <CommentClose onClick={toggleClosed}>{ closed ? '[ + ] ' : '[ - ] ' }</CommentClose> }
             { single ? null : <CommentAuthor original={comment.author === author} href={`#/user/${comment.author}`}>{comment.author}</CommentAuthor> }
-            <span style={{color: 'gray'}}> {single ? '' : '|'} {comment.score} {pointString}{dateString.length > 0 ? ` | ${dateString}` : ''}</span>
+            { comment.kind === 'more' ? null : <span style={{color: 'gray'}}> {single ? '' : '|'} {comment.score} {pointString}{dateString.length > 0 ? ` | ${dateString}` : ''}</span> }
             { closed ? null : <div dangerouslySetInnerHTML={{ __html: body_html }}></div> }
-            { closed ? null : <CommentFooter><a href={`https://www.reddit.com/${comment.permalink}`} target="_blank" rel="noreferrer noopener">Permalink</a>{ single ? <span onClick={onClickLink(comment.permalink.replace('r/',''))}> | Go to comment</span> : null }</CommentFooter> }
+            { closed ? null : (
+                <CommentFooter>
+                    { comment.kind !== 'more' ? <a href={`https://www.reddit.com/${comment.permalink}`} target="_blank" rel="noreferrer noopener">Permalink</a> : null }
+                    { single ? <span onClick={onClickLink(comment.permalink.replace('r/',''))}> | Go to comment</span> : null }
+                    { comment.kind === 'more' ? <div onClick={getMore}>Load More</div> : null }
+                </CommentFooter>) }
             { closed ? null : replies }
         </StyledComment>
     );

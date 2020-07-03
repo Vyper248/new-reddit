@@ -1,15 +1,30 @@
 import store from '../redux/store';
 import { batch } from 'react-redux';
 
-const parseComment = (comment) => {
+const parseComment = (obj, parent=null) => {        
+    //adding support for more comment loading within replies
+    if (obj.kind === 'more') {        
+        let permalink = parent !== null ? parent.data.permalink.match(/\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+\/([a-zA-Z0-9_]+)\//)[1] : '';
+        return {
+            kind: 'more',
+            id: obj.data.parent_id.replace('t1_',''),
+            body_html: '',
+            name: '',
+            author: '',
+            replies: [],
+            score: 0,
+            permalink: permalink
+        };
+    }
+    
+    let comment = obj.data;
     let {body_html, id, name, author, permalink, replies, score, created_utc} = comment;
     body_html = parseBodyText(body_html);
     
     replies = typeof replies === 'object' ? replies.data.children : [];
     
     replies = replies.map(comment => {
-        //console.log(comment);
-        return parseComment(comment.data);
+        return parseComment(comment, obj);
     });
     
     return {body_html, id, name, author, permalink, replies, score, created_utc};
@@ -182,7 +197,7 @@ const getPostList = async (loadMore=false, force=false) => {
                     }
 
                     if (post.kind === 't1') {
-                        let comment = parseComment(data);                        
+                        let comment = parseComment(post);                        
                         comment.type = 'comment';
                         comment.link_title = data.link_title;
                         comment.link_id = data.link_id;
@@ -233,6 +248,35 @@ const getPostList = async (loadMore=false, force=false) => {
     }
 };
 
+const getMoreComments = async (id, fullUrl) => {
+    const state = store.getState();
+    const { extraComments, currentSub, currentPostId } = state;
+    const setExtraComments = (val) => store.dispatch({type: 'SET_EXTRA_COMMENTS', payload: val});
+
+    try {
+        let response = await fetch(`https://www.reddit.com/r/${currentSub}/comments/${currentPostId}/${fullUrl}/${id}.json`);
+        let data = await response.json();
+
+        if (data.error) {
+            console.log('Getting More Comments - Error: ', data.error);
+        } else {
+            let newComments = data[1].data.children.map(obj => {
+                return parseComment(obj);
+            });
+            
+            //make sure it doesn't already exist in case it tried to load more twice
+            let parentComment = newComments[0];
+            let check = extraComments.find(obj => obj.id === parentComment.id);
+            if (check === undefined) {
+                let newExtras = [...extraComments, parentComment];
+                setExtraComments(newExtras);
+            }
+        }
+    } catch (error) {
+        console.log('Getting More Comments - URL Error: ', error);
+    }
+}
+
 const getComments = async () => {
     const state = store.getState();
     let { currentSub, currentPostId, commentSort, permalinkUrl } = state;
@@ -259,7 +303,7 @@ const getComments = async () => {
             let {title, selftext_html, id, url, media, media_embed, author, created_utc, permalink} = data[0].data.children[0].data;
 
             let comments = data[1].data.children.map(obj => {
-                return parseComment(obj.data);
+                return parseComment(obj);
             });
 
             batch(() => {
@@ -292,5 +336,6 @@ export {
     parseSearch,
     getPostList,
     getComments,
+    getMoreComments,
     updatePostDetails
 }

@@ -11,6 +11,7 @@ const initialState = {
     latestPost: '',
 
     comments: [],
+    extraComments: [],
     noComments: false,
     commentSort: 'new',
 
@@ -40,7 +41,7 @@ export const reducer = (state = initialState, action={}) => {
         case 'SET_USER_SORT': return {...state, currentUserSort: data};
 
         case 'SET_POSTS': return {...state, posts: data};
-        case 'SET_POST_DETAILS': return {...state, postDetails: data};
+        case 'SET_POST_DETAILS': return {...state, postDetails: data, extraComments: []};
 
         case 'CLEAR_SEARCH': return {...state, currentSearch: '', currentSearchSort: 'relevance', currentSearchSub: true, searchMenuOpen: false};
         case 'OPEN_SEARCH': return {...state, searchMenuOpen: true, sortMenuOpen: false, subMenuOpen: false, saveMenuOpen: false};
@@ -70,6 +71,7 @@ export const reducer = (state = initialState, action={}) => {
         case 'SET_NO_MORE_POSTS': return {...state, noMorePosts: data};
 
         case 'SET_COMMENTS': return {...state, comments: data};
+        case 'SET_EXTRA_COMMENTS': return {...state, extraComments: data};
         case 'SET_NO_COMMENTS': return {...state, noComments: data};
         case 'SET_COMMENT_SORT': return {...state, commentSort: data};
 
