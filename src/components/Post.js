@@ -69,6 +69,11 @@ const PostBody = styled.div`
     & h3 {
         font-size: 1em;
     }
+
+    & .embedly-card-hug {
+        background-color: white;
+        margin: 5px !important;
+    }
 `;
 
 const ScrollButton = styled.div`
@@ -130,7 +135,7 @@ const Post = () => {
         return <div style={{textAlign: 'center'}}><LoadingSpinner/></div>;
     }
 
-    let {url, title, author, created, body, media, permalink, media_embed} = post;
+    let {url, title, author, created, body, media, permalink, media_embed} = post;    
 
     //check if post is a link to another post and make sure it goes there locally and not on a new page
     let urlMatches = url.match(/\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+/g);
@@ -145,7 +150,7 @@ const Post = () => {
     
 
     //get parsed body tag
-    let bodyTag = parsePostBody(body, url, media, media_embed);  
+    let bodyTag = parsePostBody(body, url, media, media_embed, permalink, title, currentSub);  
 
     //get relative time string
     let dateString = formatDistanceStrict(new Date(), created*1000);
@@ -210,7 +215,7 @@ const Post = () => {
     );
 }
 
-const parsePostBody = (body, url, media, media_embed) => {
+const parsePostBody = (body, url, media, media_embed, permalink, title, currentSub) => {
     body = parseLinks(body);
     
     //check for image link to url and replace body with image if so
@@ -235,6 +240,15 @@ const parsePostBody = (body, url, media, media_embed) => {
         bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: media }} className="postDivBody"></PostBody>;
     } else {
         media = '';
+    }    
+
+    if (url.includes('v.redd.it')) {
+        let url = `https://www.reddit.com${permalink}?ref=share&ref_source=embed`;
+        bodyTag = <PostBody className="postDivBody">
+                    <blockquote className="reddit-card">
+                        <a href={url} target="_blank" rel="noopener noreferrer">{title}</a>
+                    </blockquote>
+                  </PostBody>
     }
     
     return bodyTag;

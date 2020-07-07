@@ -71,6 +71,11 @@ const PostBody = styled.div`
     & a {
      color: rgb(0, 225, 255);
     }
+
+    & .embedly-card-hug {
+        background-color: white;
+        margin: 5px !important;
+    }
 `;
 
 const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
@@ -105,6 +110,17 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
         if (post.body.length > 0) post.media += "<br/>"+post.body;
         let media = parseLinks(post.media);
         bodyContent = <PostBody dangerouslySetInnerHTML={{__html: media}}></PostBody>;
+        bodyHasImage = true;
+    }
+
+    //show embedded reddit video
+    if (post.url.includes('v.redd.it')) {        
+        let url = `https://www.reddit.com${post.permalink}?ref=share&ref_source=embed`;
+        bodyContent = <PostBody>
+            <blockquote className="reddit-card">
+                <a href={url} target="_blank" rel="noopener noreferrer">{post.title}</a>
+            </blockquote>
+        </PostBody>;
         bodyHasImage = true;
     }
 
