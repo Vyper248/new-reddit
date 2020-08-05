@@ -6,6 +6,7 @@ import { useMediaQuery } from 'react-responsive';
 import { FaChevronDown } from 'react-icons/fa'
 
 import CommentList from './CommentList';
+import Gallery from './Gallery';
 import LoadingSpinner from './Styled/LoadingSpinner';
 
 import { parseBodyText, parseLinks, updatePostDetails, getComments } from '../functions/useful';
@@ -97,6 +98,12 @@ const ScrollButton = styled.div`
         cursor: pointer;
         background-color: gray;
     }
+
+    @media screen and (max-width: 700px) {
+        :hover {
+            background-color: black;
+        }
+    }
 `;
 
 const SimpleButton = styled.span`
@@ -135,7 +142,7 @@ const Post = () => {
         return <div style={{textAlign: 'center'}}><LoadingSpinner/></div>;
     }
 
-    let {url, title, author, created, body, media, permalink, media_embed} = post;    
+    let {url, title, author, created, body, media, permalink, media_embed, media_metadata, is_gallery, gallery_data} = post;    
 
     //check if post is a link to another post and make sure it goes there locally and not on a new page
     let urlMatches = url.match(/\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+/g);
@@ -150,7 +157,7 @@ const Post = () => {
     
 
     //get parsed body tag
-    let bodyTag = parsePostBody(body, url, media, media_embed, permalink, title, currentSub);  
+    let bodyTag = parsePostBody(body, url, media, media_embed, permalink, title, currentSub, media_metadata, is_gallery, gallery_data);  
 
     //get relative time string
     let dateString = formatDistanceStrict(new Date(), created*1000);
@@ -215,7 +222,7 @@ const Post = () => {
     );
 }
 
-const parsePostBody = (body, url, media, media_embed, permalink, title, currentSub) => {
+const parsePostBody = (body, url, media, media_embed, permalink, title, currentSub, media_metadata, is_gallery, gallery_data) => {
     body = parseLinks(body);
     
     //check for image link to url and replace body with image if so
@@ -240,7 +247,11 @@ const parsePostBody = (body, url, media, media_embed, permalink, title, currentS
         bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: media }} className="postDivBody"></PostBody>;
     } else {
         media = '';
-    }    
+    }
+
+    if (is_gallery) {
+        return <PostBody className="postDivBody"><Gallery data={media_metadata} extraData={gallery_data}/></PostBody>
+    }
 
     if (url.includes('v.redd.it')) {
         let url = `https://www.reddit.com${permalink}?ref=share&ref_source=embed`;

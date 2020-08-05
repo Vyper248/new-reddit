@@ -300,14 +300,14 @@ const getComments = async () => {
         if (data.error){
             console.log('Getting Comments - Error: ', data.error);
         } else {
-            let {title, selftext_html, id, url, media, media_embed, author, created_utc, permalink} = data[0].data.children[0].data;
+            let {title, selftext_html, id, url, media, media_embed, media_metadata, is_gallery, gallery_data, author, created_utc, permalink} = data[0].data.children[0].data;
 
             let comments = data[1].data.children.map(obj => {
                 return parseComment(obj);
             });
 
             batch(() => {
-                setPostDetails({id, url, title, author, created:created_utc, body: parseBodyText(selftext_html), media, media_embed, permalink});
+                setPostDetails({id, url, title, author, created:created_utc, body: parseBodyText(selftext_html), media, media_embed, permalink, media_metadata, is_gallery, gallery_data});
                 setComments(comments);
                 if (comments.length === 0) setNoComments(true);
             });
