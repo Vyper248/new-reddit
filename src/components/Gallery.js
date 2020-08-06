@@ -51,6 +51,8 @@ const StyledComp = styled.div`
 
     & #galleryImgDiv a {
         align-self: center;
+        width: 100%;
+        height: 100%;
     }
     
     & #galleryImgDiv img {
