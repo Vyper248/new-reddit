@@ -58,6 +58,7 @@ const StyledComp = styled.div`
     & #galleryImgDiv img {
         max-width: 100%;
         max-height: 100%;
+        min-height: 100%;
     }
 
     & #galleryButtons {
@@ -109,6 +110,15 @@ const StyledComp = styled.div`
     }
 `;
 
+const getURL = (arr, index) => {
+    let limit = 6;
+    while (true && limit > 0) {
+        if (arr[index] !== undefined) return parseBodyText(arr[index].u);
+        else index--;
+        limit--;
+    }
+}
+
 const Gallery = ({data, extraData}) => {
     let firstId = Object.keys(data)[0];
     const [id, setId] = useState(firstId);
@@ -119,9 +129,9 @@ const Gallery = ({data, extraData}) => {
     let numberOfImages = Object.keys(data).length;
 
     let url = '';
-    if (level5) url = parseBodyText(data[id].p[5].u);
-    if (level4) url = parseBodyText(data[id].p[4].u);
-    if (isMobile) url = parseBodyText(data[id].p[3].u);
+    if (level5) url = getURL(data[id].p, 5);
+    if (level4) url = getURL(data[id].p, 4);
+    if (isMobile) url = getURL(data[id].p, 3);
     let fullUrl = parseBodyText(data[id].s.u);
 
     let caption = `${index+1}/${numberOfImages}`;
