@@ -110,6 +110,7 @@ const StyledComp = styled.div`
     }
 `;
 
+//function to get the url based on an index, but if that index doesn't exist, it gets the next largest image.
 const getURL = (arr, index) => {
     let limit = 6;
     while (true && limit > 0) {
@@ -120,13 +121,15 @@ const getURL = (arr, index) => {
 }
 
 const Gallery = ({data, extraData}) => {
-    let firstId = Object.keys(data)[0];
+    let firstId = data ? Object.keys(data)[0] : '';
     const [id, setId] = useState(firstId);
     const isMobile = useMediaQuery({ maxWidth: 700 });
     const level4 = useMediaQuery({ maxWidth: 960 });
     const level5 = useMediaQuery({ maxWidth: 2560 });
-    let index = Object.keys(data).indexOf(id);
-    let numberOfImages = Object.keys(data).length;
+    let index = data ? Object.keys(data).indexOf(id) : 0;
+    let numberOfImages = data ? Object.keys(data).length : 0;
+
+    if (!data) return <p>Post has been removed</p>;
 
     let url = '';
     if (level5) url = getURL(data[id].p, 5);
