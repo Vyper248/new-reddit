@@ -70,6 +70,7 @@ const parseURL = (url) => {
     let postId = '';
     let userSort = '';
     let permalinkUrl = '';
+    let user = '';
 
     if (parts.length > 0) {
         parts[1] !== undefined ? sub = parts[1] : sub = '';
@@ -78,10 +79,11 @@ const parseURL = (url) => {
         if (parts[2] !== 'comments' && parts[2] === undefined) newSort = 'hot';
         if (parts[1] === 'user' && parts[3] !== undefined) userSort = parts[3];
         if (parts[1] === 'user' && parts[3] === undefined) userSort = 'overview';
+        if (parts[1] === 'user' && parts[2] !== undefined) { user = parts[2]; newSort = ''; }
         if ([parts[2] === 'comments'] && parts[4] !== undefined && parts[5] !== undefined) permalinkUrl = parts[4] + '/' + parts[5];
     }    
 
-    return {sub, newSort, postId, userSort, permalinkUrl};
+    return {sub, newSort, postId, userSort, permalinkUrl, user};
 }
 
 const parseBool = (str) => {
@@ -115,7 +117,7 @@ const getMySubs = (prepend) => {
 
 const getPostList = async (loadMore=false, force=false) => {
     const state = store.getState();
-    let { posts, currentSub, currentSort, currentUserSort, currentSearch, currentSearchSort, currentSearchSub, latestPost, searchForSubs, previousUrl } = state;
+    let { posts, currentSub, currentSort, currentUser, currentUserSort, currentSearch, currentSearchSort, currentSearchSub, latestPost, searchForSubs, previousUrl } = state;
     const setLatestPost = (val) => store.dispatch({type: 'SET_LATEST_POST', payload: val});
     const setPosts = (val) => store.dispatch({type: 'SET_POSTS', payload: val});
     const setNoPosts = (val) => store.dispatch({type: 'SET_NO_POSTS', payload: val});
@@ -146,7 +148,7 @@ const getPostList = async (loadMore=false, force=false) => {
         if (currentSub.length === 0) url = 'https://www.reddit.com/.json';        
 
         if (currentSub === 'r/user') {
-            url = `https://www.reddit.com/user/${currentSort}/${currentUserSort}.json`;  
+            url = `https://www.reddit.com/user/${currentUser}/${currentUserSort}.json`;  
             if (loadMore) url += `?after=${latestPost}`;
         }
 

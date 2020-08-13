@@ -3,6 +3,7 @@ const initialState = {
     currentSort: 'hot',
     currentPostId: '',
     currentUserSort: 'overview',
+    currentUser: '',
 
     postDetails: {},
     posts: [],
@@ -40,6 +41,7 @@ export const reducer = (state = initialState, action={}) => {
         case 'SET_SORT': return {...state, currentSort: data};
         case 'SET_POSTID': return {...state, currentPostId: data};
         case 'SET_USER_SORT': return {...state, currentUserSort: data};
+        case 'SET_USER': return {...state, currentUser: data};
 
         case 'SET_POSTS': return {...state, posts: data};
         case 'SET_POST_DETAILS': return {...state, postDetails: data, extraComments: []};

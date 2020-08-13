@@ -47,9 +47,12 @@ const Page = ({location, history}) => {
     const currentContext = useSelector(state => state.showContext);
     const setContext = (val) => dispatch({type: 'SET_SHOW_CONTEXT', payload: val});
 
+    const currentUser = useSelector(state => state.currentUser);
+    const setCurrentUser = (val) => dispatch({type: 'SET_USER', payload: val});
+
     const isMobile = useMediaQuery({ maxWidth: 700 });
 
-    let {sub, newSort, postId, userSort, permalinkUrl} = parseURL(location.pathname);     
+    let {sub, newSort, postId, userSort, permalinkUrl, user} = parseURL(location.pathname);     
     let {search, searchSort, searchSub, searchForSubs} = parseSearch(location.search);    
 
     let showContext = location.search === '?context=10000';
@@ -70,6 +73,10 @@ const Page = ({location, history}) => {
         if (newSort.length > 0 && newSort !== currentSort) setCurrentSort(newSort);
         if (permalinkUrl !== currentPermalinkUrl) setPermalinkUrl(permalinkUrl);
         if (showContext !== currentContext) setContext(showContext);
+        if (user.length > 0 && user !== currentUser) setCurrentUser(user);
+        
+        //if moving from user list to post to post list, then need to make sure user is reset otherwise still displays user list
+        if (user.length === 0 && newSort.length > 0 && postId.length === 0) setCurrentUser('');
 
         if (postId.length > 0 || currentPostId.length > 0) return;
         if (search !== currentSearch) setCurrentSearch(search);
@@ -87,7 +94,7 @@ const Page = ({location, history}) => {
         getPostList();
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentSort, currentSub, currentUserSort, currentSearch, currentSearchSort, currentSearchSub, currentSearchForSubs]);
+    }, [currentSort, currentSub, currentUser, currentUserSort, currentSearch, currentSearchSort, currentSearchSub, currentSearchForSubs]);
 
     //return to scroll positiong before going to a post
     useEffect(() => {
@@ -129,7 +136,7 @@ const Page = ({location, history}) => {
     const getMainPage = () => {
         let heading = currentSub;
         if (currentSearchForSubs) heading = `Searching: ${currentSearch}`;
-        if (currentSub === 'user') heading = `${currentSort}`;
+        if (currentSub === 'user') heading = `${currentUser}`;
         
         return (
             <React.Fragment>
