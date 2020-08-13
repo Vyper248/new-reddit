@@ -279,7 +279,7 @@ const getMoreComments = async (id, fullUrl) => {
 
 const getComments = async () => {
     const state = store.getState();
-    let { currentSub, currentPostId, commentSort, permalinkUrl } = state;
+    let { currentSub, currentPostId, commentSort, permalinkUrl, showContext } = state;
     const setComments = (val) => store.dispatch({type: 'SET_COMMENTS', payload: val});
     const setNoComments = (val) => store.dispatch({type: 'SET_NO_COMMENTS', payload: val});
     const setPostDetails = (val) => store.dispatch({type: 'SET_POST_DETAILS', payload: val});
@@ -292,9 +292,10 @@ const getComments = async () => {
     if (currentSub === 'My Subreddits') currentSub = getMySubs();
 
     let url = `${currentSub}/comments/${currentPostId}/${permalinkUrl}`;    
-    
+    let context = showContext && permalinkUrl.length > 0 ? 10000 : 0;
+
     try {        
-        let response = await fetch(`https://www.reddit.com/r/${url}.json?sort=${commentSort}`);
+        let response = await fetch(`https://www.reddit.com/r/${url}.json?sort=${commentSort}&context=${context}`);
         let data = await response.json();
         
         if (data.error){

@@ -30,6 +30,7 @@ const initialState = {
 
     previousUrl: '',
     permalinkUrl: '',
+    showContext: false,
 };
 
 export const reducer = (state = initialState, action={}) => {
@@ -77,6 +78,7 @@ export const reducer = (state = initialState, action={}) => {
 
         case 'SET_PREVIOUS_URL': return {...state, previousUrl: data};
         case 'SET_PERMALINK_URL': return {...state, permalinkUrl: data};
+        case 'SET_SHOW_CONTEXT': return {...state, showContext: data};
         default: return state;
     }
 };

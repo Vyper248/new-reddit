@@ -85,6 +85,10 @@ const CommentLinkTitle = styled.div`
 const Comment = ({comment, author, single=false, onClickLink}) => {  
     const [closed, setClosed] = useState(false);
     const extraComments = useSelector(state => state.extraComments);
+    const permalinkUrl = useSelector(state => state.permalinkUrl);
+
+    let permalinkId = permalinkUrl.split('/')[1];
+    let permalinkComment = permalinkId === comment.id;
 
     //test if extra comments have been loaded for this one
     let extras = extraComments.find(obj => obj.id === comment.id && comment.kind !== 'more');
@@ -126,7 +130,7 @@ const Comment = ({comment, author, single=false, onClickLink}) => {
             { single ? null : <CommentClose onClick={toggleClosed}>{ closed ? '[ + ] ' : '[ - ] ' }</CommentClose> }
             { single ? null : <CommentAuthor original={comment.author === author} href={`#/user/${comment.author}`}>{comment.author}</CommentAuthor> }
             { comment.kind === 'more' ? null : <span style={{color: 'gray'}}> {single ? '' : '|'} {comment.score} {pointString}{dateString.length > 0 ? ` | ${dateString}` : ''}</span> }
-            { closed ? null : <div dangerouslySetInnerHTML={{ __html: body_html }}></div> }
+            { closed ? null : <div dangerouslySetInnerHTML={{ __html: body_html }} style={permalinkComment ? {backgroundColor: 'rgba(150,150,0,0.3)'} : {}}></div> }
             { closed ? null : (
                 <CommentFooter>
                     { comment.kind !== 'more' ? <a href={`https://www.reddit.com/${comment.permalink}`} target="_blank" rel="noreferrer noopener">Permalink</a> : null }
