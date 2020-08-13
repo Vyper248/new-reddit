@@ -18,7 +18,7 @@ const parseComment = (obj, parent=null) => {
     }
     
     let comment = obj.data;
-    let {body_html, id, name, author, permalink, replies, score, created_utc} = comment;
+    let {body_html, id, name, author, permalink, replies, score, created_utc, parent_id} = comment;
     body_html = parseBodyText(body_html);
     
     replies = typeof replies === 'object' ? replies.data.children : [];
@@ -26,8 +26,10 @@ const parseComment = (obj, parent=null) => {
     replies = replies.map(comment => {
         return parseComment(comment, obj);
     });
+
+    const hasContext = !parent_id.includes('t3_');
     
-    return {body_html, id, name, author, permalink, replies, score, created_utc};
+    return {body_html, id, name, author, permalink, replies, score, created_utc, hasContext};
 }
 
 const parseLinks = (text) => {

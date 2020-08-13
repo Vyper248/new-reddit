@@ -206,6 +206,8 @@ const Post = () => {
     if (localUrl !== undefined) urlTag = <a href={localUrl}> | Go to Post ({shortUrl})</a>;
     if (url.includes('v.redd.it')) urlTag = <a href={`https://www.reddit.com${permalink}`} target="_blank" rel="noopener noreferrer"> | Video</a>;
 
+    let hasContext = comments[0] !== undefined ? comments[0].hasContext : false;
+
     return (
         <StyledPost>
             <div>
@@ -216,7 +218,8 @@ const Post = () => {
             </div>
             { comments.length === 0 && noComments === false ? <LoadingSpinner/> : null }
             { noComments ? <div>No Comments</div> : null }
-            { permalinkUrl.length > 0 ? <span><a href={`#/${currentSub}/comments/${currentPostId}`}>Show All Comments</a> - <a href={`#/${currentSub}/comments/${currentPostId}/${permalinkUrl}/?context=10000`}>Show Context</a></span> : null }
+            { permalinkUrl.length > 0 ? <a href={`#/${currentSub}/comments/${currentPostId}`}>Show All Comments</a> : null }
+            { permalinkUrl.length > 0 && hasContext ? <span> - <a href={`#/${currentSub}/comments/${currentPostId}/${permalinkUrl}/?context=10000`}>Show Context</a></span> : null }
             <CommentList comments={comments} author={author}/>
             <ScrollButton onClick={scrollToNext}><FaChevronDown/></ScrollButton>
         </StyledPost>
