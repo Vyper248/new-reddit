@@ -116,11 +116,7 @@ const SubList = () => {
 const CustomSub = ({sub, currentSub, currentSort, onDeleteSub, editMode}) => {
     return (
         <ButtonGroup key={'sub-'+sub.id}>
-        {
-            editMode 
-                ? <Button className={sub.id === currentSub ? 'selected' : ''}>{sub.id}</Button> 
-                : <NavLink to={`/${sub.id}/${currentSort}`} className={sub.id === currentSub ? 'selected' : ''} style={{textTransform: 'capitalize'}}>{sub.id}</NavLink>
-        }
+            <NavLink to={`/${sub.id}/${currentSort}`} className={sub.id === currentSub ? 'selected' : ''} style={{textTransform: 'capitalize'}}>{sub.id}</NavLink>
             { editMode ? <SideButton className="subBtn" onClick={onDeleteSub(sub.id)}><FaTrashAlt/></SideButton> : null }
         </ButtonGroup>
     );
