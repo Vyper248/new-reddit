@@ -3,6 +3,10 @@ import styled from 'styled-components';
 const ButtonGroup = styled.div`
     display: flex;
 
+    & > div {
+        flex-grow: 1;
+    }
+
     & > a {
         flex-grow: 1;
     }

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
+import { ReactSortable } from 'react-sortablejs';
 
 import ButtonGroup from './Styled/ButtonGroup';
 import ButtonList from './Styled/ButtonList';
@@ -71,7 +72,16 @@ const SubList = () => {
         localStorage.setItem('subs', JSON.stringify(newSubArr));
     }
 
+    const reorder = (data) => {
+        if (data.length === 0) return;
+        let newSubArr = data.map(sub => sub.id);
+        setSubs(newSubArr);
+        localStorage.setItem('subs', JSON.stringify(newSubArr));
+    }
+
     if (currentSub === 'user') currentSort = 'hot';
+
+    let displaySubs = subs.map(sub => ({id: sub}));
 
     return (
         <ButtonList>
@@ -82,14 +92,11 @@ const SubList = () => {
             <h3>Subs</h3>
             <Icon onClick={onToggleEdit}><FaEdit/></Icon>
             {
-                subs.map(sub => {
-                    return (
-                        <ButtonGroup key={'sub-'+sub}>
-                            <NavLink to={`/${sub}/${currentSort}`} className={sub === currentSub ? 'selected' : ''} style={{textTransform: 'capitalize'}}>{sub}</NavLink>
-                            { editMode ? <SideButton className="subBtn" onClick={onDeleteSub(sub)}><FaTrashAlt/></SideButton> : null }
-                        </ButtonGroup>
-                    )
-                })
+                editMode 
+                    ? ( <ReactSortable list={displaySubs} setList={reorder}>
+                            { displaySubs.map(sub => <CustomSub sub={sub} currentSub={currentSub} currentSort={currentSort} onDeleteSub={onDeleteSub} editMode={editMode}/>) }
+                        </ReactSortable> ) 
+                    : displaySubs.map(sub => <CustomSub sub={sub} currentSub={currentSub} currentSort={currentSort} onDeleteSub={onDeleteSub} editMode={editMode}/>)
             }
             {
                 editMode ? (
@@ -103,6 +110,19 @@ const SubList = () => {
                 !checkIfSubbed(subs, currentSub) ? <Button onClick={addCurrentSub}>Add Current Sub</Button> : null
             }
         </ButtonList>
+    );
+}
+
+const CustomSub = ({sub, currentSub, currentSort, onDeleteSub, editMode}) => {
+    return (
+        <ButtonGroup key={'sub-'+sub.id}>
+        {
+            editMode 
+                ? <Button className={sub.id === currentSub ? 'selected' : ''}>{sub.id}</Button> 
+                : <NavLink to={`/${sub.id}/${currentSort}`} className={sub.id === currentSub ? 'selected' : ''} style={{textTransform: 'capitalize'}}>{sub.id}</NavLink>
+        }
+            { editMode ? <SideButton className="subBtn" onClick={onDeleteSub(sub.id)}><FaTrashAlt/></SideButton> : null }
+        </ButtonGroup>
     );
 }
 

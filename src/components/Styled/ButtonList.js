@@ -40,6 +40,10 @@ const ButtonList = styled.div`
         & div:last-child > * {
             border-bottom: none;
         }   
+
+        & a:hover {
+            background-color: black;
+        }
     }
 `;
 

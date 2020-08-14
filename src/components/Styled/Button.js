@@ -23,6 +23,12 @@ const Button = styled.button`
     :focus {
         outline: none;
     }
+
+    @media screen and (max-device-width: 600px){
+        &:hover {
+            background-color: black;
+        } 
+    }
 `;
 
 export default Button;
