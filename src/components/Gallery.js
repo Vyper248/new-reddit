@@ -56,13 +56,15 @@ const StyledComp = styled.div`
     & #galleryImgDiv a {
         align-self: center;
         width: calc(100% - 100px);
-        ${'' /* height: 100%; */}
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
     & #galleryImgDiv img {
         max-width: 100%;
         max-height: 100%;
-        min-height: 100%;
     }
 
     & #galleryButtons {
