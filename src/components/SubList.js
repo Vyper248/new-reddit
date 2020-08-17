@@ -94,9 +94,9 @@ const SubList = () => {
             {
                 editMode 
                     ? ( <ReactSortable list={displaySubs} setList={reorder}>
-                            { displaySubs.map(sub => <CustomSub sub={sub} currentSub={currentSub} currentSort={currentSort} onDeleteSub={onDeleteSub} editMode={editMode}/>) }
+                            { displaySubs.map(sub => <CustomSub key={'subButton-'+sub.id} sub={sub} currentSub={currentSub} currentSort={currentSort} onDeleteSub={onDeleteSub} editMode={editMode}/>) }
                         </ReactSortable> ) 
-                    : displaySubs.map(sub => <CustomSub sub={sub} currentSub={currentSub} currentSort={currentSort} onDeleteSub={onDeleteSub} editMode={editMode}/>)
+                    : displaySubs.map(sub => <CustomSub key={'subButton-'+sub.id} sub={sub} currentSub={currentSub} currentSort={currentSort} onDeleteSub={onDeleteSub} editMode={editMode}/>)
             }
             {
                 editMode ? (

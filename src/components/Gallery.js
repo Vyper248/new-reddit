@@ -34,6 +34,10 @@ const StyledComp = styled.div`
         cursor: pointer;
     }
 
+    & > div#thumbnails > img.selected {
+        border: 1px solid red;
+    }
+
     & #galleryInner {
         padding-top: 50%;
     }
@@ -52,7 +56,7 @@ const StyledComp = styled.div`
     & #galleryImgDiv a {
         align-self: center;
         width: calc(100% - 100px);
-        height: 100%;
+        ${'' /* height: 100%; */}
     }
     
     & #galleryImgDiv img {
@@ -128,6 +132,7 @@ const Gallery = ({data, extraData}) => {
     const level5 = useMediaQuery({ maxWidth: 2560 });
     let index = data ? Object.keys(data).indexOf(id) : 0;
     let numberOfImages = data ? Object.keys(data).length : 0;
+    const [showSpinner, setShowSpinner] = useState(true);
 
     if (!data) return <p>Post has been removed</p>;
 
@@ -145,6 +150,7 @@ const Gallery = ({data, extraData}) => {
 
     const onClickThumb = (id) => () => {
         setId(id);
+        setShowSpinner(true);
     }
 
     const next = () => {
@@ -154,6 +160,7 @@ const Gallery = ({data, extraData}) => {
         if (next >= arr.length) next = 0;
         let nextId = arr[next];
         setId(nextId);
+        setShowSpinner(true);
     }
 
     const previous = () => {
@@ -163,6 +170,11 @@ const Gallery = ({data, extraData}) => {
         if (next < 0) next = arr.length-1;
         let nextId = arr[next];
         setId(nextId);
+        setShowSpinner(true);
+    }
+
+    const onImageLoad = () => {
+        setShowSpinner(false);
     }
 
     return (
@@ -174,16 +186,16 @@ const Gallery = ({data, extraData}) => {
                         <div onClick={previous}><FaChevronDown/></div>
                         <div onClick={next}><FaChevronDown/></div>
                     </div>
-                    <LoadingSpinner style={{position: 'absolute', left: 'calc(50% - 25px)', top: 'calc(50% - 50px)', zIndex: '0'}}/>
+                    { showSpinner ? <LoadingSpinner style={{position: 'absolute', left: 'calc(50% - 25px)', top: 'calc(50% - 50px)', zIndex: '0'}}/> : null }
                     <div id="galleryImgDiv">
-                        <a key={id} href={fullUrl} target="_blank" rel="noopener noreferrer"><img src={url} alt="Gallery Main"/></a>
+                        <a key={id} href={fullUrl} target="_blank" rel="noopener noreferrer"><img src={url} alt="Gallery Main" onLoad={onImageLoad}/></a>
                     </div>
                 </div>
             </div>
             <div id="thumbnails">
             {
                 isMobile ? null : Object.values(data).map((obj, i) => {
-                    return <img key={obj.id+i} src={parseBodyText(obj.p[0].u)} onClick={onClickThumb(obj.id)} alt="Thumbnail"/>
+                    return <img key={obj.id+i} src={parseBodyText(obj.p[0].u)} onClick={onClickThumb(obj.id)} alt="Thumbnail" className={id === obj.id ? 'selected' : ''}/>
                 })
             }
             </div>
