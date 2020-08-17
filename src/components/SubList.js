@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+import { TiArrowUnsorted } from 'react-icons/ti';
 import { useSelector, useDispatch } from 'react-redux';
 import { ReactSortable } from 'react-sortablejs';
 
@@ -93,7 +94,7 @@ const SubList = () => {
             <Icon onClick={onToggleEdit}><FaEdit/></Icon>
             {
                 editMode 
-                    ? ( <ReactSortable list={displaySubs} setList={reorder}>
+                    ? ( <ReactSortable list={displaySubs} setList={reorder} handle=".handle">
                             { displaySubs.map(sub => <CustomSub key={'subButton-'+sub.id} sub={sub} currentSub={currentSub} currentSort={currentSort} onDeleteSub={onDeleteSub} editMode={editMode}/>) }
                         </ReactSortable> ) 
                     : displaySubs.map(sub => <CustomSub key={'subButton-'+sub.id} sub={sub} currentSub={currentSub} currentSort={currentSort} onDeleteSub={onDeleteSub} editMode={editMode}/>)
@@ -116,6 +117,7 @@ const SubList = () => {
 const CustomSub = ({sub, currentSub, currentSort, onDeleteSub, editMode}) => {
     return (
         <ButtonGroup key={'sub-'+sub.id}>
+            { editMode ? <div className="handle"><TiArrowUnsorted style={{position: 'relative', top: '8px'}}/></div> : null }
             <NavLink to={`/${sub.id}/${currentSort}`} className={sub.id === currentSub ? 'selected' : ''} style={{textTransform: 'capitalize'}}>{sub.id}</NavLink>
             { editMode ? <SideButton className="subBtn" onClick={onDeleteSub(sub.id)}><FaTrashAlt/></SideButton> : null }
         </ButtonGroup>

@@ -18,6 +18,7 @@ const ButtonList = styled.div`
         padding: 5px;
         min-height: 29px;
         border-top: 1px solid gray;
+        overflow: hidden;
     }
 
     & a:hover {
