@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/new-reddit/static/css/main.1db71b39.chunk.css",
-    "main.js": "/new-reddit/static/js/main.bdebdfd7.chunk.js",
-    "main.js.map": "/new-reddit/static/js/main.bdebdfd7.chunk.js.map",
+    "main.js": "/new-reddit/static/js/main.baaca4e9.chunk.js",
+    "main.js.map": "/new-reddit/static/js/main.baaca4e9.chunk.js.map",
     "runtime-main.js": "/new-reddit/static/js/runtime-main.2696e697.js",
     "runtime-main.js.map": "/new-reddit/static/js/runtime-main.2696e697.js.map",
-    "static/js/2.17c256d8.chunk.js": "/new-reddit/static/js/2.17c256d8.chunk.js",
-    "static/js/2.17c256d8.chunk.js.map": "/new-reddit/static/js/2.17c256d8.chunk.js.map",
+    "static/js/2.45b581dc.chunk.js": "/new-reddit/static/js/2.45b581dc.chunk.js",
+    "static/js/2.45b581dc.chunk.js.map": "/new-reddit/static/js/2.45b581dc.chunk.js.map",
     "index.html": "/new-reddit/index.html",
-    "precache-manifest.7009b4b6a62ce082e4eb4115da4f6442.js": "/new-reddit/precache-manifest.7009b4b6a62ce082e4eb4115da4f6442.js",
+    "precache-manifest.1ae921a6667750d5a3dd7429a7524672.js": "/new-reddit/precache-manifest.1ae921a6667750d5a3dd7429a7524672.js",
     "service-worker.js": "/new-reddit/service-worker.js",
     "static/css/main.1db71b39.chunk.css.map": "/new-reddit/static/css/main.1db71b39.chunk.css.map",
-    "static/js/2.17c256d8.chunk.js.LICENSE.txt": "/new-reddit/static/js/2.17c256d8.chunk.js.LICENSE.txt"
+    "static/js/2.45b581dc.chunk.js.LICENSE.txt": "/new-reddit/static/js/2.45b581dc.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.2696e697.js",
-    "static/js/2.17c256d8.chunk.js",
+    "static/js/2.45b581dc.chunk.js",
     "static/css/main.1db71b39.chunk.css",
-    "static/js/main.bdebdfd7.chunk.js"
+    "static/js/main.baaca4e9.chunk.js"
   ]
 }
