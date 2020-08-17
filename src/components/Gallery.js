@@ -67,16 +67,10 @@ const StyledComp = styled.div`
         max-height: 100%;
     }
 
-    & #galleryButtons {
+    & #galleryBack, & #galleryForward {
         position: absolute;
         top: 50%;
-        width: 100%;
-        display: flex;
         z-index: 3;
-        justify-content: space-between;
-    }
-    
-    & #galleryButtons > div {
         border-radius: 50%;
         width: 50px;
         height: 50px;
@@ -86,31 +80,30 @@ const StyledComp = styled.div`
         justify-content: center;
         align-items: center;
         font-size: 2em;
-        position: relative;
     }
 
-    & #galleryButtons > div:hover {
+    & #galleryBack:hover, & #galleryForward:hover {
         cursor: pointer;
         background-color: gray;
     }
 
-    & #galleryButtons > div:first-child {
+    & #galleryBack {
         transform: translate(0,-50%) rotate(90deg);
         left: -15px;
     }
 
-    & #galleryButtons > div:last-child {
+    & #galleryForward {
         transform: translate(0,-50%) rotate(-90deg);
         right: -15px;
     }
 
-    & #galleryButtons > div > svg {
+    & #galleryBack > svg, & #galleryForward > svg {
         position: relative;
         top: 2px;
     }
 
     @media screen and (max-width: 700px) {
-        & #galleryButtons > div:hover {
+        & #galleryBack:hover, & #galleryForward:hover {
             background-color: black;
         }
     }
@@ -184,10 +177,8 @@ const Gallery = ({data, extraData}) => {
             { caption.length > 0 ? <div id="caption">{ caption }</div> : null }
             <div id="mainImageOuter">
                 <div id="galleryInner">
-                    <div id="galleryButtons">
-                        <div onClick={previous}><FaChevronDown/></div>
-                        <div onClick={next}><FaChevronDown/></div>
-                    </div>
+                    <div onClick={previous} id="galleryBack"><FaChevronDown/></div>
+                    <div onClick={next} id="galleryForward"><FaChevronDown/></div>
                     { showSpinner ? <LoadingSpinner style={{position: 'absolute', left: 'calc(50% - 25px)', top: 'calc(50% - 50px)', zIndex: '0'}}/> : null }
                     <div id="galleryImgDiv">
                         <a key={id} href={fullUrl} target="_blank" rel="noopener noreferrer"><img src={url} alt="Gallery Main" onLoad={onImageLoad}/></a>
