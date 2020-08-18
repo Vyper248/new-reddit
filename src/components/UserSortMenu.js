@@ -8,9 +8,9 @@ import ButtonList from './Styled/ButtonList';
 const UserSortMenu = () => {
     const dispatch = useDispatch();
 
-    const currentSort = useSelector(state => state.currentSort);
     const currentSub = useSelector(state => state.currentSub);
     const currentUserSort = useSelector(state => state.currentUserSort);
+    const currentUser = useSelector(state => state.currentUser);
     const closeMenus = () => dispatch({type: 'CLOSE_MENUS'});
 
     const onClick = (val) => () => {
@@ -30,7 +30,7 @@ const UserSortMenu = () => {
                 sortOptions.map(option => {
                     return (
                         <ButtonGroup key={'commentSort-'+option.value}>
-                            <NavLink exact to={`/${currentSub}/${currentSort}/${option.value}`} className={option.value === currentUserSort ? 'selected' : ''} onClick={onClick(option.value)}>{option.display}</NavLink>
+                            <NavLink exact to={`/${currentSub}/${currentUser}/${option.value}`} className={option.value === currentUserSort ? 'selected' : ''} onClick={onClick(option.value)}>{option.display}</NavLink>
                         </ButtonGroup>
                     );
                 })
