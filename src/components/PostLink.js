@@ -10,6 +10,7 @@ import PostTitle from './Styled/PostTitle';
 import PostTextGroup from './Styled/PostTextGroup';
 import PostDetails from './Styled/PostDetails';
 import PostExpand from './Styled/PostExpand';
+import Spoiler from './Spoiler';
 
 const StyledPostLink = styled.div`
     border: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
@@ -76,6 +77,28 @@ const PostBody = styled.div`
         background-color: white;
         margin: 5px !important;
     }
+
+    & .md-spoiler-text {
+        display: inline-block;
+        background-color: gray;
+        color: gray;
+        transition: 0.3s;
+    }
+
+    & .md-spoiler-text:hover {
+        background-color: transparent;
+        color: white;
+        transition: 1s;
+    }
+`;
+
+const SpoilerTag = styled.span`
+    background-color: red;
+    margin: 5px;
+    font-weight: bold;
+    padding: 2px;
+    text-transform: uppercase;
+    font-size: 0.8em;
 `;
 
 const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
@@ -142,8 +165,9 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
                         <PostDetails>
                             <NavLink to={`/${post.subreddit}/${currentSort}`}>{post.subreddit}</NavLink>{ post.url.includes('v.redd.it') ? <span> - video</span> : <span> - <a href={post.url} target="_blank" rel='noreferrer noopener'>{post.domain}</a></span> } - <span>{dateString}</span>
                         </PostDetails>
-                        { expanded ? bodyContent : null }
+                        { expanded ? <Spoiler spoiler={post.spoiler}>{bodyContent}</Spoiler> : null }
                         <div>
+                            { post.spoiler ? <SpoilerTag>Spoiler</SpoilerTag> : null }
                             <PostComments><span onClick={onClickLink(`/${currentSub}/comments/${post.id}`)}>{post.num_comments} <FaRegComment/></span></PostComments>
                             <span style={{marginLeft: '15px'}}><a href={`https://www.reddit.com${post.permalink}`} target="_blank" rel="noreferrer noopener">Open on Reddit</a></span>
                         </div>

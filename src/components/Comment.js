@@ -37,6 +37,19 @@ const StyledComment = styled.div`
     :hover {
         border-left: 1px solid #fcc203;
     }
+
+    & .md-spoiler-text {
+        display: inline-block;
+        background-color: gray;
+        color: gray;
+        transition: 0.3s;
+    }
+
+    & .md-spoiler-text:hover {
+        background-color: transparent;
+        color: white;
+        transition: 1s;
+    }
 `;
 
 const CommentClose = styled.span`

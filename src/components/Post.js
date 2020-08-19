@@ -7,6 +7,7 @@ import { FaChevronDown } from 'react-icons/fa'
 
 import CommentList from './CommentList';
 import Gallery from './Gallery';
+import Spoiler from './Spoiler';
 import LoadingSpinner from './Styled/LoadingSpinner';
 
 import { parseBodyText, parseLinks, updatePostDetails, getComments } from '../functions/useful';
@@ -74,6 +75,19 @@ const PostBody = styled.div`
     & .embedly-card-hug {
         background-color: white;
         margin: 5px !important;
+    }
+
+    & .md-spoiler-text {
+        display: inline-block;
+        background-color: gray;
+        color: gray;
+        transition: 0.3s;
+    }
+
+    & .md-spoiler-text:hover {
+        background-color: transparent;
+        color: white;
+        transition: 1s;
     }
 `;
 
@@ -143,7 +157,7 @@ const Post = () => {
         return <div style={{textAlign: 'center'}}><LoadingSpinner/></div>;
     }
 
-    let {url, title, author, created, body, media, permalink, media_embed, media_metadata, is_gallery, gallery_data} = post;    
+    let {url, title, author, created, body, media, permalink, media_embed, media_metadata, is_gallery, gallery_data, spoiler} = post;
 
     //check if post is a link to another post and make sure it goes there locally and not on a new page
     let urlMatches = url.match(/\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+/g);
@@ -214,7 +228,9 @@ const Post = () => {
                 <h2 dangerouslySetInnerHTML={{ __html: title}}></h2>
                 <PostDetails><a href={`#/user/${author}`}>{author}</a> | {dateString} { urlTag }</PostDetails>
                 <PostDetails><a href={`https://www.reddit.com${permalink}`} target="_blank" rel="noopener noreferrer">Open on Reddit</a> - <SimpleButton onClick={onSavePost}>{ isSaved ? 'Unsave' : 'Save' }</SimpleButton></PostDetails>
-                { bodyTag }
+                <Spoiler spoiler={spoiler}>
+                    { bodyTag }
+                </Spoiler>
             </div>
             { comments.length === 0 && noComments === false ? <LoadingSpinner/> : null }
             { noComments ? <div>No Comments</div> : null }
