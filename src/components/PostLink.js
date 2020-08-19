@@ -94,7 +94,7 @@ const PostBody = styled.div`
 
 const SpoilerTag = styled.span`
     background-color: red;
-    margin: 5px;
+    margin-right: 10px;
     font-weight: bold;
     padding: 2px;
     text-transform: uppercase;
