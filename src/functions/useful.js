@@ -36,11 +36,9 @@ const parseLinks = (text) => {
     //make sure any links within the body open in a new tab
     text = text.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
     
-    //make sure links to reddit users are adjusted
-    text = text.replace(/href="\/u/g, 'href="https://www.reddit.com/$1');
-    
-    //but links to other reddit subs can be kept on this website
+    //but links to other reddit subs or users can be kept on this website
     text = text.replace(/target="_blank" rel="noopener noreferrer" href="\/r/g, 'href="#');  
+    text = text.replace(/target="_blank" rel="noopener noreferrer" href="\/u/g, 'href="#/user');  
 
     //replace full links to reddit with local links to stay on this website
     let redditMatches = text.match(/href="https:\/\/www.reddit.com\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+/g);
@@ -227,7 +225,10 @@ const getPostList = async (loadMore=false, force=false) => {
                         permalink: data.permalink,
                         media: media,
                         media_embed: data.media_embed,
-                        spoiler: data.spoiler
+                        spoiler: data.spoiler,
+                        link_flair_text: data.link_flair_text,
+                        link_flair_text_color: data.link_flair_text_color,
+                        link_flair_background_color: data.link_flair_background_color
                     };
                 });
 

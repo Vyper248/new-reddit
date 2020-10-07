@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { FaRegComment, FaChevronUp, FaChevronDown } from 'react-icons/fa';
 import { formatDistanceStrict } from 'date-fns';
 
-import { parseLinks } from '../functions/useful';
+import { parseLinks, parseBodyText } from '../functions/useful';
 
 import PostTitle from './Styled/PostTitle';
 import PostTextGroup from './Styled/PostTextGroup';
@@ -101,6 +101,14 @@ const SpoilerTag = styled.span`
     font-size: 0.8em;
 `;
 
+const Flair = styled.span`
+    margin-right: 5px;
+    padding: 1px 3px;
+    color: ${props => props.color === 'light' ? 'white' : 'black'};
+    background-color: ${props => props.backgroundColor};
+    cursor: default !important;
+`;
+
 const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
     const [expanded, setExpanded] = useState(false);
 
@@ -119,6 +127,7 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
 
     //make sure any links within the body open in a new tab
     post.body = parseLinks(post.body);
+    post.title = parseBodyText(post.title);
 
     //decide whether to show image preview in body
     let bodyContent = <PostBody dangerouslySetInnerHTML={{__html: post.body}}></PostBody>;
@@ -154,6 +163,20 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
     //check if sticked and add another class
     let stickied = post.stickied ? true : false;
 
+    //get flair
+    let flair = post.link_flair_text;
+    let flairColor = post.link_flair_text_color;
+    let flairBgColor = post.link_flair_background_color;
+    if (flairBgColor.length === 0) {
+        flairBgColor = 'white';
+        flairColor = 'black';
+    }
+
+    //filter out flair logos
+    flair = flair !== null ? flair.replace(/:[a-zA-Z0-9_-]+:/g, '') : '';
+    flair = flair.trim();
+    flair = parseBodyText(flair);
+
     return (
         <StyledPostLink stickied={stickied}>
             { showThumbnail ? <PostThumbnail><img src={post.thumbnail} alt="Thumbnail"/></PostThumbnail> : null }
@@ -161,7 +184,10 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
                 { openBtn ? <PostExpand onClick={onToggleExpand} stickied={stickied}>{ expanded ? <FaChevronUp/> : <FaChevronDown/> }</PostExpand> : null }
                 <PostTextGroup>
                     <div>
-                        <PostTitle><span onClick={onClickLink(`/${currentSub}/comments/${post.id}`)}>{post.title}</span></PostTitle>
+                        <PostTitle>
+                            { flair.length > 0 ? <Flair color={flairColor} backgroundColor={flairBgColor}>{flair}</Flair> : null }
+                            <span onClick={onClickLink(`/${currentSub}/comments/${post.id}`)}>{post.title}</span>
+                        </PostTitle>
                         <PostDetails>
                             <NavLink to={`/${post.subreddit}/${currentSort}`}>{post.subreddit}</NavLink>{ post.url.includes('v.redd.it') ? <span> - video</span> : <span> - <a href={post.url} target="_blank" rel='noreferrer noopener'>{post.domain}</a></span> } - <span>{dateString}</span>
                         </PostDetails>

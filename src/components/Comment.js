@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { formatDistanceStrict } from 'date-fns';
 
-import { parseLinks, getMoreComments } from '../functions/useful';
+import { parseLinks, getMoreComments, parseBodyText } from '../functions/useful';
 
 import CommentList from './CommentList';
 
@@ -139,7 +139,7 @@ const Comment = ({comment, author, single=false, onClickLink}) => {
 
     return (
         <StyledComment single={single}>
-            { single ? <CommentLinkTitle onClick={onClickLink(`/${comment.subreddit}/comments/${comment.link_id.replace('t3_','')}`)}>{comment.link_title}<span style={{color: 'gray'}}> | {comment.subreddit}</span> </CommentLinkTitle> : null }
+            { single ? <CommentLinkTitle onClick={onClickLink(`/${comment.subreddit}/comments/${comment.link_id.replace('t3_','')}`)}>{parseBodyText(comment.link_title)}<span style={{color: 'gray'}}> | {comment.subreddit}</span> </CommentLinkTitle> : null }
             { single ? null : <CommentClose onClick={toggleClosed}>{ closed ? '[ + ] ' : '[ - ] ' }</CommentClose> }
             { single ? null : <CommentAuthor original={comment.author === author} href={`#/user/${comment.author}`}>{comment.author}</CommentAuthor> }
             { comment.kind === 'more' ? null : <span style={{color: 'gray'}}> {single ? '' : '|'} {comment.score} {pointString}{dateString.length > 0 ? ` | ${dateString}` : ''}</span> }
