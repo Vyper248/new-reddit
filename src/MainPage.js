@@ -7,6 +7,7 @@ import PostList from './components/PostList';
 import Post from './components/Post';
 import Header from './components/Header';
 import SideMenu from './components/SideMenu';
+import ErrorBoundary from './components/ErrorBoundary';
 
 import { getPostList, getComments, parseURL, parseSearch } from './functions/useful';
 
@@ -149,22 +150,26 @@ const Page = ({location, history}) => {
 
     if (isMobile) {
         return (
-            <div style={{height: '100%', overflow: 'hidden'}}>
-                <TopMenu onBackClick={onBackClick}/>
-                <div style={{marginTop: '50px'}}></div>
-                { getMainPage() }
-            </div>
+            <ErrorBoundary history={history}>
+                <div style={{height: '100%', overflow: 'hidden'}}>
+                    <TopMenu onBackClick={onBackClick}/>
+                    <div style={{marginTop: '50px'}}></div>
+                    { getMainPage() }
+                </div>
+            </ErrorBoundary>
         );
     } else {
         return (
-            <div style={{display: 'flex', height: '100%'}}>
-                <div>
-                    <SideMenu/>
+            <ErrorBoundary history={history}>
+                <div style={{display: 'flex', height: '100%'}}>
+                    <div>
+                        <SideMenu/>
+                    </div>
+                    <div style={{width: 'calc(100% - 250px)', height: '100%', overflow: 'scroll', marginLeft: '250px', position: 'relative'}} id='mainPage'>
+                        { getMainPage() }
+                    </div>
                 </div>
-                <div style={{width: 'calc(100% - 250px)', height: '100%', overflow: 'scroll', marginLeft: '250px', position: 'relative'}} id='mainPage'>
-                    { getMainPage() }
-                </div>
-            </div>
+            </ErrorBoundary>
         );
     }
 }

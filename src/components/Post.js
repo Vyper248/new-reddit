@@ -9,6 +9,7 @@ import CommentList from './CommentList';
 import Gallery from './Gallery';
 import Spoiler from './Spoiler';
 import LoadingSpinner from './Styled/LoadingSpinner';
+import ErrorBoundary from './ErrorBoundary';
 
 import { parseBodyText, parseLinks, updatePostDetails, getComments } from '../functions/useful';
 
@@ -270,7 +271,7 @@ const parsePostBody = (body, url, media, media_embed, permalink, title, currentS
     }
 
     if (is_gallery) {
-        return <PostBody className="postDivBody"><Gallery data={media_metadata} extraData={gallery_data}/></PostBody>
+        return <PostBody className="postDivBody"><ErrorBoundary><Gallery data={media_metadata} extraData={gallery_data}/></ErrorBoundary></PostBody>
     }
 
     if (url.includes('v.redd.it')) {
