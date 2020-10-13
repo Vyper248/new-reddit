@@ -63,6 +63,16 @@ const parseBodyText = (text) => {
     return text;
 }
 
+const parseFlair = (flair) => {
+    if (flair === undefined || flair === null) return '';
+
+    //filter out flair logos
+    flair = flair.length > 0 ? flair.replace(/:[a-zA-Z0-9_-]+:/g, '') : '';
+    flair = flair.trim();
+    flair = parseBodyText(flair);
+    return flair;
+}
+
 const parseURL = (url) => {
     let parts = url.split('/');
     let sub = '';
@@ -338,6 +348,7 @@ const updatePostDetails = () => {
 export {
     parseComment, 
     parseBodyText,
+    parseFlair,
     parseLinks,
     parseURL,
     parseSearch,

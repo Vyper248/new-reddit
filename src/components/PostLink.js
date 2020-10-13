@@ -4,12 +4,13 @@ import { NavLink } from 'react-router-dom';
 import { FaRegComment, FaChevronUp, FaChevronDown } from 'react-icons/fa';
 import { formatDistanceStrict } from 'date-fns';
 
-import { parseLinks, parseBodyText } from '../functions/useful';
+import { parseLinks, parseBodyText, parseFlair } from '../functions/useful';
 
 import PostTitle from './Styled/PostTitle';
 import PostTextGroup from './Styled/PostTextGroup';
 import PostDetails from './Styled/PostDetails';
 import PostExpand from './Styled/PostExpand';
+import Flair from './Styled/Flair';
 import Spoiler from './Spoiler';
 
 const StyledPostLink = styled.div`
@@ -101,15 +102,7 @@ const SpoilerTag = styled.span`
     font-size: 0.8em;
 `;
 
-const Flair = styled.span`
-    margin-right: 5px;
-    padding: 1px 3px;
-    color: ${props => props.color === 'light' ? 'white' : 'black'};
-    background-color: ${props => props.backgroundColor};
-    cursor: default !important;
-`;
-
-const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
+const PostLink = ({ post, onClickLink, currentSub, currentSort, onClickFlair=()=>{} }) => {
     const [expanded, setExpanded] = useState(false);
 
     const onToggleExpand = () => {
@@ -164,18 +157,13 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
     let stickied = post.stickied ? true : false;
 
     //get flair
-    let flair = post.link_flair_text;
+    let flair = parseFlair(post.link_flair_text);
     let flairColor = post.link_flair_text_color;
     let flairBgColor = post.link_flair_background_color;
     if (flairBgColor.length === 0) {
         flairBgColor = 'white';
         flairColor = 'black';
     }
-
-    //filter out flair logos
-    flair = flair !== null ? flair.replace(/:[a-zA-Z0-9_-]+:/g, '') : '';
-    flair = flair.trim();
-    flair = parseBodyText(flair);
 
     return (
         <StyledPostLink stickied={stickied}>
@@ -185,7 +173,7 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort }) => {
                 <PostTextGroup>
                     <div>
                         <PostTitle>
-                            { flair.length > 0 ? <Flair color={flairColor} backgroundColor={flairBgColor}>{flair}</Flair> : null }
+                            { flair.length > 0 ? <Flair color={flairColor} backgroundColor={flairBgColor} onClick={onClickFlair(flair, flairColor, flairBgColor)}>{flair}</Flair> : null }
                             <span onClick={onClickLink(`/${currentSub}/comments/${post.id}`)}>{post.title}</span>
                         </PostTitle>
                         <PostDetails>
