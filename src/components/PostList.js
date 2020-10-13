@@ -44,8 +44,8 @@ const PostList = ({onClickLink}) => {
         setFlairFilter('');
         setFlairFilterBg('black');
         setFlairFilterSub(currentSub);
-        //refresh post list, otherwise could be too many posts which takes longer to display, so this'll keep things responsive
-        getPostList(false, true);
+        //refresh post list if there's too many posts, otherwise could take too long to display them all again
+        if (posts.length > 100) getPostList(false, true);
     }
 
     //make sure flair filters are specific to subs, so cancel filter if changing sub
