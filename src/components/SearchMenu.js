@@ -48,7 +48,7 @@ const SearchMenu = () => {
     }
 
     const onClearSearch = (getNewPosts=true) => {
-        if (search.length === 0) return; //if there's nothing to clear, don't do anything
+        // if (search.length === 0) return; //if there's nothing to clear, don't do anything
         setSearch('');
         setSearchSub(true);
         setSearchSort('relevance');
@@ -59,7 +59,7 @@ const SearchMenu = () => {
         <ButtonList>
             <h3>Search</h3>
             <ButtonGroup>
-                <Input type="text" placeholder="Search" onChange={onChangeSearch} value={search} onKeyPress={onEnter}/>
+                <Input type="text" placeholder="Search" onChange={onChangeSearch} value={decodeURI(search)} onKeyPress={onEnter}/>
                 <SideButton onClick={onSearch} disabled={currentSub === 'user' ? true : false}>Search</SideButton>
             </ButtonGroup>
             <ButtonGroup>

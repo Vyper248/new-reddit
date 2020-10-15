@@ -10,9 +10,12 @@ const ReloadButton = styled.span`
     }
 `;
 
-const Header = ({heading, onReload}) => {
+const Header = ({heading, subHeading='', onReload}) => {
     return (
-        <h1 style={{textAlign: 'center'}}>{heading} &nbsp;<ReloadButton onClick={onReload}>&#8635;</ReloadButton></h1>
+        <div>
+            <h1 style={{textAlign: 'center'}}>{heading} &nbsp;<ReloadButton onClick={onReload}>&#8635;</ReloadButton></h1>
+            { subHeading.length > 0 ? <h3 style={{textAlign: 'center'}}>{decodeURIComponent(subHeading)}</h3> : null }
+        </div>
     );
 };
 

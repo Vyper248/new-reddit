@@ -101,7 +101,8 @@ const parseBool = (str) => {
 }
 
 const parseSearch = (searchStr) => {
-    let search = searchStr.match(/search=([a-zA-Z0-9% ]+)/);
+    searchStr = searchStr.replace('&amp;', '%26'); //if search string contains &, replace with %26 so the regex still catches it
+    let search = searchStr.match(/search=([^&]+)/);
     let searchSort = searchStr.match(/searchSort=(relevance|new)/);
     let searchSub = searchStr.match(/searchSub=(true|false)/);
     let searchForSubs = searchStr.match(/searchForSubs=(true|false)/);
@@ -111,8 +112,8 @@ const parseSearch = (searchStr) => {
     searchSub = searchSub === null ? true : parseBool(searchSub[1]);
     searchForSubs = searchForSubs === null ? false : parseBool(searchForSubs[1]);
 
-    search = search.replace(/%20/g, ' ');
-    
+    search = search.replace(/%20/g, ' ').replace(/%22/g, '"');
+
     return {search, searchSort, searchSub, searchForSubs};
 }
 
@@ -162,7 +163,7 @@ const getPostList = async (loadMore=false, force=false) => {
             if (loadMore) url += `?after=${latestPost}`;
         }
 
-        if (url === previousUrl && force === false) return;
+        if (decodeURI(url) === decodeURI(previousUrl) && force === false) return;
         else {
             let baseUrl = url.replace(/\?after=[a-zA-Z0-9_]+/, '');
             setPreviousUrl(baseUrl);
@@ -174,6 +175,7 @@ const getPostList = async (loadMore=false, force=false) => {
             setNoMorePosts(false);
         }        
 
+        // console.log('Fetching data with url: '+url);
         let response = await fetch(url);
         let data = await response.json();
 

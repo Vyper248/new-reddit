@@ -9,7 +9,7 @@ import Header from './components/Header';
 import SideMenu from './components/SideMenu';
 import ErrorBoundary from './components/ErrorBoundary';
 
-import { getPostList, getComments, parseURL, parseSearch } from './functions/useful';
+import { getPostList, getComments, parseURL, parseSearch, parseFlair } from './functions/useful';
 
 const Page = ({location, history}) => {
     const dispatch = useDispatch();
@@ -136,12 +136,15 @@ const Page = ({location, history}) => {
 
     const getMainPage = () => {
         let heading = currentSub;
-        if (currentSearchForSubs) heading = `Searching: ${currentSearch}`;
+        let subHeading = '';
+        if (currentSearchForSubs) heading = `Searching Subs: ${currentSearch}`;
+        if (currentSearch.length > 0 && !currentSearchForSubs) subHeading = `Searching: ${decodeURI(currentSearch)}`;
+        if (currentSearch.length > 0 && !currentSearchForSubs && currentSearch.includes('flair_name')) subHeading = `Searching Flair: ${parseFlair(decodeURI(currentSearch.replace('flair_name:', '')))}`;
         if (currentSub === 'user') heading = `${currentUser}`;
         
         return (
             <React.Fragment>
-                <Header heading={heading} onReload={onReload}/>
+                <Header heading={heading} subHeading={subHeading} onReload={onReload}/>
                 { currentPostId.length > 0 ? <Post/> : null }
                 <PostList onClickLink={onClickLink}/>
             </React.Fragment>

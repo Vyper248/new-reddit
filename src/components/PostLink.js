@@ -173,7 +173,7 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort, onClickFlair=()=
                 <PostTextGroup>
                     <div>
                         <PostTitle>
-                            { flair.length > 0 ? <Flair color={flairColor} backgroundColor={flairBgColor} onClick={onClickFlair(flair, flairColor, flairBgColor)}>{flair}</Flair> : null }
+                            { flair.length > 0 ? <Flair color={flairColor} backgroundColor={flairBgColor} onClick={onClickFlair(post.link_flair_text)}>{flair}</Flair> : null }
                             <span onClick={onClickLink(`/${currentSub}/comments/${post.id}`)}>{post.title}</span>
                         </PostTitle>
                         <PostDetails>
