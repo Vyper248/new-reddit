@@ -18,7 +18,7 @@ const parseComment = (obj, parent=null) => {
     }
     
     let comment = obj.data;
-    let {body_html, id, name, author, permalink, replies, score, created_utc, parent_id} = comment;
+    let {body_html, id, name, author, permalink, replies, score, created_utc, parent_id, stickied} = comment;
     body_html = parseBodyText(body_html);
     
     replies = typeof replies === 'object' ? replies.data.children : [];
@@ -29,7 +29,7 @@ const parseComment = (obj, parent=null) => {
 
     const hasContext = !parent_id.includes('t3_');
     
-    return {body_html, id, name, author, permalink, replies, score, created_utc, hasContext};
+    return {body_html, id, name, author, permalink, replies, score, created_utc, hasContext, stickied};
 }
 
 const parseLinks = (text) => {
@@ -86,6 +86,7 @@ const parseURL = (url) => {
         parts[1] !== undefined ? sub = parts[1] : sub = '';
         parts[2] === 'comments' && parts[3] !== undefined ? postId = parts[3] : postId = '';
         parts[2] !== 'comments' && parts[2] !== undefined ? newSort = parts[2] : newSort = '';
+        if (parts[2] === 'comments' && parts[3] === undefined) newSort = 'comments';
         if (parts[2] !== 'comments' && parts[2] === undefined) newSort = 'hot';
         if (parts[1] === 'user' && parts[3] !== undefined) userSort = parts[3];
         if (parts[1] === 'user' && parts[3] === undefined) userSort = 'overview';

@@ -9,7 +9,7 @@ const SortMenu = () => {
     const currentSub = useSelector(state => state.currentSub);
     const currentSort = useSelector(state => state.currentSort);
 
-    let sortOptions = ['hot', 'new', 'rising', 'controversial', 'top'];
+    let sortOptions = ['hot', 'new', 'rising', 'controversial', 'top', 'comments'];
 
     return (
         <ButtonList>

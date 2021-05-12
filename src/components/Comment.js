@@ -10,8 +10,8 @@ import CommentList from './CommentList';
 const StyledComment = styled.div`
     padding: 5px;
     padding-bottom: 0px;
-    border-left: 1px solid red;
-    border-top: 1px solid red;
+    border-left: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
+    border-top: 1px solid ${props => props.stickied ? '#50ec11' : 'red'};
     margin-bottom: 0px;
     transition: border-left 0.5s;
 
@@ -99,6 +99,7 @@ const Comment = ({comment, author, single=false, onClickLink}) => {
     const [closed, setClosed] = useState(false);
     const extraComments = useSelector(state => state.extraComments);
     const permalinkUrl = useSelector(state => state.permalinkUrl);
+    const currentSub = useSelector(state => state.currentSub);
 
     let permalinkId = permalinkUrl.split('/')[1];
     let permalinkComment = permalinkId === comment.id;
@@ -138,11 +139,11 @@ const Comment = ({comment, author, single=false, onClickLink}) => {
     if (comment.kind === 'more' && comment.permalink.length === 0) return null;
 
     return (
-        <StyledComment single={single}>
+        <StyledComment single={single} stickied={comment.stickied}>
             { single ? <CommentLinkTitle onClick={onClickLink(`/${comment.subreddit}/comments/${comment.link_id.replace('t3_','')}`)}>{parseBodyText(comment.link_title)}<span style={{color: 'gray'}}> | {comment.subreddit}</span> </CommentLinkTitle> : null }
             { single ? null : <CommentClose onClick={toggleClosed}>{ closed ? '[ + ] ' : '[ - ] ' }</CommentClose> }
             { single ? null : <CommentAuthor original={comment.author === author} href={`#/user/${comment.author}`}>{comment.author}</CommentAuthor> }
-            { comment.kind === 'more' ? null : <span style={{color: 'gray'}}> {single ? '' : '|'} {comment.score} {pointString}{dateString.length > 0 ? ` | ${dateString}` : ''}</span> }
+            { comment.kind === 'more' ? null : <span style={{color: 'gray'}}> {single ? '' : '|'} {single && currentSub !== 'user' ? comment.author+' | ' : ''} {comment.score} {pointString}{dateString.length > 0 ? ` | ${dateString}` : ''}</span> }
             { closed ? null : <div dangerouslySetInnerHTML={{ __html: body_html }} style={permalinkComment ? {backgroundColor: 'rgba(150,150,0,0.3)'} : {}}></div> }
             { closed ? null : (
                 <CommentFooter>
