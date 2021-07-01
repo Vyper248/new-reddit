@@ -214,7 +214,6 @@ const Post = () => {
         }
 
         setSaved(newSaved);
-        localStorage.setItem('saved', JSON.stringify(newSaved));
     }
 
     let urlTag = <a href={url} target="_blank" rel="noopener noreferrer"> | Go to URL ({shortUrl})</a>;

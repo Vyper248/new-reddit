@@ -65,7 +65,6 @@ const SubLink = ({ sub, currentSort }) => {
     const addSub = () => {
         let newSubArr = [...subs, sub.subName];  
         setSubs(newSubArr);
-        localStorage.setItem('subs', JSON.stringify(newSubArr));
     }
 
     const alreadySubbed = subs.reduce((a,c) => {

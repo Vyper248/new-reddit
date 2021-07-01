@@ -58,15 +58,6 @@ const Page = ({location, history}) => {
 
     let showContext = location.search === '?context=10000';
 
-    //load saved posts from local storage
-    const setSaved = (val) => dispatch({type: 'SET_SAVED', payload: val});
-    useEffect(() => {
-        let storedSaves = localStorage.getItem('saved');
-        storedSaves = storedSaves ? JSON.parse(storedSaves) : [];
-        setSaved(storedSaves);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);    
-
     batch(() => {
         if (sub !== currentSub) setCurrentSub(sub);
         if (postId !== currentPostId) setCurrentPostId(postId);

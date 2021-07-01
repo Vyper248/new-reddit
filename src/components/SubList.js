@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
@@ -32,16 +32,8 @@ const SubList = () => {
     const subs = useSelector(state => state.subs);
     const setSubs = (val) => dispatch({type: 'SET_SUBS', payload: val});
 
-    const [editMode, setEditMode] = useState(false);
+    const [editMode, setEditMode] = useState(subs.length === 0 ? true : false);
     const [newSub, setNewSub] = useState('');
-
-    useEffect(() => {
-        let storedSubs = localStorage.getItem('subs');
-        storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
-        if (storedSubs.length === 0) setEditMode(true);
-        setSubs(storedSubs);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     const onToggleEdit = () => {
         setEditMode(!editMode);
@@ -59,7 +51,6 @@ const SubList = () => {
     const onDeleteSub = (sub) => () => {
         let newSubArr = subs.filter(subName => subName !== sub);
         setSubs(newSubArr);
-        localStorage.setItem('subs', JSON.stringify(newSubArr));
     }
 
     const addCurrentSub = () => {
@@ -70,14 +61,12 @@ const SubList = () => {
         let newSubArr = [...arr, sub];  
         setSubs(newSubArr);
         setNewSub('');
-        localStorage.setItem('subs', JSON.stringify(newSubArr));
     }
 
     const reorder = (data) => {
         if (data.length === 0) return;
         let newSubArr = data.map(sub => sub.id);
         setSubs(newSubArr);
-        localStorage.setItem('subs', JSON.stringify(newSubArr));
     }
 
     if (currentSub === 'user') currentSort = 'hot';
