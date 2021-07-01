@@ -23,6 +23,7 @@ const initialState = {
     searchMenuOpen: false,
     subMenuOpen: false,
     saveMenuOpen: false,
+    settingsMenuOpen: false,
 
     currentSearch: '',
     currentSearchSort: 'relevance',
@@ -47,19 +48,22 @@ export const reducer = (state = initialState, action={}) => {
         case 'SET_POST_DETAILS': return {...state, postDetails: data, extraComments: []};
 
         case 'CLEAR_SEARCH': return {...state, currentSearch: '', currentSearchSort: 'relevance', currentSearchSub: true, searchMenuOpen: false};
-        case 'OPEN_SEARCH': return {...state, searchMenuOpen: true, sortMenuOpen: false, subMenuOpen: false, saveMenuOpen: false};
+        case 'OPEN_SEARCH': return {...state, searchMenuOpen: true, settingsMenuOpen: false, sortMenuOpen: false, subMenuOpen: false, saveMenuOpen: false};
         case 'CLOSE_SEARCH': return {...state, searchMenuOpen: false};
 
-        case 'OPEN_SUBS': return {...state, subMenuOpen: true, sortMenuOpen: false, searchMenuOpen: false, saveMenuOpen: false};
+        case 'OPEN_SUBS': return {...state, subMenuOpen: true, settingsMenuOpen: false, sortMenuOpen: false, searchMenuOpen: false, saveMenuOpen: false};
         case 'CLOSE_SUBS': return {...state, subMenuOpen: false};
 
-        case 'OPEN_SORT': return {...state, sortMenuOpen: true, subMenuOpen: false, searchMenuOpen: false, saveMenuOpen: false};
+        case 'OPEN_SORT': return {...state, sortMenuOpen: true, settingsMenuOpen: false, subMenuOpen: false, searchMenuOpen: false, saveMenuOpen: false};
         case 'CLOSE_SORT': return {...state, sortMenuOpen: false};
 
-        case 'OPEN_SAVED': return {...state, saveMenuOpen: true, sortMenuOpen: false, subMenuOpen: false, searchMenuOpen: false};
+        case 'OPEN_SAVED': return {...state, saveMenuOpen: true, settingsMenuOpen: false, sortMenuOpen: false, subMenuOpen: false, searchMenuOpen: false};
         case 'CLOSE_SAVED': return {...state, saveMenuOpen: false};
 
-        case 'CLOSE_MENUS': return {...state, sortMenuOpen: false, searchMenuOpen: false, subMenuOpen: false, saveMenuOpen: false};
+        case 'OPEN_SETTINGS': return {...state, settingsMenuOpen: true, saveMenuOpen: false, sortMenuOpen: false, subMenuOpen: false, searchMenuOpen: false};
+        case 'CLOSE_SETTINGS': return {...state, settingsMenuOpen: false};
+
+        case 'CLOSE_MENUS': return {...state, settingsMenuOpen: false, sortMenuOpen: false, searchMenuOpen: false, subMenuOpen: false, saveMenuOpen: false};
 
         case 'SET_SUBS': return {...state, subs: data};
         case 'SET_SAVED': return {...state, saved: data};
