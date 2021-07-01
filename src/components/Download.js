@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { format } from 'date-fns';
 
-const StyledComp = styled.div`
+const StyledComp = styled.button`
     background-color: black;
     color: white;
     width: 150px;
@@ -11,6 +11,7 @@ const StyledComp = styled.div`
     margin: 5px;
     display: inline-block;
     border: 1px solid gray;
+    font-size: 1em;
 
     &:hover {
         cursor: pointer;
