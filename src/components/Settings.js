@@ -38,7 +38,8 @@ const Settings = () => {
         //merge with existing data
         let newSubs = [...subs];
         data.forEach(sub => {
-            if (subs.includes(sub)) return;
+            let old = subs.find(name => name.toLowerCase() === sub.toLowerCase());
+            if (old !== undefined) return;
             newSubs.push(sub);
         });
 
