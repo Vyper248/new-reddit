@@ -25,6 +25,9 @@ const getFromLocalStorage = () => {
     if (storedSaves !== undefined) storedSaves = JSON.parse(storedSaves);
     let state = reducer();
 
+    if (!storedSubs) storedSubs = [];
+    if (!storedSaves) storedSaves = [];
+
     return {
         ...state,
         subs: storedSubs,
