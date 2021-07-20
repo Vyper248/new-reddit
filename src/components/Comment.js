@@ -50,6 +50,13 @@ const StyledComment = styled.div`
         color: white;
         transition: 1s;
     }
+
+    & blockquote {
+        color: #AAA;
+        border-left: 2px solid #333;
+        padding-left: 10px;
+        margin-inline-start: 10px;
+    }
 `;
 
 const CommentClose = styled.span`
