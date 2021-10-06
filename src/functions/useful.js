@@ -122,6 +122,7 @@ const getMySubs = (prepend) => {
     let currentSub = '';
     let storedSubs = localStorage.getItem('subs');
     storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
+    storedSubs = storedSubs.filter(sub => (!sub.includes('/'))); //filter items with / in, such as user links
     currentSub = prepend+storedSubs.join('+');
     if (storedSubs.length === 0) currentSub = prepend+'All';
     return currentSub;
