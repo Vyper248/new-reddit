@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "981cc041b7714e5d86eeb5ba27c093be",
+    "revision": "120701afa79d695fba0b62fcbd643c5e",
     "url": "/new-reddit/index.html"
   },
   {
-    "revision": "95ae342de4e76f659923",
+    "revision": "a66c3260c3ccd98edddd",
     "url": "/new-reddit/static/css/main.1db71b39.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/new-reddit/static/js/2.034fe753.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "95ae342de4e76f659923",
-    "url": "/new-reddit/static/js/main.af618152.chunk.js"
+    "revision": "a66c3260c3ccd98edddd",
+    "url": "/new-reddit/static/js/main.4f5039d4.chunk.js"
   },
   {
     "revision": "7eaaa34a03b3ecab3fa7",
