@@ -8,6 +8,10 @@ const PostTitle = styled.div`
         cursor: pointer;
     }
 
+    & > span:last-child {
+        word-break: break-word;
+    }
+
     @media screen and (max-device-width: 600px){
         font-size: 0.9em;
     }

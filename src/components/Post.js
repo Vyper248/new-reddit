@@ -25,6 +25,10 @@ const StyledPost = styled.div`
         text-align: left;
         margin-bottom: 10px;
     }
+
+    & > div > h2 {
+        word-break: break-word;
+    }
 `;
 
 const PostDetails = styled.div`
