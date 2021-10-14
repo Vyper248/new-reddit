@@ -312,7 +312,7 @@ const getComments = async () => {
     if (currentSub === 'My Subreddits') currentSub = getMySubs();
 
     let url = `${currentSub}/comments/${currentPostId}/${permalinkUrl}`;    
-    let context = showContext && permalinkUrl.length > 0 ? 10000 : 0;
+    let context = showContext && permalinkUrl.length > 0 ? 10000 : 3;
 
     try {        
         let response = await fetch(`https://www.reddit.com/r/${url}.json?sort=${commentSort}&context=${context}`);
