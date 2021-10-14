@@ -28,6 +28,7 @@ const StyledComp = styled.div`
 
     & > div#thumbnails > img {
         margin: 5px;
+        user-select: none;
     }
 
     & > div#thumbnails > img:hover {
@@ -65,6 +66,7 @@ const StyledComp = styled.div`
     & #galleryImgDiv img {
         max-width: 100%;
         max-height: 100%;
+        user-select: none;
     }
 
     & #galleryBack, & #galleryForward {
@@ -120,16 +122,19 @@ const getURL = (arr, index) => {
 }
 
 const Gallery = ({data, extraData}) => {
-    let firstId = data ? Object.keys(data)[0] : '';
+    let firstId = extraData && extraData.items.length > 0 ? extraData.items[0].media_id : '';
     const [id, setId] = useState(firstId);
     const isMobile = useMediaQuery({ maxWidth: 700 });
     const level4 = useMediaQuery({ maxWidth: 960 });
     const level5 = useMediaQuery({ maxWidth: 2560 });
-    let index = data ? Object.keys(data).indexOf(id) : 0;
-    let numberOfImages = data ? Object.keys(data).length : 0;
+    let numberOfImages = extraData.items ? extraData.items.length : 0;
     const [showSpinner, setShowSpinner] = useState(true);
 
     if (!data) return <p>Post has been removed</p>;
+
+    let sortedData = {};
+    extraData.items.forEach(item => sortedData[item.media_id] = data[item.media_id]);
+    let index = Object.keys(sortedData).indexOf(id);
 
     let url = '';
     if (level5) url = getURL(data[id].p, 5);
@@ -149,7 +154,7 @@ const Gallery = ({data, extraData}) => {
     }
 
     const next = () => {
-        let arr = Object.keys(data);
+        let arr = Object.keys(sortedData);
         let index = arr.indexOf(id);
         let next = index+1;
         if (next >= arr.length) next = 0;
@@ -159,12 +164,12 @@ const Gallery = ({data, extraData}) => {
     }
 
     const previous = () => {
-        let arr = Object.keys(data);
+        let arr = Object.keys(sortedData);
         let index = arr.indexOf(id);
-        let next = index-1;
-        if (next < 0) next = arr.length-1;
-        let nextId = arr[next];
-        setId(nextId);
+        let prev = index-1;
+        if (prev < 0) prev = arr.length-1;
+        let prevId = arr[prev];
+        setId(prevId);
         setShowSpinner(true);
     }
 
@@ -187,8 +192,9 @@ const Gallery = ({data, extraData}) => {
             </div>
             <div id="thumbnails">
             {
-                isMobile ? null : Object.values(data).map((obj, i) => {
-                    return <img key={obj.id+i} src={parseBodyText(obj.p[0].u)} onClick={onClickThumb(obj.id)} alt="Thumbnail" className={id === obj.id ? 'selected' : ''}/>
+                isMobile ? null : extraData.items.map((obj,i) => {
+                    let dataObj = data[obj.media_id];
+                    return <img key={obj.id} src={parseBodyText(dataObj.p[0].u)} onClick={onClickThumb(obj.media_id)} alt="Thumbnail" className={id === obj.media_id ? 'selected' : ''}/>
                 })
             }
             </div>
