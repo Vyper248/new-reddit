@@ -242,7 +242,8 @@ const getPostList = async (loadMore=false, force=false) => {
                         spoiler: data.spoiler,
                         link_flair_text: data.link_flair_text,
                         link_flair_text_color: data.link_flair_text_color,
-                        link_flair_background_color: data.link_flair_background_color
+                        link_flair_background_color: data.link_flair_background_color,
+                        crosspost_parent_list: data.crosspost_parent_list
                     };
                 });
 
@@ -321,14 +322,14 @@ const getComments = async () => {
         if (data.error){
             console.log('Getting Comments - Error: ', data.error);
         } else {
-            let {title, selftext_html, id, url, media, media_embed, media_metadata, is_gallery, gallery_data, author, created_utc, permalink, spoiler} = data[0].data.children[0].data;
+            let {title, selftext_html, id, url, media, media_embed, media_metadata, is_gallery, gallery_data, author, created_utc, permalink, spoiler, crosspost_parent_list} = data[0].data.children[0].data;
 
             let comments = data[1].data.children.map(obj => {
                 return parseComment(obj);
             });
 
             batch(() => {
-                setPostDetails({id, url, title, author, created:created_utc, body: parseBodyText(selftext_html), media, media_embed, permalink, media_metadata, is_gallery, gallery_data, spoiler});
+                setPostDetails({id, url, title, author, created:created_utc, body: parseBodyText(selftext_html), media, media_embed, permalink, media_metadata, is_gallery, gallery_data, spoiler, crosspost_parent_list});
                 setComments(comments);
                 if (comments.length === 0) setNoComments(true);
             });
@@ -349,6 +350,20 @@ const updatePostDetails = () => {
     else setPostDetails(post);  
 }
 
+const getLocalUrl = (url, currentSub, currentPostId) => {
+    let urlMatches = url.match(/\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+/g);
+    let localUrl = undefined;
+    if (urlMatches && urlMatches.length > 0) {
+        let match = urlMatches[0];
+        let sub = match.match(/r\/([a-zA-Z0-9]+)/)[1];
+        let id = match.match(/comments\/([a-zA-Z0-9]+)/)[1];
+        let alreadyHere = sub === currentSub && id === currentPostId;
+        if (sub !== undefined && id !== undefined && !alreadyHere) localUrl = `#/${sub}/comments/${id}`;
+    }
+
+    return localUrl;
+}
+
 export {
     parseComment, 
     parseBodyText,
@@ -359,5 +374,6 @@ export {
     getPostList,
     getComments,
     getMoreComments,
-    updatePostDetails
+    updatePostDetails,
+    getLocalUrl
 }

@@ -10,8 +10,9 @@ import Gallery from './Gallery';
 import Spoiler from './Spoiler';
 import LoadingSpinner from './Styled/LoadingSpinner';
 import ErrorBoundary from './ErrorBoundary';
+import Crosspost from './Crosspost';
 
-import { parseBodyText, parseLinks, updatePostDetails, getComments } from '../functions/useful';
+import { parseBodyText, parseLinks, updatePostDetails, getComments, getLocalUrl } from '../functions/useful';
 
 const StyledPost = styled.div`
     background-color: black;
@@ -169,22 +170,13 @@ const Post = () => {
         return <div style={{textAlign: 'center'}}><LoadingSpinner/></div>;
     }
 
-    let {url, title, author, created, body, media, permalink, media_embed, media_metadata, is_gallery, gallery_data, spoiler} = post;
+    let {url, title, author, created, body, media, permalink, media_embed, media_metadata, is_gallery, gallery_data, spoiler, crosspost_parent_list} = post;
 
-    //check if post is a link to another post and make sure it goes there locally and not on a new page
-    let urlMatches = url.match(/\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+/g);
-    let localUrl = undefined;
-    if (urlMatches && urlMatches.length > 0) {
-        let match = urlMatches[0];
-        let sub = match.match(/r\/([a-zA-Z0-9]+)/)[1];
-        let id = match.match(/comments\/([a-zA-Z0-9]+)/)[1];
-        let alreadyHere = sub === currentSub && id === currentPostId;
-        if (sub !== undefined && id !== undefined && !alreadyHere) localUrl = `#/${sub}/comments/${id}`;
-    }
+    let localUrl = getLocalUrl(url, currentSub, currentPostId);
     
 
     //get parsed body tag
-    let bodyTag = parsePostBody(body, url, media, media_embed, permalink, title, currentSub, media_metadata, is_gallery, gallery_data);  
+    let bodyTag = parsePostBody(body, url, media, media_embed, permalink, title, currentSub, media_metadata, is_gallery, gallery_data, crosspost_parent_list);  
 
     //get relative time string
     let dateString = formatDistanceStrict(new Date(), created*1000);
@@ -253,8 +245,16 @@ const Post = () => {
     );
 }
 
-const parsePostBody = (body, url, media, media_embed, permalink, title, currentSub, media_metadata, is_gallery, gallery_data) => {
+export const parsePostBody = (body, url, media, media_embed, permalink, title, currentSub, media_metadata, is_gallery, gallery_data, crosspost_parent_list) => {
     body = parseLinks(body);
+
+    //check for crosspost
+    if (crosspost_parent_list !== undefined) {
+        let data = crosspost_parent_list[0];
+        return <PostBody className="postDivBody">
+            <Crosspost data={data}/>
+        </PostBody>
+    }
     
     //check for image link to url and replace body with image if so
     let bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: body }} className="postDivBody"></PostBody>;
