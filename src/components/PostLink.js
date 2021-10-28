@@ -64,6 +64,21 @@ const PostBody = styled.div`
         max-height: 900px;
     }
 
+    p.bodyImage {
+        max-width: fit-content;
+
+        & img {
+            max-width: 100%;
+        }
+    
+        & span {
+            display: block;
+            font-size: 0.8em;
+            color: #AAA;
+            text-align: center;
+        }
+    }
+
     & iframe {
         max-width: 100%;
         margin: auto;
@@ -126,7 +141,7 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort, onClickFlair=()=
     if (/(.jpg|.png|.bmp|.jpeg)/.test(post.thumbnail) === true) showThumbnail = true;
 
     //make sure any links within the body open in a new tab
-    post.body = parseLinks(post.body);
+    post.body = parseLinks(post.body, true);
     post.title = parseBodyText(post.title);
 
     //decide whether to show image preview in body

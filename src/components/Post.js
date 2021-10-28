@@ -55,6 +55,22 @@ const PostBody = styled.div`
         max-width: 100%;
         margin-top: 10px;
     }
+
+    p.bodyImage {
+        max-width: fit-content;
+
+        & img {
+            max-width: 100%;
+        }
+    
+        & span {
+            display: block;
+            font-size: 0.8em;
+            color: #AAA;
+            text-align: center;
+        }
+    }
+
     
     & iframe {
         max-width: 100%;
@@ -246,7 +262,7 @@ const Post = () => {
 }
 
 export const parsePostBody = (body, url, media, media_embed, permalink, title, currentSub, media_metadata, is_gallery, gallery_data, crosspost_parent_list) => {
-    body = parseLinks(body);
+    body = parseLinks(body, true);
 
     //check for crosspost
     if (crosspost_parent_list !== undefined) {

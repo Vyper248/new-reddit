@@ -32,7 +32,7 @@ const parseComment = (obj, parent=null) => {
     return {body_html, id, name, author, permalink, replies, score, created_utc, hasContext, stickied};
 }
 
-const parseLinks = (text) => {
+const parseLinks = (text, body=false) => {
     //make sure any links within the body open in a new tab
     text = text.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"');
     
@@ -47,6 +47,35 @@ const parseLinks = (text) => {
         let id = match.match(/comments\/([a-zA-Z0-9]+)/)[1];
         text = text.replace(`target="_blank" rel="noopener noreferrer" ${match}`, `href="#/${sub}/comments/${id}`);
     });
+
+    if (body) {
+        //Check for image links and replace with image (only check paragraphs to ignore inline image links)
+        let aTagMatches = text.match(/<p><a\b[^>]*>(.*?)<\/a>( ?)<\/p>/g);
+        if (aTagMatches) {
+            aTagMatches.forEach(a => {
+                //get full href
+                let hrefMatch = a.match(/href="(.[^"]+)"/);
+                if (hrefMatch === undefined || hrefMatch.length < 2) return;
+                let href = parseBodyText(hrefMatch[1]);
+    
+                //check <a> tag description if not the same as url
+                let aText = a.match(/<p><a\b[^>]*>(.*?)<\/a><\/p>/);
+                let imageText = '';
+                if (aText && aText.length > 1) {
+                    imageText = parseBodyText(aText[1]);
+                    if (imageText === href) imageText = '';
+                }
+        
+                //basic check if link is an image link
+                let imgMatch = href.match(/\.jpg|\.bmp|\.jpeg|\.png|\.gif/);
+        
+                //if it is, replace with img tag
+                if (imgMatch && imgMatch.length > 0) {
+                    text = text.replace(a, `<p class="bodyImage"><a target="_blank" rel="noopener noreferrer" href="${href}"><img src="${href}"/><span>${imageText}</span></a></p>`);
+                }
+            });
+        }
+    }
 
     return text;
 }
