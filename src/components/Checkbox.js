@@ -15,7 +15,7 @@ const StyledCheckbox = styled.div`
     :hover {
         cursor: pointer;
     }
-`;
+`; 
 
 const Checkbox = ({checked, onClick}) => {
     return (
