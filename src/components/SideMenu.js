@@ -9,7 +9,7 @@ import UserSortMenu from './UserSortMenu';
 import SubList from './SubList';
 import SearchMenu from './SearchMenu';
 import SaveList from './SaveList';
-import Settings from './Settings';
+import Settings from './Settings/Settings';
 import Button from './Styled/Button';
 
 const StyledSideMenu = styled.div`

@@ -6,14 +6,10 @@ import Download from './Download';
 import Upload from './Upload';
 
 const StyledComp = styled.div`
-    text-align: center;
 
-    & > #group {
-        margin-top: 20px;
-    }
-`;
+`
 
-const Settings = () => {
+const BackupRestore = () => {
     const dispatch = useDispatch();
     const saved = useSelector(state => state.saved);
     const subs = useSelector(state => state.subs);
@@ -83,7 +79,6 @@ const Settings = () => {
 
     return (
         <StyledComp>
-            <h3>Settings</h3>
             <p>Download and Upload the list of subs and saved posts.</p>
             <div id="group">
                 <div>Sub List</div>
@@ -104,4 +99,4 @@ const Settings = () => {
     );
 }
 
-export default Settings;
+export default BackupRestore;

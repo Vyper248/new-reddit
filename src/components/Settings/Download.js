@@ -1,23 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
 import { format } from 'date-fns';
 
-const StyledComp = styled.button`
-    background-color: black;
-    color: white;
-    width: 150px;
-    border-radius: 5px;
-    padding: 5px;
-    margin: 5px;
-    display: inline-block;
-    border: 1px solid gray;
-    font-size: 1em;
-
-    &:hover {
-        cursor: pointer;
-        background-color: gray;
-    }
-`;
+import BasicButton from '../Styled/BasicButton';
 
 const Download = ({data, filename=`Data - ${format(new Date(),'yyyy-MM-dd')}.json`}) => {
     const downloadJson = () => {
@@ -30,7 +14,7 @@ const Download = ({data, filename=`Data - ${format(new Date(),'yyyy-MM-dd')}.jso
     }
 
     return (
-        <StyledComp onClick={downloadJson}>Download</StyledComp>
+        <BasicButton onClick={downloadJson}>Download</BasicButton>
     );
 }
 

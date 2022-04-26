@@ -9,7 +9,7 @@ import UserSortMenu from './UserSortMenu';
 import CommentSortMenu from './CommentSortMenu';
 import SearchMenu from './SearchMenu';
 import SaveList from './SaveList';
-import Settings from './Settings';
+import Settings from './Settings/Settings';
 
 const StyledTopMenu = styled.div`
     border-bottom: 1px solid red;
@@ -26,7 +26,7 @@ const StyledTopMenu = styled.div`
 
     & > div:last-child {
         font-size: 1.4em;
-        height: 34px;
+        height: 35px;
     }
 
     & > div:last-child > svg {
