@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -31,6 +31,10 @@ const SearchMenu = () => {
     const [searchSub, setSearchSub] = useState(currentSearchSub);
     const toggleThisSub = () => setSearchSub(!searchSub);
 
+    useEffect(() => {
+        setSearch(currentSearch);
+    }, [currentSearch]);
+
     const onSearch = () => {
         closeMenus();
         history.push(`/${currentSub}/${currentSort}?search=${search}&searchSort=${searchSort}&searchSub=${searchSub}&searchForSubs=${false}`);
@@ -51,7 +55,7 @@ const SearchMenu = () => {
         // if (search.length === 0) return; //if there's nothing to clear, don't do anything
         setSearch('');
         setSearchSub(true);
-        setSearchSort('relevance');
+        // setSearchSort('relevance');
         history.push(`/${currentSub}/${currentSort}`);
     }
 
