@@ -37,6 +37,12 @@ const ButtonList = styled.div`
         border-bottom: 1px solid gray;
     }
 
+    & > div + h3 {
+        margin-top: 0px;
+        padding-top: 1em;
+        border-top: 1px solid gray;
+    }
+
     @media screen and (max-device-width: 600px){
         & div:last-child > * {
             border-bottom: none;

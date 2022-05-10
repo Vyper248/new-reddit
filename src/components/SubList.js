@@ -73,7 +73,10 @@ const SubList = () => {
 
     if (currentSub === 'user') currentSort = 'hot';
 
-    let displaySubs = subs.map(sub => ({id: sub}));
+    let displaySubs = subs.map(sub => ({id: sub, display: sub}));
+
+    let filteredSubs = subs.filter(sub => !sub.includes('user/')).map(sub => ({id: sub, display: sub}));
+    let filteredUsers = subs.filter(sub => sub.includes('user/')).map(user => ({id: user, display: user.replace('user/', '').replace('/overview', '')}));
 
     return (
         <ButtonList>
@@ -86,9 +89,9 @@ const SubList = () => {
             {
                 editMode 
                     ? ( <ReactSortable list={displaySubs} setList={reorder} handle=".handle">
-                            { displaySubs.map(sub => <CustomSub key={'subButton-'+sub.id} sub={sub} currentSub={currentSub} currentSort={currentSort} onDeleteSub={onDeleteSub} editMode={editMode}/>) }
+                            { displaySubs.map(sub => <CustomSub key={'subButton-'+sub.id} sub={sub} currentSub={currentSub} currentUser={currentUser} currentSort={currentSort} onDeleteSub={onDeleteSub} editMode={editMode}/>) }
                         </ReactSortable> ) 
-                    : displaySubs.map(sub => <CustomSub key={'subButton-'+sub.id} sub={sub} currentSub={currentSub} currentSort={currentSort} onDeleteSub={onDeleteSub} editMode={editMode}/>)
+                    : filteredSubs.map(sub => <CustomSub key={'subButton-'+sub.id} sub={sub} currentSub={currentSub} currentUser={currentUser} currentSort={currentSort} onDeleteSub={onDeleteSub} editMode={editMode}/>)
             }
             {
                 editMode ? (
@@ -99,23 +102,34 @@ const SubList = () => {
                 ) : null
             }
             {
-                !checkIfSubbed(subs, currentSub, currentUser) ? <Button onClick={addCurrentSub}>Add Current {currentSub === 'user' ? 'User' : 'Sub'}</Button> : null
+                !checkIfSubbed(subs, currentSub, currentUser, 'subs') ? <Button onClick={addCurrentSub}>Add Current {currentSub === 'user' ? 'User' : 'Sub'}</Button> : null
+            }
+            { editMode ? null : <h3>Users</h3> }
+            {
+                editMode 
+                    ? null
+                    : filteredUsers.map(sub => <CustomSub key={'subButton-'+sub.id} sub={sub} currentSub={currentSub} currentUser={currentUser} currentSort={'hot'} onDeleteSub={onDeleteSub} editMode={editMode}/>)
+            }
+            {
+                !checkIfSubbed(subs, currentSub, currentUser, 'users') ? <Button onClick={addCurrentSub}>Add Current {currentSub === 'user' ? 'User' : 'Sub'}</Button> : null
             }
         </ButtonList>
     );
 }
 
-const CustomSub = ({sub, currentSub, currentSort, onDeleteSub, editMode}) => {
+const CustomSub = ({sub, currentSub, currentUser, currentSort, onDeleteSub, editMode}) => {
     return (
         <ButtonGroup key={'sub-'+sub.id}>
             { editMode ? <div className="handle"><TiArrowUnsorted style={{position: 'relative', top: '8px'}}/></div> : null }
-            <NavLink to={`/${sub.id}/${currentSort}`} className={sub.id === currentSub ? 'selected' : ''} style={{textTransform: 'capitalize'}}>{sub.id}</NavLink>
+            <NavLink to={`/${sub.id}/${currentSort}`} className={sub.display === currentSub || sub.display === currentUser ? 'selected' : ''} style={{textTransform: 'capitalize'}}>{sub.display}</NavLink>
             { editMode ? <SideButton className="subBtn" onClick={onDeleteSub(sub.id)}><FaTrashAlt/></SideButton> : null }
         </ButtonGroup>
     );
 }
 
-const checkIfSubbed = (subs, currentSub, currentUser) => {
+const checkIfSubbed = (subs, currentSub, currentUser, section) => {
+    if (section === 'subs' && currentSub === 'user') return true;
+    if (section === 'users' && currentSub !== 'user') return true;
     if (currentSub === 'user') return subs.includes(`user/${currentUser}/overview`);
     if (currentSub.length === 0) return true;
     if (currentSub === 'Popular') return true;
