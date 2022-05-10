@@ -27,6 +27,7 @@ const Icon = styled.div`
 const SubList = () => {
     const dispatch = useDispatch();
     const currentSub = useSelector(state => state.currentSub);
+    const currentUser = useSelector(state => state.currentUser);
     let currentSort = useSelector(state => state.currentSort);
 
     const subs = useSelector(state => state.subs);
@@ -54,7 +55,8 @@ const SubList = () => {
     }
 
     const addCurrentSub = () => {
-        addSubToStorage(subs, currentSub);
+        if (currentSub === 'user') addSubToStorage(subs, `user/${currentUser}/overview`);
+        else addSubToStorage(subs, currentSub);
     }
 
     const addSubToStorage = (arr, sub) => {
@@ -97,7 +99,7 @@ const SubList = () => {
                 ) : null
             }
             {
-                !checkIfSubbed(subs, currentSub) ? <Button onClick={addCurrentSub}>Add Current Sub</Button> : null
+                !checkIfSubbed(subs, currentSub, currentUser) ? <Button onClick={addCurrentSub}>Add Current {currentSub === 'user' ? 'User' : 'Sub'}</Button> : null
             }
         </ButtonList>
     );
@@ -113,8 +115,8 @@ const CustomSub = ({sub, currentSub, currentSort, onDeleteSub, editMode}) => {
     );
 }
 
-const checkIfSubbed = (subs, currentSub) => {
-    if (currentSub === 'user') return true;
+const checkIfSubbed = (subs, currentSub, currentUser) => {
+    if (currentSub === 'user') return subs.includes(`user/${currentUser}/overview`);
     if (currentSub.length === 0) return true;
     if (currentSub === 'Popular') return true;
     if (currentSub === 'All') return true;

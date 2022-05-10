@@ -182,7 +182,7 @@ const PostLink = ({ post, onClickLink, currentSub, currentSort, onClickFlair=()=
     let flair = parseFlair(post.link_flair_text);
     let flairColor = post.link_flair_text_color;
     let flairBgColor = post.link_flair_background_color;
-    if (flairBgColor.length === 0) {
+    if (!flairBgColor || flairBgColor?.length === 0) {
         flairBgColor = 'white';
         flairColor = 'black';
     }
