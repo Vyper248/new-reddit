@@ -18,6 +18,7 @@ const initialState = {
 
     subs: [],
     saved: [],
+    blockedUsers: [],
     flairs: {},
 
     sortMenuOpen: false,
@@ -72,6 +73,7 @@ export const reducer = (state = initialState, action={}) => {
 
         case 'SET_SUBS': return {...state, subs: data};
         case 'SET_SAVED': return {...state, saved: data};
+        case 'SET_BLOCKED_USERS': return {...state, blockedUsers: data};
         case 'SET_FLAIRS': return {...state, flairs: data};
 
         case 'SET_CURRENT_SEARCH': return {...state, currentSearch: data};

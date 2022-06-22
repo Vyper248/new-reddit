@@ -15,6 +15,9 @@ const localStorageMiddleware = ({getState}) => {
         } else if (action.type === 'SET_FLAIRS') {
             let flairs = state.flairs;
             localStorage.setItem('reddit-flairs', JSON.stringify(flairs));
+        } else if (action.type === 'SET_BLOCKED_USERS') {
+            let blockedUsers = state.blockedUsers;
+            localStorage.setItem('reddit-blocked-users', JSON.stringify(blockedUsers));
         }
 
         return result;
@@ -28,16 +31,20 @@ const getFromLocalStorage = () => {
     if (storedSaves !== undefined) storedSaves = JSON.parse(storedSaves);
     let storedFlairs = localStorage.getItem('reddit-flairs');
     if (storedFlairs !== undefined) storedFlairs = JSON.parse(storedFlairs);
+    let storedBlockedUsers = localStorage.getItem('reddit-blocked-users');
+    if (storedBlockedUsers !== undefined) storedBlockedUsers = JSON.parse(storedBlockedUsers);
     let state = reducer();
 
     if (!storedSubs) storedSubs = [];
     if (!storedSaves) storedSaves = [];
+    if (!storedBlockedUsers) storedBlockedUsers = [];
     if (!storedFlairs) storedFlairs = {};
 
     return {
         ...state,
         subs: storedSubs,
         saved: storedSaves,
+        blockedUsers: storedBlockedUsers,
         flairs: storedFlairs
     }
 }

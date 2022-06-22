@@ -15,7 +15,7 @@ const StyledComp = styled.div`
     }
 `
 
-const sendData = async (uniqueID, subs, saved, url, type='merge', signal) => {
+const sendData = async (uniqueID, subs, saved, blockedUsers, url, type='merge', signal) => {
     //app ID to make sure both requests come from the same app
     const appID = 'asui248a9db37gruba92ge';
 
@@ -35,6 +35,11 @@ const sendData = async (uniqueID, subs, saved, url, type='merge', signal) => {
                 type: 'objects',
                 syncKey: 'id',
                 objects: saved
+            },
+            {
+                key: 'SET_BLOCKED_USERS',
+                type: 'strings',
+                objects: blockedUsers
             }
         ]
     };
@@ -57,6 +62,7 @@ const Sync = () => {
 
     const saved = useSelector(state => state.saved);
     const subs = useSelector(state => state.subs);
+    const blockedUsers = useSelector(state => state.blockedUsers);
 
     const [serverReady, setServerReady] = useState(false);
     const [beginSyncUp, setBeginSyncUp] = useState(false);
@@ -97,7 +103,7 @@ const Sync = () => {
     const onStartSyncingUp = (type) => async () => {
         setBeginSyncUp(true);
         setSyncStatus({status: '', message: ''});
-        let returnObj = await sendData(uniqueID, subs, saved, 'send', type, fetchController.signal);
+        let returnObj = await sendData(uniqueID, subs, saved, blockedUsers, 'send', type, fetchController.signal);
 
         //if use leaves the settings section, the fetch is aborted, so don't need to update state.
         if (returnObj.err === 'The user aborted a request.') return;
@@ -131,7 +137,7 @@ const Sync = () => {
 
     const onSetQRCode = async (value) => {
         setShowScanner(false);
-        let returnObj = await sendData(value, subs, saved, 'receive', '', fetchController.signal);
+        let returnObj = await sendData(value, subs, saved, blockedUsers, 'receive', '', fetchController.signal);
         let message = updateState(returnObj);
         setSyncStatus(message);
     }
