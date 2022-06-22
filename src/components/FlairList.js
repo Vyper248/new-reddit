@@ -52,6 +52,9 @@ const FlairList = () => {
             if (post.subreddit.toLowerCase() !== currentSub.toLowerCase()) return;
     
             let flairName = post.link_flair_text;
+            if (!flairName) return;
+            if (flairName.trim().length === 0) return;
+
             if (savedFlairs[flairName] === undefined) {
                 changedFlairs = true;
                 savedFlairs[flairName] = {
@@ -106,6 +109,7 @@ const FlairList = () => {
             }
             {
                 Object.values(subFlairs).map(flair => {
+                    if (!flair.link_flair_text) return;
                     //get flair details
                     let flairText = parseFlair(flair.link_flair_text);
                     let flairColor = flair.link_flair_text_color;
