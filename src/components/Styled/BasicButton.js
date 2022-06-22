@@ -11,6 +11,14 @@ const BasicButton = styled.div`
     border: 1px solid gray;
     font-size: 1em;
 
+    ${props => props.small ? `
+        width: auto;
+        margin: 2px;
+        padding: 1px 3px;
+    ` : ''}
+
+    ${props => props.noBorder ? 'border: none;' : ''}
+
     &:hover {
         cursor: pointer;
         background-color: gray;

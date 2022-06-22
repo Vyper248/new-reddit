@@ -5,6 +5,7 @@ const Flair = styled.span`
     padding: 1px 3px;
     color: ${props => props.color === 'light' ? 'white' : 'black'};
     background-color: ${props => props.backgroundColor};
+    ${props => props.dim ? 'opacity: 0.4;' : ''}
     cursor: pointer;
 `;
 
