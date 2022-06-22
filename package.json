@@ -1,6 +1,6 @@
 {
   "name": "new-reddit",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "date-fns": "^2.9.0",
