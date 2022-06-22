@@ -4,6 +4,7 @@ import { useSelector, useDispatch, batch } from 'react-redux';
 
 import TopMenu from './components/TopMenu';
 import PostList from './components/PostList';
+import FlairList from "./components/FlairList";
 import Post from './components/Post';
 import Header from './components/Header';
 import SideMenu from './components/SideMenu';
@@ -136,6 +137,7 @@ const Page = ({location, history}) => {
         return (
             <React.Fragment>
                 <Header heading={heading} subHeading={subHeading} onReload={onReload}/>
+                { !isMobile && currentPostId.length === 0 ? <FlairList/> : null }
                 { currentPostId.length > 0 ? <Post/> : null }
                 <PostList onClickLink={onClickLink}/>
             </React.Fragment>

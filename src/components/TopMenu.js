@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { MdSettings } from 'react-icons/md';
+import { FaFilter, FaSearch, FaSortAmountDown } from 'react-icons/fa';
 
 import SubList from './SubList';
 import SortMenu from './SortMenu';
@@ -10,6 +11,7 @@ import CommentSortMenu from './CommentSortMenu';
 import SearchMenu from './SearchMenu';
 import SaveList from './SaveList';
 import Settings from './Settings/Settings';
+import FlairList from './FlairList';
 
 const StyledTopMenu = styled.div`
     border-bottom: 1px solid red;
@@ -18,20 +20,25 @@ const StyledTopMenu = styled.div`
     background-color: black;
     z-index: 6;
 
-    & > div:last-child,  & > div:nth-last-child(2),  & > div:nth-last-child(3){
+    & > div#settingsBtn, & > div#filterBtn, & > div#searchBtn, & > div#sortBtn {
         float: right;
         border-right: none;
         border-left: 1px solid gray;
-    }
-
-    & > div:last-child {
-        font-size: 1.4em;
+        font-size: 1.2em;
         height: 35px;
+
+        & > svg {
+            position: relative;
+            top: 0px;
+        }
     }
 
-    & > div:last-child > svg {
-        position: relative;
-        top: -2px;
+    & > div#settingsBtn {
+        font-size: 1.4em;
+
+        & > svg {
+            top: -2px;
+        }
     }
 `;
 
@@ -78,6 +85,9 @@ const TopMenu = ({onBackClick}) => {
     const settingsMenuOpen = useSelector(state => state.settingsMenuOpen);
     const onClickSettings = () => settingsMenuOpen ? dispatch({type: 'CLOSE_SETTINGS'}) : dispatch({type: 'OPEN_SETTINGS'});
 
+    const filterMenuOpen = useSelector(state => state.filterMenuOpen);
+    const onClickFilter = () => filterMenuOpen ? dispatch({type: 'CLOSE_FILTER'}) : dispatch({type: 'OPEN_FILTER'});
+
     const currentPostId = useSelector(state => state.currentPostId);
     const currentSub = useSelector(state => state.currentSub);
 
@@ -87,9 +97,10 @@ const TopMenu = ({onBackClick}) => {
                 <MenuButton onClick={onClickSubs} selected={subMenuOpen}>Subs</MenuButton>
                 { saved.length > 0 ? <MenuButton onClick={onClickSave} selected={saveMenuOpen}>Saved</MenuButton> : null }
                 { currentPostId.length > 0 ? <MenuButton onClick={onBackClick}>Back</MenuButton> : null }
-                <MenuButton onClick={onClickSort} selected={sortMenuOpen}>Sort</MenuButton>
-                <MenuButton onClick={onClickSearch} selected={searchMenuOpen}>Search</MenuButton>
-                <MenuButton onClick={onClickSettings} selected={settingsMenuOpen}><MdSettings/></MenuButton>
+                <MenuButton id='sortBtn' onClick={onClickSort} selected={sortMenuOpen}><FaSortAmountDown/></MenuButton>
+                <MenuButton id='searchBtn' onClick={onClickSearch} selected={searchMenuOpen}><FaSearch/></MenuButton>
+                <MenuButton id='filterBtn' onClick={onClickFilter} selected={filterMenuOpen}><FaFilter/></MenuButton>
+                <MenuButton id='settingsBtn' onClick={onClickSettings} selected={settingsMenuOpen}><MdSettings/></MenuButton>
             </StyledTopMenu>
             { saveMenuOpen ? <Dropdown width="300px"><SaveList/></Dropdown> : null }
             { subMenuOpen ? <Dropdown><SubList/></Dropdown> : null }
@@ -98,6 +109,7 @@ const TopMenu = ({onBackClick}) => {
             { sortMenuOpen && currentSub !== 'user' && currentPostId.length > 0 ? <Dropdown right={true}><CommentSortMenu/></Dropdown> : null }
             { searchMenuOpen ? <Dropdown right={true}><SearchMenu/></Dropdown> : null }
             { settingsMenuOpen ? <Dropdown right={true}><Settings/></Dropdown> : null }
+            { filterMenuOpen ? <Dropdown right={true}><h3 style={{textAlign: 'center'}}>Flair Filters</h3><FlairList/></Dropdown> : null }
         </React.Fragment>
     );
 };

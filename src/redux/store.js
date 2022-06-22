@@ -12,6 +12,9 @@ const localStorageMiddleware = ({getState}) => {
         } else if (action.type === 'SET_SAVED') {
             let saved = state.saved;
             localStorage.setItem('saved', JSON.stringify(saved));
+        } else if (action.type === 'SET_FLAIRS') {
+            let flairs = state.flairs;
+            localStorage.setItem('reddit-flairs', JSON.stringify(flairs));
         }
 
         return result;
@@ -23,15 +26,19 @@ const getFromLocalStorage = () => {
     if (storedSubs !== undefined) storedSubs = JSON.parse(storedSubs);
     let storedSaves = localStorage.getItem('saved');
     if (storedSaves !== undefined) storedSaves = JSON.parse(storedSaves);
+    let storedFlairs = localStorage.getItem('reddit-flairs');
+    if (storedFlairs !== undefined) storedFlairs = JSON.parse(storedFlairs);
     let state = reducer();
 
     if (!storedSubs) storedSubs = [];
     if (!storedSaves) storedSaves = [];
+    if (!storedFlairs) storedFlairs = {};
 
     return {
         ...state,
         subs: storedSubs,
-        saved: storedSaves
+        saved: storedSaves,
+        flairs: storedFlairs
     }
 }
 
