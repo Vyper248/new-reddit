@@ -8,7 +8,7 @@ import { parseFlair } from '../functions/useful';
 
 import Flair from './Styled/Flair';
 import BasicButton from './Styled/BasicButton';
-
+ 
 const StyledComp = styled.div`
     display: flex;
     justify-content: center;
