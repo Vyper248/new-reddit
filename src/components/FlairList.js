@@ -38,6 +38,7 @@ const FlairList = () => {
     const currentSub = useSelector(state => state.currentSub);
     const currentSort = useSelector(state => state.currentSort);
     const currentSearch = useSelector(state => state.currentSearch);
+    const searchSubs = useSelector(state => state.searchForSubs);
 
     const [subFlairs, setSubFlairs] = useState({});
     const [editFlairs, setEditFlairs] = useState(false);
@@ -49,7 +50,7 @@ const FlairList = () => {
 
         let changedFlairs = false;
         posts.forEach(post => {
-            if (post.subreddit.toLowerCase() !== currentSub.toLowerCase()) return;
+            if (post.subreddit?.toLowerCase() !== currentSub.toLowerCase()) return;
     
             let flairName = post.link_flair_text;
             if (!flairName) return;
@@ -101,6 +102,7 @@ const FlairList = () => {
     }
 
     if (Object.values(subFlairs).length === 0) return null;
+    if (searchSubs) return null;
 
     return (
         <StyledComp>
