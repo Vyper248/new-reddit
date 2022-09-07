@@ -44,7 +44,7 @@ const sendData = async (uniqueID, subs, saved, blockedUsers, url, type='merge', 
         ]
     };
     try {
-        let response = await fetch('https://general-sync-server.herokuapp.com/api/'+url, {
+        let response = await fetch('https://sync-server.onrender.com/api/'+url, {
             signal: signal,
             method: 'POST',
             headers: {'content-type': 'application/json'},
@@ -82,7 +82,7 @@ const Sync = () => {
 
         const checkServer = async () => {
             try {
-                let response = await fetch('https://general-sync-server.herokuapp.com/', { signal });
+                let response = await fetch('https://sync-server.onrender.com/', { signal });
                 let data = await response.json();
                 if (data.status === 'Ready') {
                     setServerReady(true);
