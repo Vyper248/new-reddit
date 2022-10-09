@@ -3,8 +3,9 @@ import { batch } from 'react-redux';
 
 const parseComment = (obj, parent=null) => {        
     //adding support for more comment loading within replies
-    if (obj.kind === 'more') {        
-        let permalink = parent !== null ? parent.data.permalink.match(/\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+\/([a-zA-Z0-9_]+)\//)[1] : '';
+    if (obj.kind === 'more') {   
+        let permalinkMatch = parent !== null ? parent.data.permalink.match(/\/r\/[a-zA-Z0-9]+\/comments\/[a-zA-Z0-9]+\/([a-zA-ZÀ-ÿ0-9_]+)\//) : null;
+        let permalink = permalinkMatch ? permalinkMatch[1] : '';
         return {
             kind: 'more',
             id: obj.data.parent_id.replace('t1_',''),
