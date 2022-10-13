@@ -78,6 +78,7 @@ const FlairList = () => {
     const onToggleFlairHidden = (flairName) => {
         let subFlairsCopy = {...subFlairs};
         let flair = subFlairsCopy[flairName];
+        if (!flair) return;
         flair.hidden = !flair.hidden;
         dispatch({type: 'SET_FLAIRS', payload: flairs});
         setSubFlairs(subFlairsCopy);
@@ -110,7 +111,7 @@ const FlairList = () => {
                 editFlairs ? <div id='FlairHelp'>Click a flair to hide or show it.</div> : null
             }
             {
-                Object.values(subFlairs).map(flair => {
+                Object.values(subFlairs).map((flair,i) => {
                     if (!flair.link_flair_text) return;
                     //get flair details
                     let flairText = parseFlair(flair.link_flair_text);
@@ -130,7 +131,7 @@ const FlairList = () => {
                     if (!editFlairs && flair.hidden) return null;
 
                     return <Flair 
-                                key={`flair-${flairText}-${flair.hidden}-${flairBgColor}`} 
+                                key={`flair-${flairText}-${i}-${flairBgColor}`} 
                                 dim={flair.hidden} color={flairColor} backgroundColor={flairBgColor} 
                                 onClick={onClickFlair(flair.link_flair_text)}>
                                     {flairText}
