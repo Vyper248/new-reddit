@@ -188,6 +188,8 @@ const Post = () => {
 
     let {url, title, author, created, body, media, permalink, media_embed, media_metadata, is_gallery, gallery_data, spoiler, crosspost_parent_list} = post;
 
+    document.title = `New Reddit - ${currentSub} - ${title}`;
+
     let localUrl = getLocalUrl(url, currentSub, currentPostId);
     
 

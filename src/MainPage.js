@@ -80,6 +80,7 @@ const Page = ({location, history}) => {
 
     //when changing sub or sort method, get post list and clear search
     useEffect(() => {   
+        document.title = `New Reddit - ${currentSub}`;
         if (isMobile) closeMenus(); 
         if (currentSub.length === 0) return;        
         if (currentPostId.length > 0 && posts.length > 0) return;  
