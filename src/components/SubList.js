@@ -104,7 +104,7 @@ const SubList = () => {
             {
                 !checkIfSubbed(subs, currentSub, currentUser, 'subs') ? <Button onClick={addCurrentSub}>Add Current {currentSub === 'user' ? 'User' : 'Sub'}</Button> : null
             }
-            { editMode ? null : <h3>Users</h3> }
+            { editMode || filteredUsers.length === 0 ? null : <h3>Users</h3> }
             {
                 editMode 
                     ? null
