@@ -2,16 +2,35 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import QRCode from 'react-qr-code';
 import { useDispatch, useSelector } from 'react-redux';
+import { FaCopy } from 'react-icons/fa'; 
 
 import QRReader from './QRReader';
 import BasicButton from '../Styled/BasicButton';
+import Input from '../Styled/Input';
+import ButtonGroup from '../Styled/ButtonGroup';
+import SideButton from '../Styled/SideButton';
 
 const StyledComp = styled.div`
     margin-top: 10px;
     padding: 10px;
+
     #qrcode {
         background-color: white;
         padding: 10px;
+        margin: 10px;
+        margin-bottom: 10px;
+    }
+
+    #qrCodeValue {
+        margin-bottom: 10px;
+
+        & > svg {
+            cursor: pointer;
+
+            &:hover {
+                filter: brightness(75%);
+            }
+        }
     }
 `
 
@@ -115,6 +134,8 @@ const Sync = () => {
     const randomNumber = Math.round(Number(Date.now() + '' + Math.random()*10000))+'';
     const [uniqueID, setUniqueID] = useState(randomNumber);
 
+    const [manualQRCode, setManualQRCode] = useState('');
+
     //make sure the interval is cleared if there is one
     useEffect(() => {
         return () => {
@@ -159,6 +180,7 @@ const Sync = () => {
     const onStartSyncDown = () => {
         setSyncStatus({status: '', message: ''});
         setShowScanner(true);
+        setManualQRCode('');
     }
 
     const onCancelSyncDown = () => {
@@ -171,6 +193,23 @@ const Sync = () => {
         let returnObj = await sendData(value, subs, saved, blockedUsers, 'receive');
         let message = updateState(returnObj);
         setSyncStatus(message);
+    }
+
+    const onClickManualCodeGo = () => {
+        onSetQRCode(manualQRCode);
+    }
+
+    const onChangeManualCode = (e) => {
+        setManualQRCode(e.target.value);
+    }
+
+    const onClickManualCodeCopy = () => {
+        try {
+            navigator.clipboard.writeText(uniqueID);
+        } catch (err) {
+            alert("Can only copy over https.");
+            console.log('Can\'t copy on an unsecure server.');
+        }
     }
 
     const updateState = (returnObj) => {
@@ -215,9 +254,10 @@ const Sync = () => {
     if (beginSync) {
         return (
             <StyledComp>
-                <div id='qrcode' style={{margin: '10px', marginBottom: '20px'}}>
+                <div id='qrcode'>
                     <QRCode value={uniqueID} size={180}/>
                 </div>
+                <div id='qrCodeValue'>{uniqueID} <FaCopy onClick={onClickManualCodeCopy}/></div>
                 <div>
                     Scan the QR code on the device you want to sync with.
                 </div>
@@ -235,9 +275,13 @@ const Sync = () => {
         return (
             <StyledComp>
                 <div>
-                    Scan the QR code
+                    Scan the QR code or enter manually
                 </div>
                 { showScanner ? <QRReader setQRCode={onSetQRCode}/> : null }
+                <ButtonGroup>
+                    <Input value={manualQRCode} onChange={onChangeManualCode} style={{border: '1px solid white', color: 'white'}}/>
+                    <SideButton onClick={onClickManualCodeGo} style={{border: '1px solid white', borderLeft: 'none'}}>Go</SideButton>
+                </ButtonGroup>
                 <BasicButton onClick={onCancelSyncDown}>Cancel</BasicButton>
             </StyledComp>
         );
