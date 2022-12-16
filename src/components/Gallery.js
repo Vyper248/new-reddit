@@ -22,7 +22,7 @@ const StyledComp = styled.div`
         display: flex;
         max-width: 100%;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
         flex-flow: wrap;
     }
 
@@ -142,6 +142,9 @@ const Gallery = ({data, extraData}) => {
     if (isMobile) url = getURL(data[id].p, 3);
     let fullUrl = parseBodyText(data[id].s.u);
 
+    //sometimes there's no data in p, so use s instead
+    if (url === undefined) url = fullUrl;
+
     let caption = `${index+1}/${numberOfImages}`;
     let extraDataObj = extraData.items.find(obj => obj.media_id === id);
     if (extraDataObj !== undefined) {
@@ -194,7 +197,9 @@ const Gallery = ({data, extraData}) => {
             {
                 isMobile ? null : extraData.items.map((obj,i) => {
                     let dataObj = data[obj.media_id];
-                    return <img key={obj.id} src={parseBodyText(dataObj.p[0].u)} onClick={onClickThumb(obj.media_id)} alt="Thumbnail" className={id === obj.media_id ? 'selected' : ''}/>
+                    let thumbUrl = dataObj?.p[0]?.u;
+                    if (thumbUrl === undefined) thumbUrl = dataObj.s.u;
+                    return <img key={obj.id} src={parseBodyText(thumbUrl)} onClick={onClickThumb(obj.media_id)} alt="Thumbnail" className={id === obj.media_id ? 'selected' : ''}/>
                 })
             }
             </div>
