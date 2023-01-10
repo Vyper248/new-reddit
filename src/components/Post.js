@@ -277,7 +277,11 @@ export const parsePostBody = (body, url, media, media_embed, permalink, title, c
     //check for image link to url and replace body with image if so
     let bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: body }} className="postDivBody"></PostBody>;
     if (/.(png|jpg|jpeg|bmp|gif)$/.test(url)){
-        bodyTag = <PostBody><img src={url} alt="Preview of content"/></PostBody>;
+        //keep body here in case user added extra text
+        bodyTag = <PostBody>
+                    <img src={url} alt="Preview of content"/>
+                    <div dangerouslySetInnerHTML={{ __html: body }}></div>
+                  </PostBody>;
     }
 
     //check for a live update thread
