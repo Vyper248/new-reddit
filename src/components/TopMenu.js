@@ -60,7 +60,7 @@ const Dropdown = styled.div`
     border-right: 1px solid red;
     border-bottom: 1px solid red;
     max-height: calc(100% - 50px);
-    overflow: scroll;
+    overflow: auto;
     ${ props => props.right 
             ? 'right: 0px; border-left: 1px solid red; border-right: none;' 
             : '' };

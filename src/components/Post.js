@@ -48,7 +48,7 @@ const PostBody = styled.div`
     padding-bottom: 10px;
 
     & pre {
-        overflow: scroll;
+        overflow: auto;
     }
 
     & > img {

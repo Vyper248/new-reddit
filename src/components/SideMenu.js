@@ -17,7 +17,7 @@ const StyledSideMenu = styled.div`
     border-right: 1px solid red;
     height: 100%;
     position: fixed;
-    overflow: scroll;
+    overflow: auto;
 `;
 
 const SavedButton = styled(Button)`

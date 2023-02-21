@@ -31,7 +31,7 @@ const StyledComment = styled.div`
     }
 
     & pre {
-        overflow: scroll;
+        overflow: auto;
     }
 
     :hover {

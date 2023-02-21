@@ -162,7 +162,7 @@ const Page = ({location, history}) => {
                     <div>
                         <SideMenu/>
                     </div>
-                    <div style={{width: 'calc(100% - 250px)', height: '100%', overflow: 'scroll', marginLeft: '250px', position: 'relative'}} id='mainPage'>
+                    <div style={{width: 'calc(100% - 250px)', height: '100%', overflow: 'auto', marginLeft: '250px', position: 'relative'}} id='mainPage'>
                         { getMainPage() }
                     </div>
                 </div>
