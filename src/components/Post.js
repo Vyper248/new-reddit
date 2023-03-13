@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { formatDistanceStrict } from 'date-fns';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,6 +11,7 @@ import Spoiler from './Spoiler';
 import LoadingSpinner from './Styled/LoadingSpinner';
 import ErrorBoundary from './ErrorBoundary';
 import Crosspost from './Crosspost';
+import UserStats from './UserStats/UserStats';
 
 import { parseBodyText, parseLinks, updatePostDetails, getComments, getLocalUrl } from '../functions/useful';
 
@@ -36,9 +37,18 @@ const PostDetails = styled.div`
     color: gray;
     text-align: left;
     margin-bottom: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     & a {
         color: gray;
+        white-space: nowrap;
+    }
+
+    & #statBtn {
+        :hover {
+            cursor: pointer;
+        }
     }
 `;
 
@@ -157,6 +167,7 @@ const SimpleButton = styled.span`
 
 const Post = () => {
     const dispatch = useDispatch();
+    const [showStats, setShowStats] = useState(false);
 
     const comments = useSelector(state => state.comments);
     const noComments = useSelector(state => state.noComments);
@@ -199,10 +210,6 @@ const Post = () => {
     //get relative time string
     let dateString = formatDistanceStrict(new Date(), created*1000);
 
-    //if URL is too long, make shorter
-    let shortUrl = url || '';
-    if (shortUrl.length > 40) shortUrl = shortUrl.substr(0,40) + '...';
-
     //check if post is saved
     let isSaved = saved.find(obj => obj.id === currentPostId) !== undefined;
 
@@ -237,9 +244,13 @@ const Post = () => {
         setSaved(newSaved);
     }
 
-    let urlTag = <a href={url} target="_blank" rel="noopener noreferrer"> | Go to URL ({shortUrl})</a>;
-    if (localUrl !== undefined) urlTag = <a href={localUrl}> | Go to Post ({shortUrl})</a>;
-    if (url.includes('v.redd.it')) urlTag = <a href={`https://www.reddit.com${permalink}`} target="_blank" rel="noopener noreferrer"> | Video</a>;
+    const onClickToggleStats = () => {
+        setShowStats(val => !val);
+    }
+
+    let urlTag = <a href={url} target="_blank" rel="noopener noreferrer"> Go to URL ({url || ''})</a>;
+    if (localUrl !== undefined) urlTag = <a href={localUrl}> Go to Post ({url || ''})</a>;
+    if (url.includes('v.redd.it')) urlTag = <a href={`https://www.reddit.com${permalink}`} target="_blank" rel="noopener noreferrer"> Go to Video</a>;
 
     let hasContext = comments[0] !== undefined ? comments[0].hasContext : false;
 
@@ -247,8 +258,10 @@ const Post = () => {
         <StyledPost>
             <div>
                 <h2 dangerouslySetInnerHTML={{ __html: title}}></h2>
-                <PostDetails><a href={`#/user/${author}`}>{author}</a> | {dateString} { urlTag }</PostDetails>
+                <PostDetails><a href={`#/user/${author}`}>{author}</a> | <span id='statBtn' onClick={onClickToggleStats}>{ showStats ? 'Hide Stats' : 'Show Stats'}</span> | {dateString}</PostDetails>
+                <PostDetails>{ urlTag }</PostDetails>
                 <PostDetails><a href={`https://www.reddit.com${permalink}`} target="_blank" rel="noopener noreferrer">Open on Reddit</a> - <SimpleButton onClick={onSavePost}>{ isSaved ? 'Unsave' : 'Save' }</SimpleButton></PostDetails>
+                { showStats ? <UserStats username={author}/> : null }
                 <Spoiler spoiler={spoiler}>
                     { bodyTag }
                 </Spoiler>
