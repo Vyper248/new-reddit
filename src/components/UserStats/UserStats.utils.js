@@ -56,10 +56,10 @@ export const analyseData = (submissionData, commentData, ignoreProfile, username
     submissionData.forEach(submission => {
         let data = submission.data;
         if (ignoreProfile && data.subreddit.toLowerCase() === 'u_'+username.toLowerCase()) return;
+        if (focusSub.length > 0 && data.subreddit.toLowerCase() !== focusSub.toLowerCase()) return;
         submissionCount++;
         addSubSubmitted(data, subsSubmittedTo);
-        if (focusSub.length > 0 && data.subreddit.toLowerCase() !== focusSub.toLowerCase()) return;
-        addDomain(data, domainsSubmittedFrom);                    
+        addDomain(data, domainsSubmittedFrom, focusSub);                    
         addAccount(data, accountsSubmittedFrom);
     });
     
@@ -76,11 +76,11 @@ export const analyseData = (submissionData, commentData, ignoreProfile, username
     return { submissionCount, domainsSubmittedFrom, subsSubmittedTo, accountsSubmittedFrom, subsCommentedTo };
 }
 
-const addDomain = (data, domainsSubmittedFrom) => {
+const addDomain = (data, domainsSubmittedFrom, focusSub=false) => {
     let domain = data.domain;
     let existingObj = domainsSubmittedFrom.find(obj => obj.domain === domain);
     if (existingObj === undefined){
-        domainsSubmittedFrom.push({domain, count:1});
+        domainsSubmittedFrom.push({domain, count:1, focusSub});
     } else {
         existingObj.count++;
     }

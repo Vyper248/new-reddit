@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 const StyledUserTable = styled.div`
     max-height: 300px;
@@ -31,6 +32,8 @@ const StyledUserTable = styled.div`
 `;
 
 const UserTable = ({headings, data, type, total, username, totalComments}) => {
+    const currentSub = useSelector(state => state.currentSub);
+
     return (
         <StyledUserTable>
             <table>
@@ -59,9 +62,12 @@ const UserTable = ({headings, data, type, total, username, totalComments}) => {
     
     function getCells(obj, i){
         if (type === 'domains'){
+            let url = `https://www.reddit.com/search?q=site%3A${obj.domain}+author%3A${username}+is_self%3A0&restrict_sr=on&sort=new`;
+            if (obj.domain.includes('self.')) url = `https://www.reddit.com/r/${obj.domain.replace('self.', '')}/search?q=author%3A${username}+is_self%3A1&restrict_sr=on&sort=new`;
+            else if (obj.focusSub) url = `https://www.reddit.com/r/${currentSub}/search?q=site%3A${obj.domain}+author%3A${username}+is_self%3A0&restrict_sr=on&sort=new`;
             return (
                 <tr key={i}>
-                    <td>{obj.domain}</td>
+                    <td><a href={url} target="_blank" rel="noopener noreferrer">{obj.domain}</a></td>
                     <td>{obj.count}</td>
                     <td>{((obj.count/total)*100).toFixed(0)}%</td>
                 </tr>
@@ -69,7 +75,7 @@ const UserTable = ({headings, data, type, total, username, totalComments}) => {
         } else if (type === 'subsSubmitted'){
             return (
                 <tr key={i}>
-                    <td><a href={"https://www.reddit.com/r/"+obj.sub+"/search?q=author%3A"+username+"&restrict_sr=on&sort=new&feature=legacy_search"} target="_blank" rel="noopener noreferrer">{obj.sub}</a></td>
+                    <td><a href={"https://www.reddit.com/r/"+obj.sub+"/search?q=author%3A"+username+"&restrict_sr=on&sort=new"} target="_blank" rel="noopener noreferrer">{obj.sub}</a></td>
                     <td>{obj.count}</td>
                     <td>{((obj.count/total)*100).toFixed(0)}%</td>
                 </tr>
