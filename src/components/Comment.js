@@ -163,7 +163,7 @@ const Comment = ({comment, author, single=false, onClickLink}) => {
             { closed ? null : <div dangerouslySetInnerHTML={{ __html: body_html }} style={permalinkComment ? {backgroundColor: 'rgba(150,150,0,0.3)'} : {}}></div> }
             { closed ? null : (
                 <CommentFooter>
-                    { comment.kind !== 'more' ? <a href={`https://www.reddit.com/${comment.permalink}`} target="_blank" rel="noreferrer noopener">Permalink</a> : null }
+                    { comment.kind !== 'more' ? <a href={`https://www.reddit.com${comment.permalink}`} target="_blank" rel="noreferrer noopener">Permalink</a> : null }
                     { single ? <span onClick={onClickLink(comment.permalink.replace('r/',''))}> | Go to comment</span> : null }
                     { comment.kind === 'more' ? <div onClick={getMore}>Load More</div> : null }
                 </CommentFooter>) }
