@@ -81,6 +81,11 @@ const PostBody = styled.div`
         }
     }
 
+    & iframe.youtube {
+        width: 712px;
+        height: 400px;
+        max-width: 100%;
+    }
     
     & iframe {
         max-width: 100%;
@@ -127,6 +132,14 @@ const PostBody = styled.div`
         border-left: 2px solid #333;
         padding-left: 10px;
         margin-inline-start: 10px;
+    }
+
+    @media screen and (max-width: 550px) {
+        & iframe.youtube {
+            width: auto;
+            height: auto;
+            max-width: auto;
+        }
     }
 `;
 
@@ -307,10 +320,11 @@ export const parsePostBody = (body, url, media, media_embed, permalink, title, c
 
     //check for media embed and replace body with this
     if (media && media.oembed){
-        media = parseBodyText(media.oembed.html);
-        media = parseLinks(media);
-        if (body.length > 0) media += '<br/>'+body;
-        bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: media }} className="postDivBody"></PostBody>;
+        let mediaHTML = parseBodyText(media.oembed.html);
+        mediaHTML = parseLinks(mediaHTML);
+        if (body.length > 0) mediaHTML += '<br/>'+body;
+        if (media.type === 'youtube.com') mediaHTML = mediaHTML.replace('<iframe', '<iframe class="youtube"');
+        bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: mediaHTML }} className="postDivBody"></PostBody>;
     } else {
         media = '';
     }
