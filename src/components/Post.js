@@ -330,7 +330,14 @@ export const parsePostBody = (body, url, media, media_embed, permalink, title, c
     }
 
     if (is_gallery) {
-        return <PostBody className="postDivBody"><ErrorBoundary><Gallery data={media_metadata} extraData={gallery_data}/></ErrorBoundary></PostBody>
+        return (
+            <PostBody className="postDivBody">
+                <ErrorBoundary>
+                    <Gallery data={media_metadata} extraData={gallery_data}/>
+                </ErrorBoundary>
+                <div dangerouslySetInnerHTML={{ __html: body }}></div>
+            </PostBody>
+        )
     }
 
     if (url.includes('v.redd.it')) {
