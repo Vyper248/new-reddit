@@ -326,6 +326,23 @@ export const parsePostBody = (body, url, media, media_embed, permalink, title, c
         if (media.type === 'youtube.com') mediaHTML = mediaHTML.replace('<iframe', '<iframe class="youtube"');
         bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: mediaHTML }} className="postDivBody"></PostBody>;
     } else {
+        if (media && media.reddit_video) {
+            // const { height, fallback_url, dash_url, hls_url, width } = media.reddit_video;
+
+            return <PostBody>
+                <blockquote className="reddit-embed-bq" style={{height:'500px'}} data-embed-theme="dark" data-embed-height="500">      
+                    <a href={`https://www.reddit.com${permalink}`}>{title}</a>
+                </blockquote>
+            </PostBody>
+
+            // Currently only shows the video, not the audio
+            // return <PostBody>
+            //     <video width={width} height={height} controls>
+            //         <source src={fallback_url}/>
+            //     </video>
+            // </PostBody>
+        }
+
         media = '';
     }
 
