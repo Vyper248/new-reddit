@@ -327,22 +327,9 @@ export const parsePostBody = (body, url, media, media_embed, permalink, title, c
         bodyTag = <PostBody dangerouslySetInnerHTML={{ __html: mediaHTML }} className="postDivBody"></PostBody>;
     } else {
         if (media && media.reddit_video) {
-            // const { height, fallback_url, dash_url, hls_url, width } = media.reddit_video;
-
-            
             return <PostBody>
                 <iframe height="500" src={`https://embed.reddit.com${permalink}?embed=true&ref_source=embed&ref=share&utm_medium=widgets&utm_source=embedv2&utm_term=23&theme=dark&utm_name=post_embed`} width="640px" allowfullscreen="true" sandbox="allow-scripts allow-same-origin allow-popups" style={{border: 'none', maxWidth: '100%', borderRadius: '8px', display: 'block', margin: '0px auto'}}></iframe>
-                {/* <blockquote className="reddit-embed-bq" style={{height:'500px'}} data-embed-theme="dark" data-embed-height="500">      
-                    <a href={`https://www.reddit.com${permalink}`}>{title}</a>
-                </blockquote> */}
             </PostBody>
-
-            // Currently only shows the video, not the audio
-            // return <PostBody>
-            //     <video width={width} height={height} controls>
-            //         <source src={fallback_url}/>
-            //     </video>
-            // </PostBody>
         }
 
         media = '';
