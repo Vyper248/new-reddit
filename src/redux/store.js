@@ -35,7 +35,14 @@ const getFromLocalStorage = () => {
     if (storedBlockedUsers !== undefined) storedBlockedUsers = JSON.parse(storedBlockedUsers);
     let state = reducer();
 
-    if (!storedSubs) storedSubs = [];
+    //add a default sub group if nothing exists
+    if (!storedSubs) storedSubs = [{
+        id: 1,
+        heading: 'Subs',
+        subs: ['PS5'],
+        hidden: false
+    }];
+    
     if (!storedSaves) storedSaves = [];
     if (!storedBlockedUsers) storedBlockedUsers = [];
     if (!storedFlairs) storedFlairs = {};

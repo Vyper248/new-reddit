@@ -109,11 +109,10 @@ const Page = ({location, history}) => {
     if (sub !== currentSub || postId !== currentPostId || userSort !== currentUserSort || (newSort.length > 0 && newSort !== currentSort)) return <div></div>;
 
     if (currentSub.length === 0) {
-        let redirectSub = '';
+        let redirectSub = 'Popular';
         let storedSubs = localStorage.getItem('subs');
         storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
-        if (storedSubs.length > 0) redirectSub = storedSubs[0];
-        else redirectSub = 'Popular';
+        if (storedSubs.length > 0 && storedSubs[0].subs.length > 0) redirectSub = storedSubs[0].subs[0];
         history.push(`/${redirectSub}/${currentSort}`);
         return <div></div>;
     }

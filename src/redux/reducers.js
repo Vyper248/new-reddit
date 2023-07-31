@@ -1,6 +1,6 @@
 const initialState = {
     currentSub: '',
-    currentSort: 'hot',
+    currentSort: 'new',
     currentPostId: '',
     currentUserSort: 'overview',
     currentUser: '',

@@ -117,7 +117,7 @@ const parseURL = (url) => {
         parts[2] === 'comments' && parts[3] !== undefined ? postId = parts[3] : postId = '';
         parts[2] !== 'comments' && parts[2] !== undefined ? newSort = parts[2] : newSort = '';
         if (parts[2] === 'comments' && parts[3] === undefined) newSort = 'comments';
-        if (parts[2] !== 'comments' && parts[2] === undefined) newSort = 'hot';
+        if (parts[2] !== 'comments' && parts[2] === undefined) newSort = 'new';
         if (parts[1] === 'user' && parts[3] !== undefined) userSort = parts[3];
         if (parts[1] === 'user' && parts[3] === undefined) userSort = 'overview';
         if (parts[1] === 'user' && parts[2] !== undefined) { user = parts[2]; newSort = ''; }
@@ -152,9 +152,22 @@ const getMySubs = (prepend) => {
     let currentSub = '';
     let storedSubs = localStorage.getItem('subs');
     storedSubs = storedSubs ? JSON.parse(storedSubs) : [];
-    storedSubs = storedSubs.filter(sub => (!sub.includes('/'))); //filter items with / in, such as user links
-    currentSub = prepend+storedSubs.join('+');
-    if (storedSubs.length === 0) currentSub = prepend+'All';
+
+    //get subs from all groups into a single array
+    let allSubs = storedSubs.reduce((a,c) => {
+        a.push(...c.subs);
+        return a;
+    }, []);
+
+    //convert to a set to remove any duplicates and then back to an array
+    let uniqueSubs = new Set(allSubs);
+    allSubs = Array.from(uniqueSubs);
+
+    //filter items with / in, such as user links
+    allSubs = allSubs.filter(sub => !sub.includes('/')); 
+    
+    currentSub = prepend+allSubs.join('+');
+    if (allSubs.length === 0) currentSub = prepend+'All';
     return currentSub;
 }
 

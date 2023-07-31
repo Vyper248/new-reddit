@@ -22,26 +22,15 @@ const BackupRestore = () => {
         let valid = true;
         if (!Array.isArray(data)) valid = false;
         if (data.length === 0) valid = false;
-        for (let i = 0; i < data.length; i++) {
-            if (typeof data[i] !== 'string') { valid = false; break; }
-        }
 
         if (!valid) {
             alert('File not valid');
             return;
         }
 
-        //merge with existing data
-        let newSubs = [...subs];
-        data.forEach(sub => {
-            let old = subs.find(name => name.toLowerCase() === sub.toLowerCase());
-            if (old !== undefined) return;
-            newSubs.push(sub);
-        });
-
         //set to state and save to localstorage
-        setSubs(newSubs);
-        localStorage.setItem('subs', JSON.stringify(newSubs));
+        setSubs(data);
+        localStorage.setItem('subs', JSON.stringify(data));
     }
     
     const onUploadSaved = (data) => {

@@ -41,6 +41,16 @@ const AddSubBtn = styled.div`
     }
 `;
 
+const checkSubs = (subs, sub) => {
+    for (let i = 0; i < subs.length; i++) {
+        for (let j = 0; j < subs[i].subs.length; j++) {
+            if (subs[i].subs[j].toLowerCase() === sub.toLowerCase()) return true;
+        }
+    }
+
+    return false;
+}
+
 const SubLink = ({ sub, currentSort }) => {
     const dispatch = useDispatch();
     const [expanded, setExpanded] = useState(false);
@@ -63,14 +73,13 @@ const SubLink = ({ sub, currentSort }) => {
     if (description.length === 0) openBtn = false;    
 
     const addSub = () => {
-        let newSubArr = [...subs, sub.subName];  
-        setSubs(newSubArr);
+        let latestGroup = subs[subs.length-1];
+        let newSubArr = [...latestGroup.subs, sub.subName];  
+        latestGroup.subs = newSubArr;
+        setSubs([...subs]);
     }
 
-    const alreadySubbed = subs.reduce((a,c) => {
-        if (c.toLowerCase() === sub.subName.toLowerCase()) a++;
-        return a;
-    }, 0);
+    const alreadySubbed = checkSubs(subs, sub.subName);
 
     return (
         <StyledPostLink stickied={alreadySubbed}>

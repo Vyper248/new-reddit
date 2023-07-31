@@ -86,7 +86,8 @@ const sendData = async (uniqueID, subs, saved, blockedUsers, type='merge') => {
         objects: [
             {
                 key: 'SET_SUBS',
-                type: 'strings',
+                type: 'subStrings',
+                subKey: 'subs',
                 objects: subs
             },
             {

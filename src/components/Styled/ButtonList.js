@@ -29,11 +29,11 @@ const ButtonList = styled.div`
         background-color: gray;
     }
 
-    & > a:last-of-type, & > button:last-of-type {
+    & > button:last-of-type {
         border-bottom: 1px solid gray;
     }
 
-    & > div:last-child > * {
+    & > div:last-child {
         border-bottom: 1px solid gray;
     }
 
