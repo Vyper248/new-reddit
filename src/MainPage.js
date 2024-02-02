@@ -131,7 +131,7 @@ const Page = ({location, history}) => {
         let subHeading = '';
         if (currentSearchForSubs) heading = `Searching Subs: ${currentSearch}`;
         if (currentSearch.length > 0 && !currentSearchForSubs) subHeading = `Searching: ${decodeURI(currentSearch)}`;
-        if (currentSearch.length > 0 && !currentSearchForSubs && currentSearch.includes('flair_name')) subHeading = `Searching Flair: ${parseFlair(decodeURI(currentSearch.replace('flair_name:', '')))}`;
+        if (currentSearch.length > 0 && !currentSearchForSubs && currentSearch.includes('flair')) subHeading = `Searching Flair: ${parseFlair(decodeURI(currentSearch.replace('flair:', '')))}`;
         if (currentSub === 'user') heading = `${currentUser}`;
         
         return (

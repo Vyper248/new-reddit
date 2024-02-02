@@ -91,11 +91,11 @@ const FlairList = () => {
         }
 
         //if already searching for this flair, don't need to do anything
-        if (decodeURI(currentSearch) === `flair_name:"${flairName}"`) return;
+        if (decodeURI(currentSearch) === `flair:"${flairName}"`) return;
         
         //base flair sorting on current post sort. I user is looking at new posts, search should use new, otherwise use top (relevant not needed for flair searching)
         let sorting = currentSort === 'new' ? 'new' : 'top';
-        history.push(`/${currentSub}/${currentSort}?search=${`flair_name:"${flairName}"`}&searchSort=${sorting}&searchSub=${true}&searchForSubs=${false}`);
+        history.push(`/${currentSub}/${currentSort}?search=${`flair:"${flairName}"`}&searchSort=${sorting}&searchSub=${true}&searchForSubs=${false}`);
     }  
 
     const onToggleEditMode = () => {
